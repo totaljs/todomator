@@ -10,10 +10,7 @@ cp -a ../public/ public
 cp -a ../schemas/ schemas
 cp -a ../views/ views
 
-cd ..
-
-total4 --bundle ../openplatform.bundle
-# cp openplatform.package ../openplatform@4.bundle
+total4 --bundle ../app.bundle
 
 cd ..
 rm -rf .bundle
