@@ -367,6 +367,8 @@ dd:before { content: ':'; margin-right: 8px; color: gray; }
 	.list .item .name i { width: 18px; margin: 4px 5px 0 0; font-size: 14px; }
 	.list .item > div { height: 55px; padding-top: 10px; }
 	.list .item > span { height: 38px; }
+	.list .item .project2 { font-size: 14px; margin: 1px 5px 0 0; line-height: 14px; }
+	.list .item .count { width: 22px; height: 22px; line-height: 22px; font-size: 11px; }
 
 	.ui-layout-right .back { display: block; }
 	.ui-layout-right .search { margin: 0 0 0 60px; }
