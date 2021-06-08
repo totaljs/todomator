@@ -23,6 +23,7 @@ NEWSCHEMA('Docs', function(schema) {
 
 		var date = $.query.date ? $.query.date.parseDate().format('yyyy-MM-dd') : null;
 		var output = [];
+		var today = +NOW.format('yyyyMMdd');
 		var openonly = $.query.collectionid === 'open';
 		if (openonly)
 			$.query.collectionid = '';
@@ -55,7 +56,7 @@ NEWSCHEMA('Docs', function(schema) {
 			if (FUNC.notallowed(col, $.user))
 				continue;
 
-			if (openonly && (!col.isopen || item.date > NOW || item.isarchived))
+			if (openonly && (!col.isopen || item.date3 > today || item.isarchived))
 				continue;
 
 			output.push(item);
@@ -95,6 +96,7 @@ NEWSCHEMA('Docs', function(schema) {
 		model.islinewrapping = false;
 		model.search = (model.name + ' ' + model.project + ' ' + model.number + ' ' + model.reference).toSearch().max(200);
 		model.date2 = model.date.format('yyyy-MM-dd');
+		model.date3 = +model.date.format('yyyyMMdd');
 		model.isarchived = false;
 		model.isfavorite = false;
 		model.countpriorities = 0;
@@ -123,6 +125,7 @@ NEWSCHEMA('Docs', function(schema) {
 
 		response.dtupdated = NOW;
 		response.date2 = response.date.format('yyyy-MM-dd');
+		response.date3 = +response.date.format('yyyyMMdd');
 		response.search = (model.name + ' ' + model.project + ' ' + model.number + ' ' + model.reference).toSearch().max(200);
 
 		FUNC.save('docs');
@@ -257,6 +260,7 @@ NEWSCHEMA('Docs', function(schema) {
 
 			response.date = $.filter.date;
 			response.date2 = response.date.format('yyyy-MM-dd');
+			response.date3 = +response.date.format('yyyyMMdd');
 
 			FUNC.save('docs');
 			$.audit(response.name);

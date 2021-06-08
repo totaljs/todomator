@@ -30,7 +30,7 @@ Object.keys(DB).wait(function(key, next) {
 
 	// Makes a default collection
 	if (!DB.collections.length)
-		EXEC('+Collections --> insert', { name: 'Projects' }, NOOP);
+		EXEC('+Collections --> insert', { name: 'Projects', isopen: true }, NOOP);
 
 	if (!DB.users.length) {
 		var password = GUID(10);
