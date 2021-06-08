@@ -1,0 +1,7 @@
+name                        : Todomator
+version                     : 1.0.0
+database                    : textdb
+
+cookie         (generate)   : 10
+secret_password (generate)  : 15
+secret_session  (generate)  : 15

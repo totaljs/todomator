@@ -1,0 +1,123 @@
+{
+	"$id": "https://schemas.totaljs.com/docs.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"required": [],
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"number": {
+			"type": "string",
+			"maxLength": 40
+		},
+		"name": {
+			"type": "string",
+			"maxLength": 80
+		},
+		"body": {
+			"type": "string"
+		},
+		"project": {
+			"type": "string",
+			"maxLength": 50
+		},
+		"color": {
+			"type": "string",
+			"maxLength": 7
+		},
+		"icon": {
+			"type": "string",
+			"maxLength": 30
+		},
+		"reference": {
+			"type": "string",
+			"maxLength": 40
+		},
+		"pin": {
+			"type": "string",
+			"maxLength": 6
+		},
+		"hourlyrate": {
+			"type": "number"
+		},
+		"date": {
+			"type": "date"
+		},
+		"isprivate": {
+			"type": "boolean"
+		},
+		"groups": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"roles": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"counttasks": {
+			"type": "number"
+		},
+		"countminutes": {
+			"type": "number"
+		},
+		"countpending": {
+			"type": "number"
+		},
+		"countcompleted": {
+			"type": "number"
+		},
+		"countcanceled": {
+			"type": "number"
+		},
+		"countprices": {
+			"type": "number"
+		},
+		"countpriorities": {
+			"type": "number"
+		},
+		"countworking": {
+			"type": "number"
+		},
+		"countestimate": {
+			"type": "number"
+		},
+		"countusers": {
+			"type": "number"
+		},
+		"counttags": {
+			"type": "number"
+		},
+		"countupdates": {
+			"type": "number"
+		},
+		"dtexpire": {
+			"type": "date"
+		},
+		"dtupdated": {
+			"type": "date"
+		},
+		"ip": {
+			"type": "string"
+		},
+		"userid": {
+			"type": "string"
+		},
+		"username": {
+			"type": "string"
+		},
+		"useremail": {
+			"type": "string"
+		},
+		"tags": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	}
+}

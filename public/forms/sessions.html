@@ -1,0 +1,47 @@
+<div data---="largeform__common.form__if:sessionsform;title:@(My sessions);icon:fal fa-desktop-alt;scrollbar:1;width:600" class="hidden">
+	<div data-scope="sessionsform">
+		<div class="padding sessions" data-bind="?__template">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="item">
+						<dl>
+							<dt>@(Device)</dt>
+							<dd class="b">{{ m.ua }}{{ if m.iscurrent }} <span class="badge badge-red badge-small">@(current)</span>{{ fi }}</dd>
+							<dt>@(IP address)</dt>
+							<dd>{{ m.ip }}</dd>
+							<dt>@(Used)</dt>
+							<dd>{{ m.dtlogged | format('yyyy-MM-dd HH:mm') }}</dd>
+							<dt>@(Online)</dt>
+							<dd>{{ if m.isonline }}<b class="green">@(online)</b>{{ else }}@(offline){{ fi }}</dd>
+							<dt>@(Created)</dt>
+							<dd>{{ m.dtcreated | format('yyyy-MM-dd HH:mm') }}</dd>
+						</dl>
+						{{ if !m.iscurrent }}
+						<div class="help">
+							<span class="link red exec" data-exec="?/cancel" data-id="{{ m.id }}"><i class="fa fa-trash-o mr5"></i>@(Cancel session)</span>
+						</div>
+						{{ fi }}
+						<hr />
+					</div>
+				{{ end }}
+			</script>
+		</div>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%;max-width:100%">@(Close)</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('sessionsform', function(exports) {
+		exports.cancel = function(el) {
+			SETTER('approve/show', '@(Are you sure you want to cancel selected session?)', '"trash-o" @(Cancel)', function() {
+				AJAX('GET /api/account/logout/' + el.attrd('id'), ASETTER('message/response', function() {
+					el.closest('.item').remove();
+				}));
+			});
+		};
+	});
+
+</script>

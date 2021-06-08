@@ -1,0 +1,57 @@
+<div data---="largeform__common.form__if:helpform;title:@(Help);icon:fal fa-life-ring;scrollbar:1;width:700" class="hidden">
+	<div class="padding helpform">
+		<div class="panel">
+			<label>@(Task syntax)</label>
+			<div class="padding">
+				<p>@(Task must start with "-" dash on the each line)</p>
+				<div class="cm-s-default">
+					<div>
+						<div><span class="cm-code">- @(a simple task)</span></div>
+						<div><span class="cm-highpriority">- @(a simple task tagged as)</span> <span class="cm-highpriority cm-priority">@priority</span></div>
+						<div><span class="cm-high">- @(a simple task tagged as )</span> <span class="cm-high cm-high">@high</span></div>
+						<div><span class="shortcut">CTRL+ENTER</span><span class="cm-strong cm-attribute">- @(a simple task)</span> <span class="cm-strong cm-attribute cm-working">@working</span></div>
+						<div><span class="shortcut">ALT+C</span><span class="cm-strong cm-error">- @(a simple task)</span> <span class="cm-strong cm-canceled">@canceled</span></div>
+						<div><span class="shortcut">ALT+D</span><span class="cm-strong cm-quote">- @(a simple task)</span> <span class="cm-strong cm-quote cm-completed">@done</span></div>
+						<div><span class="cm-code">- @(a simple task with spent time)</span> <span class="cm-minutes">[2 h]</span> @(or) <span class="cm-minutes">[20 m]</span></div>
+						<div><span class="cm-code">- @(a simple task with estimation)</span> <span class="cm-minutes cm-estimate">{2 h}</span></div>
+						<div><span class="cm-code">- @(a simple task with a price)</span> <span class="cm-plus cm-price">[200]</span> @(or) <span class="cm-plus cm-price">[200 EUR]</span></div>
+						<div><span class="cm-code">- @(a simple task with a deadline)</span> <span class="cm-code cm-date">@date(2020-07-02)</span></div>
+						<br />
+						<div><span class="cm-sum">= 26 h</span> @(equal &quot;=&quot; char will count all minutes and hours together)</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br />
+		<div class="panel">
+			<label>@(Highlighting)</label>
+			<div class="padding">
+				<div class="cm-s-default">
+					<div>
+						<div><span class="cm-plus">+ @(a simple task with)</span> <span class="cm-code cm-bold">*@(keyword)*</span></div>
+						<div><span class="cm-code">- @(a simple task with)</span> <span class="cm-code cm-high">_@(keyword)_</span></div>
+						<div><span class="cm-plus">+ @(a simple task with)</span> <span class="cm-code cm-tag">#@(tag)</span></div>
+						<div><span class="cm-code">- @(a simple task with)</span> <span class="cm-code cm-strike">~@(line-through)~</span></div>
+						<div><span class="cm-plus">+ @(a simple task with)</span> <span class="cm-code cm-user">&lt;@(user name)&gt;</span></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br />
+		<div class="panel">
+			<label>@(Captions)</label>
+			<div class="padding">
+				<div class="cm-s-default">
+					<div>
+						<div>@ @(Headline)</div>
+						<div># @(Title)</div>
+						<div>@(Caption):</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%;max-width:100%">@(Close)</button>
+	</nav>
+</div>

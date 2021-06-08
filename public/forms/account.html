@@ -1,0 +1,146 @@
+<div data---="largeform__common.form__if:~PATH~;title:@(Account);icon:fal fa-cog;autofocus:true;scrollbar:1;submit:?/submit;width:600" class="hidden" data-scope="~PATH~">
+
+	<div class="~PATH~">
+
+		<div class="bg-smoke" style="padding:30px 0">
+			<div class="photo exec pointer" data-exec="?/upload"><img data-bind="?__src:value.photo?value.photo:Thelpers.initialsbase64(user.name,300,300);track:photo" alt="@(Photo)" class="img-responsive" /></div>
+			<div class="help center exec pointer" data-exec="?/upload"><i class="fa fa-cloud-upload"></i>@(Upload photo - 300x300 pixels)</div>
+		</div>
+
+		<div class="padding" style="padding-bottom:8px">
+			<div class="row">
+				<div class="col-xs-6 m">
+					<div data---="input__?.firstname__required:1;maxlength:30;$id:signup_createinput__''">@(First name)</div>
+				</div>
+				<div class="col-xs-6 m">
+					<div data---="input__?.lastname__required:1;maxlength:30__''">@(Last name)</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6 m">
+					<div data---="input__?.position__type:phone;required:1;disabled:1__''">@(Position)</div>
+				</div>
+				<div class="col-md-6 m">
+					<div data---="input__?.email__type:email;required:1__'@'">@(E-mail address)</div>
+				</div>
+			</div>
+
+			<div data---="checkbox__?.ispassword__null__NAV.query.password==='1'">@(Change password)</div>
+			<br />
+
+			<div class="hidden" data-bind="?.ispassword__show">
+				<hr class="nmt" />
+				<div class="alert hidden m" data-bind="NAV.query.password__show:value==='1'">
+					@(You have performed resetting of your password. You can change the password below.)
+				</div>
+				<div class="row">
+					<div class="col-md-6 m">
+						<div data---="input__?.password__type:password;required:1;maxlength:30__''">@(Password)</div>
+					</div>
+					<div class="col-md-6 m">
+						<div data---="input__?.passwordreply__type:password;required:1;maxlength:30__''">@(Confirm password)</div>
+					</div>
+				</div>
+				<div data-bind="?__track:password,passwordreply__show:value.password&&value.passwordreply&&value.password!=value.passwordreply" class="inline-message inline-message-error hidden"><i class="fa fa-warning"></i> @(Passwords do not match).</div>
+			</div>
+		</div>
+		<div class="padding bg-smoke npb">
+			<div class="row">
+				<div class="col-md-4 col-xs-6 m">
+					<div data---="input__?.countryid__required:1;dirsource:common.cl.countries__''">@(Country)</div>
+				</div>
+				<div class="col-md-4 col-xs-6 m">
+					<div data---="input__?.languageid__required:1;dirsource:common.cl.languages__''">@(Language)</div>
+				</div>
+				<div class="col-md-4 col-xs-6 m">
+					<div data---="input__?.currencyid__required:1;dirsource:common.cl.currencies__''">@(Currency)</div>
+				</div>
+			</div>
+			<hr style="margin-top:10px" />
+			<div class="row">
+				<div class="col-md-4 col-xs-6 m">
+					<div class="label">@(Theme):</div>
+					<div data---="radiobuttonexpert__?.theme__datasource:%themes__0">
+						<script type="text/html">
+							<div class="radiobutton-item">
+								<i class="{{ icon }}"></i>
+								<span>{{ name }}</span>
+							</div>
+						</script>
+					</div>
+				</div>
+				<div class="col-md-4 col-xs-6 m">
+					<div class="label">@(Date format):</div>
+					<div data---="radiobuttonexpert__?.dateformat__datasource:%dateformats">
+						<script type="text/html">
+							<div class="radiobutton-item">
+								<i class="far fa-calendar"></i>
+								<span>{{ name }}</span>
+							</div>
+						</script>
+					</div>
+				</div>
+				<div class="col-md-4 col-xs-6 m">
+					<div class="label">@(Number format):</div>
+					<div data---="radiobuttonexpert__?.numberformat__datasource:%numberformats">
+						<script type="text/html">
+							<div class="radiobutton-item">
+								<i class="far fa-calculator"></i>
+								<span>{{ name }}</span>
+							</div>
+						</script>
+					</div>
+				</div>
+			</div>
+			<hr class="nmt" />
+			<div data---="radiobutton__?.timeformat__items:@(24 hours)|24,@(12 hours)|12;type:number" class="m pull-left">@(Time format):</div>
+			<div data---="radiobutton__?.datefirst__items:@(Sunday)|0,@(Monday)|1;type:number__1" class="m pull-left" style="margin-left:20px">@(First day of week):</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="padding">
+
+		</div>
+	</div>
+	<nav data---="validation__?__if:value.ispassword?value.password==value.passwordreply\:true">
+		<button name="submit" disabled><i class="far fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+
+	SET('%themes', [{ id: 0, name: '@(Light)', icon: 'fal fa-adjust' }, { id: 1, name: '@(Dark)', icon: 'far fa-adjust' }, { id: 2, name: '@(Auto)', icon: 'far fa-clock' }]);
+	SET('%dateformats', [{ id: 'yyyy-MM-dd', name: NOW.format('yyyy-MM-dd') }, { id: 'dd.MM.yyyy', name: NOW.format('dd.MM.yyyy') }, { id: 'MM.dd.yyyyy', name: NOW.format('MM.dd.yyyy') }]);
+	SET('%numberformats', [{ id: 0, name: '1 000.00' }, { id: 1, name: '1 000,00' }, { id: 2, name: '1,000.00' }, { id: 3, name: '1.000,00' }]);
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.submit = function(hide) {
+			var model = GET('? @reset');
+			SETTER('loading/show');
+			AJAX('POST /api/account/ REPEAT', model, ASETTER('message/response', function(response) {
+				W.user = response.value;
+				FUNC.refreshuser();
+				UPD('user');
+				SETTER('loading/hide', 1000);
+				hide();
+			}));
+		};
+
+		exports.upload = function() {
+			var opt = {};
+			opt.width = 300;
+			opt.height = 300;
+			opt.url = '/api/upload/base64/';
+			opt.background = '#FFFFFF';
+			opt.multiple = false;
+			opt.callback = function(response, err) {
+				if (response && response[0])
+					SET('?.photo', response[0]);
+			};
+			SETTER('imageuploader/upload', opt);
+		};
+	});
+
+</script>

@@ -1,0 +1,58 @@
+<div data---="largeform__common.form__if:~PATH~;title:@(Users);icon:far fa-users;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+	<div class="padding">
+		<div class="listing" data-bind="?.items__template">
+			<script type="text/plain">
+			{{ foreach m in value }}
+				<figure data-id="{{ m.id }}" class="exec{{ if m.inactive }} gray{{ fi }}" data-exec="?/edit">
+					<section>
+						{{ if m.id !== user.id }}<span class="control"><i class="fas fa-trash-o"></i></span>{{ fi }}
+						<div><i class="fa fa-circle mr5 {{ if m.online }}green{{ else }}red{{ fi }} pull-left fs12" style="margin-top:4px"></i>{{ m.name }}{{ if m.sa }}<span class="badge badge-small badge-red">@(admin)</span>{{ fi }}{{ if m.inactive }}<span class="badge badge-small badge-gray">@(inactive)</span>{{ fi }}</div>
+						<div class="help nmt">{{ m.position }}</div>
+					</section>
+				</figure>
+			{{ end }}
+			</script>
+		</div>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+</div>
+
+<div data---="importer__common.form2__if:userform;url:/forms/user.html"></div>
+
+<script>
+
+	PLUGIN('~PATH~', function(exports) {
+
+		exports.reload = function(com) {
+
+			if (!com.updated) {
+				com.updated = true;
+				var el = com.element.find('.ui-largeform-title');
+				el.append('<button class="ui-largeform-options exec b" data-exec="?/add"><i class="far fa-plus-circle green"></i>@(New user)</button>');
+			}
+
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			AJAX('GET /api/users/', '?.items');
+		};
+
+		exports.add = function() {
+			SET('userform @default', { welcome: true, languageid: user.languageid, countryid: user.countryid, currencyid: user.currencyid, theme: user.theme, numberformat: user.numberformat, dateformat: user.dateformat, timeformat: user.timeformat, datefirst: user.datefirst });
+			SET('common.form2', 'userform');
+		};
+
+		exports.edit = function(el) {
+			var id = el.attrd2('id');
+			AJAX('GET /api/users/' + id, ASETTER('message/response', function(response) {
+				SET('userform @reset', response);
+				SET('common.form2', 'userform');
+			}));
+		};
+
+	});
+
+</script>
