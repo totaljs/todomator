@@ -1,26 +1,23 @@
 {
-  "name": "flow",
-  "version": "10.0.0",
+  "name": "Todomator",
+  "version": "1.0.0",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/totaljs/flow"
+    "url": "https://github.com/totaljs/todomator"
   },
   "dependencies": {
-    "total4": "latest"
+    "total4": "latest",
+    "querybuilderpg": "latest"
   },
   "scripts": {
     "start": "node index.js 8000"
   },
   "keywords": [
-    "flow",
-    "flowstream",
-    "iot"
+    "todomator",
+    "tasks",
+    "todo"
   ],
-  "author": "Total.js",
-  "contributors": [
-    "Peter Širka",
-    "Martin Smola"
-  ],
+  "author": "Peter Širka / Total.js",
   "license": "MIT"
 }

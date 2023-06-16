@@ -286,6 +286,9 @@ INSERT INTO "public"."cl_status" ("id", "name", "icon", "color", "sortindex") VA
 	('postponed', 'Postponed', 'ti ti-history', '#8C42F6', 4),
 	('review', 'Review', 'ti ti-clean', '#EC8632', 3);
 
+INSERT INTO "public"."tbl_user" ("id", "name", "search", "email", "password", "permissions", "sa", "dtcreated") VALUES
+	('{id}', 'John Connor', 'johnconor', 'info@totaljs.com', '{password}', '{}', 't', timezone('utc'::text, now()))
+
 -- INDEXES
 
 CREATE INDEX "tbl_ticket_idxstatus" ON "public"."tbl_ticket" USING BTREE ("statusid", "folderid", "userid");

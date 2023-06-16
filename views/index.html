@@ -69,7 +69,7 @@
 
 		DEF.color = '#4285F4';
 		DEF.api = '/api/';
-		DEF.versionhtml = '1';
+		DEF.versionhtml = '@{CONF.version}';
 		DEF.languagehtml = '@{user.language}';
 
 		common.clientid = GUID(5) + Date.now().toString(36);
