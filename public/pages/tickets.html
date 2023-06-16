@@ -130,7 +130,7 @@
 		</section>
 
 		<main style="border-left:1px solid #E0E0E0">
-			<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;scrollbarshadow:1">
+			<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;scrollbarshadow:1;$assign:?|viewbox">
 				<ui-component name="empty" path="?.data.items" config="parent:auto;icon:ti ti-check-circle green">
 
 					<script type="text/html">
@@ -284,8 +284,10 @@
 						model.data.items.push.apply(model.data.items, response);
 						exports.upd('data');
 					}
-				} else
+				} else {
+					exports.viewbox.scrollbar.scrollTop(0);
 					exports.set('data.items', response);
+				}
 
 				exports.set('next', response.length === limit);
 			});
