@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=total
+      - POSTGRES_PASSWORD=platform
+      - POSTGRES_DB=openplatform
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "total", "-d", "todomator"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
+  todomator:
+    container_name: todomator
+    image: totalplatform/todomator:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - todomator:/www/databases/
+    environment:
+      - DATABASE=postgresql://total:platform@postgres:5432/todomator
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+    driver: local
+  todomator:
+    driver: local
