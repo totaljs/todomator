@@ -28,7 +28,7 @@ ON('ready', function() {
 
 async function init() {
 
-	var tables = await DB().query("SELECT FROM pg_tables WHERE schemaname='public' AND tablename='tbl_ticket' LIMIT 1").promise();
+	var tables = await DATA.query("SELECT FROM pg_tables WHERE schemaname='public' AND tablename='tbl_ticket' LIMIT 1").promise();
 
 	if (tables.length) {
 		PAUSESERVER('Database');
@@ -45,7 +45,7 @@ async function init() {
 		var sql = buffer.toString('utf8').arg(data);
 
 		// Run SQL
-		await DB().query(sql).promise();
+		await DATA.query(sql).promise();
 
 		PAUSESERVER('Database');
 

@@ -287,7 +287,7 @@ INSERT INTO "public"."cl_status" ("id", "name", "icon", "color", "sortindex") VA
 	('review', 'Review', 'ti ti-clean', '#EC8632', 3);
 
 INSERT INTO "public"."tbl_user" ("id", "name", "search", "email", "password", "permissions", "sa", "dtcreated") VALUES
-	('{id}', 'John Connor', 'johnconor', 'info@totaljs.com', '{password}', '{}', 't', timezone('utc'::text, now()))
+	('{id}', 'John Connor', 'johnconor', 'info@totaljs.com', '{password}', '{}', 't', timezone('utc'::text, now()));
 
 -- INDEXES
 
