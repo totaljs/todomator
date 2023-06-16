@@ -10,17 +10,15 @@ function index() {
 
 	for (var key in F.plugins) {
 		var item = F.plugins[key];
-		if (item.visible(self.user)) {
-			var obj = {};
-			obj.id = item.id;
-			obj.routes = item.routes;
-			obj.position = item.position;
-			obj.name = TRANSLATOR(self.user.language || '', item.name);
-			obj.icon = item.icon;
-			obj.import = item.import ? '/_{id}/{import}'.args(item) : '';
-			obj.hidden = item.hidden;
-			plugins.push(obj);
-		}
+		var obj = {};
+		obj.id = item.id;
+		obj.routes = item.routes;
+		obj.position = item.position;
+		obj.name = TRANSLATOR(self.user.language || '', item.name);
+		obj.icon = item.icon;
+		obj.import = item.import ? '/_{id}/{import}'.args(item) : '';
+		obj.hidden = item.hidden;
+		plugins.push(obj);
 	}
 
 	plugins.quicksort('position');
