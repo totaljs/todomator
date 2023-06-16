@@ -1,0 +1,30 @@
+<style>
+	.CLASS { height: 5px; }
+</style>
+
+<script>
+	exports.id = 'br';
+	exports.name = '@(Empty line)';
+	exports.version = 1;
+	exports.icon = 'ti ti-align-center';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = {};
+	exports.sortindex = 5;
+
+	exports.make = function(widget, config, element) {
+
+		widget.save = function() {
+			return { is: 1 };
+		};
+
+		element.append('<span></span>');
+
+		if (widget.newbie) {
+			widget.change();
+			widget.next();
+		}
+
+	};
+
+</script>

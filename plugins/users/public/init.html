@@ -1,0 +1,34 @@
+<ui-component name="importer" path="common.form" config="if:formusers;url:/~ID~/users.html"></ui-component>
+<ui-component name="importer" path="common.form" config="if:formpassword;url:/~ID~/password.html"></ui-component>
+<ui-component name="importer" path="common.form2" config="if:formuser;url:/~ID~/user.html"></ui-component>
+
+<script>
+
+	ON('ready', function() {
+		ON('tickets_menu', function(opt) {
+
+			var callback = function(model, selected) {
+				switch (selected.id) {
+					case 'password':
+						SET('formpassword @reset', '{}');
+						SET('common.form', 'formpassword');
+						break;
+					case 'logout':
+						location.href = '/logout/';
+						break;
+					default:
+						SET('common.form', 'form' + selected.id);
+						break;
+				}
+			};
+
+			if (user.sa)
+				opt.items.push({ id: 'users', name: '@(Users)', icon: 'ti ti-users', callback: callback });
+
+			opt.items.push('-');
+			opt.items.push({ id: 'password', name: '@(Change password)', icon: 'ti ti-key', callback: callback });
+			opt.items.push({ id: 'logout', name: '@(Log out)', icon: 'ti ti-power-off red', callback: callback });
+		});
+	});
+
+</script>

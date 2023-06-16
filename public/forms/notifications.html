@@ -1,0 +1,119 @@
+<style>
+	.CLASS figure { font-size: 12px; }
+	.CLASS .name { margin-right: 300px; }
+	.CLASS .name > i { width: 12px; margin-right: 5px; text-align: center; }
+	.CLASS table span { color: #999; padding: 1px 3px; margin-left: 8px; position: relative; display: inline-block; max-width: 250px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; vertical-align: middle; background-color: #F8F8F8; border-radius: var(--radius); }
+	.CLASS .new { background-color: rgba(246,206,205,0.2); }
+	.CLASS .new span { background-color: #FFF; }
+</style>
+
+<ui-component name="box" path="common.form2" config="if:CLASS;icon:ti ti-bell-alt;title:@(Notifications);autofocus:true;reload:?/reload;scrollbar:1;width:880" class="hidden CLASS" plugin="CLASS">
+	<div class="padding">
+		<ui-bind path="!?.items" config="template" class="block m">
+			<script type="text/html">
+				{{ if value.length }}
+				<table class="table fs12" style="width:100%">
+					<col style="width:130px" />
+					<col style="width:200px" />
+					<col style="width:130px" />
+					<col />
+					<thead>
+						<tr class="bg-smoke">
+							<th>@(Created)</th>
+							<th>@(User)</th>
+							<th>@(Type)</th>
+							<th>@(Value)</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{ foreach m in value }}
+						<tr{{ if m.isunread }} class="new"{{ fi }}>
+							<td class="gray" title="{{ m.dtcreated | format('[date]') }}">{{ m.dtcreated | time }}</td>
+							<td>{{ if m.isunread }}<i class="ti ti-bell-alt red mr5"></i>{{ else }}<i class="ti ti-account mr5"></i>{{ fi }}{{ m.createdby }}</td>
+							<td>{{ m.type | raw }}</td>
+							<td>{{ m.body | raw }}</td>
+						</tr>
+						{{ end }}
+					</tbody>
+				</table>
+				{{ else }}
+					<br />
+					<br />
+					<div class="center padding gray"><i class="ti ti-bell mr5"></i>@(You don't have any notifications)</div>
+				{{ fi }}
+			</script>
+		</ui-bind>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var ticketid;
+
+		exports.reload = function() {
+			ticketid = exports.get('%ticketid');
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('tickets_history/{0} ERROR'.format(ticketid), function(response) {
+
+				var fields = {};
+				fields.folderid = '@(Folder)';
+				fields.name = '@(Title)';
+				fields.estimate = '@(Time estimation)';
+				fields.ispriority = '@(Priority)';
+				fields.isbillable = '@(Billable)';
+				fields.tags = '@(Tags)';
+				fields.deadline = '@(Deadline)';
+				fields.attachments = '@(Attachments)';
+				fields.date = '@(Date)';
+
+				for (var m of response) {
+					var tmp = null;
+					switch (m.typeid) {
+						case 'status':
+							tmp = DEF.cl.status.findItem('id', m.value);
+							m.body = '<i class="{icon}" style="color:{color}"></i><span>{name}</span>'.args(tmp);
+							m.type = '@(Status)';
+							break;
+						case 'metadata':
+							tmp = m.value.split(',');
+
+							for (var i = 0; i < tmp.length; i++)
+								tmp[i] = fields[tmp[i]] || tmp[i];
+
+							m.type = '@(Modified)';
+							m.body = '<i class="ti ti-pencil"></i><span class="gray">{0}</span>'.format(tmp.join(', '));
+							break;
+						case 'content':
+							m.type = '@(Content)';
+							m.body = '<i class="ti ti-pencil-paintbrush"></i><span class="gray">@(Modified content)</span>';
+							break;
+						case 'comment':
+							m.type = '@(Comment)';
+							m.body = '<i class="ti ti-comment"></i><span class="gray">@(Comment)</span>';
+							break;
+						case 'logwork':
+							m.type = '@(Logged time)';
+							m.body = '<i class="ti ti-clock"></i><span class="gray">{0}</span>'.format(Thelpers.logwork(m.value.parseInt()));
+							break;
+						case 'user':
+							m.type = '@(Assigned)';
+							m.body = '<i class="ti ti-account"></i><span>{0}</span>'.format(m.value);
+							break;
+					}
+				}
+
+				exports.set('items', response);
+			});
+		};
+
+	});
+
+</script>

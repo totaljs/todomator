@@ -1,0 +1,134 @@
+<style>
+	.CLASS .listing2 figure { cursor: default; font-size: 12px; }
+	.CLASS h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
+</style>
+
+<ui-component name="box" path="common.form2" config="if:~PATH~;width:600;title:@(Logs);autofocus:1;closeesc:1;closeoutside:1;submit:?/submit;close:?/hide;reload:?/reload;icon:ti ti-history;zindex:30" plugin="~PATH~" class="hidden ~PATH~">
+
+	<div class="padding">
+
+		<ui-bind path="?" config="template;track:id" class="block m">
+			<script type="text/html">
+				<div class="keyvalue">
+					<span>@(Ticket)</span>
+					<div class="b">{{ value.name }}</div>
+				</div>
+				<div class="keyvalue">
+					<span>@(Estimate)</span>
+					<div>{{ value.estimate | logwork }}</div>
+				</div>
+				<div class="keyvalue">
+					<span>@(Worked)</span>
+					<div>{{ value.worked | logwork }}</div>
+				</div>
+			</script>
+		</ui-bind>
+
+		<div class="m">
+			<ui-component name="searchinput" path="?.search" config="placeholder:@(Search in logs)"></ui-component>
+		</div>
+
+		<ui-component name="search" path="?.search" config="selector:figure">
+			<ui-bind path="?.items" config="template" class="block listing2">
+				<script type="text/html">
+					{{ foreach m in value }}
+						<figure data-search="{{ m.user_name }} {{ m.name }}" data-id="{{ m.id }}">
+							<section>
+								<div class="pull-right ml10"><span class="exec" data-exec="?/options"><i class="ti ti-cog"></i></span></div>
+								<div class="pull-right">{{ m.dtcreated | format('[date]') }}</div>
+								<div class="pull-right mr10 b">{{ m.minutes | logwork }}</div>
+								<div><b>{{ m.user_name }}</b> <span class="fs12 gray">{{ m.name }}</span></div>
+							</section>
+						</figure>
+					{{ end }}
+				</script>
+			</ui-bind>
+		</ui-component>
+	</div>
+
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var is = false;
+		var caller = null;
+
+		exports.reload = function(header) {
+			is = false;
+			caller = exports.caller;
+			exports.refresh();
+		};
+
+		exports.hide = function() {
+			if (!is)
+				return;
+			var model = exports.model;
+			caller.model.worked = model.worked;
+			caller.changed();
+			caller.upd('id');
+		};
+
+		exports.refresh = function() {
+			var model = exports.model;
+			exports.tapi('tickets_logs/' + model.id, 'items');
+		};
+
+		exports.options = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.align = 'right';
+			opt.items = [];
+			opt.items.push({ id: 'update', name: '@(Update)', icon: 'ti ti-pencil' });
+			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-remove red' });
+			opt.callback = function(selected) {
+				exports[selected.id](el);
+			};
+			EXEC('-menu/show', opt);
+		};
+
+		exports.update = function(el) {
+
+			var id = ATTRD(el);
+			var model = exports.model;
+			var item = model.items.findItem('id', id);
+			var data = {};
+
+			data.id = item.id;
+			data.ticketid = model.id;
+			data.minutes = item.minutes;
+			data.name = item.name;
+			data.date = item.date;
+			data.callback = function(time) {
+				is = true;
+				model.worked = time;
+				exports.upd('id');
+				exports.refresh();
+			};
+
+			SET('formtime @default', data);
+			SET('common.form3', 'formtime');
+
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			var model = exports.model;
+			EXEC('-approve/show', '@(Are you sure you want to remove selected log?)', '"ti ti-remove" @(Remove)', function() {
+				exports.tapi('logwork_remove/{0} ERROR'.format(id), function(response) {
+					is = true;
+					model.worked = response.value || 0;
+					exports.upd('id');
+					exports.refresh();
+				});
+			});
+		};
+
+	});
+</script>

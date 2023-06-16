@@ -1,0 +1,89 @@
+@{layout('')}
+@{title('@(Sign-in)')}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+	<meta name="robots" content="all,follow" />
+	<link rel="stylesheet" href="https://cdn.componentator.com/spa.min@19pro.css" />
+	<script src="https://cdn.componentator.com/spa.min@19.js"></script>
+	@{import('meta', 'head', 'favicon.ico')}
+	<style>
+		html, body { padding: 0; margin: 0; background-color: #F0F0F0; }
+		.login.panel { width: 320px; background-color: #FFF; margin: 0 auto; text-align: left; border-radius: var(--radius); box-shadow: 0 0 80px rgba(0,0,0,0.1); }
+		.login.panel button { background-color: var(--color); color: #FFF; width: 100%; border: 0; height: 45px; border-radius: var(--radius); font-weight: bold; }
+		.login.panel button i { margin-right: 7px; }
+		.login.panel button[disabled] { background-color: #F0F0F0; color: #A0A0A0; cursor: not-allowed; font-weight: normal; }
+		.login.panel .padding { padding: 30px; }
+		.login h2 { padding: 0 0 5px; margin: 0 0 20px; border-bottom: 1px solid #E0E0E0; }
+		.login .reset { font-size: 12px; }
+		.cover { margin-bottom: 25px; display: block; }
+	</style>
+	<script src="@{REPO.ui}"></script>
+</head>
+<body>
+
+	<ui-component name="exec"></ui-component>
+	<ui-component name="LAZY message" config="style:2"></ui-component>
+	<ui-component name="LAZY notify" config="position:bottom right"></ui-component>
+
+	<ui-component name="viewbox" config="parent:window;centered:1" class="invisible">
+		<div class="login panel">
+
+			<a href="/" class="cover"><img src="/img/signin.png" alt="@{CONF.name}" border="0" class="img-responsive" style="border-radius:var(--radius) var(--radius) 0 0" /></a>
+
+			<ui-bind path="common.type" config="show:value === 'login'" class="hidden">
+				<ui-plugin path="formlogin" class="padding npt">
+					<ui-component name="autofill">
+						<ui-component name="input" path="?.email" config="required:1;type:email" default="'@'" class="m email">@(E-mail address)</ui-component>
+						<ui-component name="input" path="?.password" config="required:1;type:password" default="''" class="m">@(Password)</ui-component>
+						<ui-component name="validate" path="?" style="margin-top:20px">
+							<button name="submit" class="exec" data-exec="?/submit" disabled><i class="ti ti-key"></i>@(Sign-in)</button>
+						</ui-component>
+					</ui-component>
+				</ui-plugin>
+			</ui-bind>
+
+		</div>
+	</ui-component>
+
+	<script>
+
+		var common = {};
+
+		common.type = 'login';
+		DEF.api = '/api/';
+
+		ON('ERROR', function(err) {
+			var builder = [];
+			if (err instanceof Array) {
+				for (var e of err)
+					builder.push(e.error || e.message || e.name);
+			} else
+				builder.push(err.toString());
+			builder.length && SETTER('message/warning', builder.join('<br>'));
+		});
+
+		PLUGIN('formlogin', function(exports) {
+
+			exports.submit = function() {
+				var form = exports.form;
+				exports.tapi('login ERROR', form, function(response) {
+					location.href = location.href;
+				});
+			};
+
+		});
+
+		ON('ready', function() {
+			setTimeout(() => $('.email input').focus(), 1000);
+		});
+
+	</script>
+
+</body>
+</html>

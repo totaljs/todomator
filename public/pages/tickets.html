@@ -1,0 +1,535 @@
+<style>
+	.CLASS .folder { width: 140px; float: left; border-right: 1px solid #E0E0E0; padding-right: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; line-height: 21px; }
+	.CLASS .folder > div { border-radius: var(--radius); color: rgba(0,0,0,0.7); padding: 0 5px; }
+	.CLASS .closed .folder > div { color: rgba(100,100,100,0.7); opacity: 0.8; }
+	.CLASS .folder i { margin-right: 5px; }
+	.CLASS .folder a { color: #777; }
+	.CLASS .id { font-family: Menlo, Consolas, monospace; font-size: 11px; margin-right: 5px; color: #A0A0A0; }
+	.CLASS .status { width: 120px; float: left; border-right: 1px solid #E0E0E0; margin-right: 10px; padding: 3px 0 0 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #000; }
+	.CLASS .user { position: relative; display: inline-block; }
+	.CLASS .user span { color: #FFF !important; background-color: #E0E0E0; width: 20px; height: 20px; line-height: 21px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
+	.CLASS .user img { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
+	.CLASS .user span:last-child { margin-right: 0; }
+	.CLASS .user img:last-child { margin-right: 0; }
+	.CLASS .assigned b { background-color: rgba(255,199,92,0.2); padding: 2px 5px !important; border-radius: var(--radius); }
+	.CLASS .open .assigned b { background-color: rgb(115,182,255,0.28); }
+	.CLASS .priority.open .assigned b { background-color: rgba(232,72,63,0.15); }
+	.CLASS .user i { margin-right: 5px; }
+	.CLASS .date { line-height: 21px; width: 100px; float: right; color: #777; margin-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: right; }
+	.CLASS .worked { float: right; color: #777; text-align: right; border-right: 1px solid #E0E0E0; margin-right: 10px; padding-right: 10px; line-height: 21px; min-height: 21px; }
+	.CLASS .worked span { margin-right: 5px; color: #A0A0A0; }
+	.CLASS .sender { width: 120px; float: right; border-right: 1px solid #E0E0E0; margin-right: 10px; padding-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #777; line-height: 21px; }
+	.CLASS .unread > section { background-color: rgba(246,206,228,0.1); }
+	.CLASS .name { line-height: 21px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding-left: 10px; }
+	.CLASS .name b { padding: 2px 0; }
+	.CLASS .name .ti-paperclip { color: #999; }
+	.CLASS .priority { color: #E8483F; }
+	.CLASS .open.priority b { color: #E8483F !important; }
+	.CLASS .open b { color: var(--color); }
+	.CLASS .open .status { color: var(--color); }
+	.CLASS .open .folder { color: var(--color); }
+	.CLASS .pending b { font-weight: normal; }
+	.CLASS .sender a { color: #777; }
+	.CLASS .sender i { margin-right: 5px; }
+	.CLASS .selection { margin-top: 2px; width: 17px; height: 17px; }
+	.CLASS .postponed { color: #8C42F6; }
+	.CLASS .postponed .status { color: #8C42F6; }
+	.CLASS .postponed b { font-weight: normal; }
+	.CLASS .closed { color: #999; }
+	.CLASS .closed b { font-weight: normal; }
+	.CLASS .closed .id { color: #C0C0C0; }
+	.CLASS .closed .sender a { color: #A0A0A0; }
+	.CLASS .closed .folder { color: #A0A0A0; }
+	.CLASS .closed .status { color: #A0A0A0; }
+	.CLASS .closed .user span { color: #A0A0A0; font-weight: normal; filter: grayscale(1); }
+	.CLASS .closed .user img { filter: grayscale(1); }
+	.CLASS .listing { font-size: 12px; }
+	.CLASS .listing section { padding: 7px 0 0; height: 34px; }
+	.CLASS .searchbox { max-width: 600px; text-align: left; position: relative; display: inline-block; width: 100%; margin: 12px 150px 0; }
+	.CLASS .searchbox .ui-searchinput { width: 100%; height: 34px; background-color: #F3F3F3; border: 0; margin-left: 30px; }
+	.CLASS .searchbox .ui-searchinput input { height: 33px; font-size: 14px; }
+	.CLASS .searchbox .ui-searchinput > span { width: 35px; line-height: 34px; font-size: 14px; }
+	.CLASS .searchbox .ui-searchinput > div { margin-left: 35px; }
+	.CLASS .separator { background-color: transparent !important; cursor: default; color: #888; padding: 25px 10px 15px; }
+	.CLASS .tickets .toolbar button { height: 34px; padding: 0 15px; font-size: 12px; width: 200px; }
+	.CLASS .counter { float: right; font-size: 11px; color: #A0A0A0; line-height: 18px; width: 18px; margin: 6px 0 0; text-align: center; }
+	.CLASS .counterunread { float: right; font-size: 11px; color: #FFF; background-color: #E73323; border-radius: 100px; line-height: 18px; width: 18px; margin: 6px 0 0; text-align: center; font-weight: bold; }
+	.CLASS .counterbookmark { float: right; font-size: 11px; color: #FFF; background-color: #EF9D4B; border-radius: 100px; line-height: 18px; width: 18px; margin: 6px 0 0; text-align: center; font-weight: bold; }
+	.CLASS .selected i { color: var(--color); }
+	.CLASS .isprivate { font-size: 10px; margin: 10px 0 0 0; float: right; color: orange !important; }
+	.CLASS .searchbox .calendar { float: left; font-size: 18px; margin: 4px 0 0; color: #999; }
+	.CLASS .searchbox .calendar:hover { color: #000; }
+	.CLASS .calendar.selected { animation: ticketscalendarbutton 1s infinite forwards; }
+	.CLASS .calendar.selected i { color: #EA706B; }
+	.CLASS .searchbox .ui-searchinput-is { background-color: #FFE8E8; }
+	.CLASS .comments { font-size: 16px; font-weight: normal; margin: 0 0 0 5px; position: relative; display: inline-block; vertical-align: middle; color: rgba(0,0,0,0.4); }
+	.CLASS .logo { float: left; margin: 20px 0 0 8px; }
+	.CLASS .logo img { width: 120px; }
+
+	@keyframes ticketscalendarbutton {
+		0% { transform: scale(1); }
+		50% { transform: scale(1.15); }
+		100% { transform: scale(1); }
+	}
+
+</style>
+
+<ui-plugin config="aclass:1">
+
+	<header>
+		<span class="mainmenu exec" data-exec="?/menu"><i class="ti ti-menu"></i></span>
+		<a href="https://www.todomator.com" target="_blank" class="logo"><img src="/img/logo.svg" alt="@(Todomator)" /></a>
+
+		<div class="searchbox">
+			<ui-bind path="?.date" config=".selected" child=".calendar" class="block">
+				<span class="exec calendar" data-exec="?/calendar"><i class="ti ti-calendar"></i></span>
+				<ui-component name="searchinput" path="?.search" config="placeholder:@(Search in tickets)"></ui-component>
+			</ui-bind>
+		</div>
+
+		<div class="toolbar">
+			<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
+		</div>
+	</header>
+
+	<ui-component name="navlayout" path="?.menu" config="parent:auto;width:200;margin:58" class="invisible">
+
+		<section>
+			<ui-component name="aselected" config="selector:.item">
+				<div class="nav">
+					<nav>
+						<a href="/" class="item exec jR"><ui-bind path="?.counter.unresolved" config="text:value>99?99:value;show" class="hidden counter">0</ui-bind><i class="ti ti-spinner"></i>@(Open)</a>
+						<a href="/review/" class="item exec jR"><ui-bind path="?.counter.review" config="text:value>99?99:value;show" class="hidden counterunread">0</ui-bind><i class="ti ti-clean"></i>@(Review)</a>
+						<a href="/unread/" class="item exec jR"><ui-bind path="?.counter.unread" config="text:value>99?99:value;show" class="hidden counterunread">0</ui-bind><i class="ti ti-bell"></i>@(Unread)</a>
+						<a href="/bookmarks/" class="item exec jR"><ui-bind path="?.counter.bookmarks" config="text:value>99?99:value;show" class="hidden counterbookmark">0</ui-bind><i class="ti ti-bookmark"></i>@(Bookmarks)</a>
+						<a href="/all/" class="item exec jR"><i class="ti ti-archive"></i>@(All tickets)</a>
+					</nav>
+				</div>
+				<div class="searchfolders">
+					<ui-component name="searchinput" path="%searchfolders" config="placeholder:@(Search in folders)"></ui-component>
+				</div>
+				<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;margin:218;scrollbarshadow:1" class="invisible">
+					<ui-component name="search" path="%searchfolders" config="selector:.item;datasource:#folder" class="nav folders">
+						<ui-bind path="#folder" config="template:.item;changes" child="nav">
+							<nav class="npb">
+								<script type="text/html">
+									{{ foreach m in value }}
+										{{ if !m.isarchived }}
+											<a href="/{{ m.id }}/" class="exec item hellip jR{{ if m.ispinned }} b{{ fi }}" data-id="{{ m.id }}" data-search="{{ m.name }}"><i class="{{ m.icon }} fs12" style="color:{{ m.color }}"></i>{{ m.name }}{{ if m.isprivate }}<i class="ti ti-star-alt isprivate"></i>{{ fi }}</a>
+										{{ fi }}
+									{{ end }}
+								</script>
+							</nav>
+						</ui-bind>
+						<div class="nav">
+							<nav class="custom npt"></nav>
+						</div>
+					</ui-component>
+				</ui-component>
+			</ui-component>
+		</section>
+
+		<main style="border-left:1px solid #E0E0E0">
+			<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;scrollbarshadow:1">
+				<ui-component name="empty" path="?.data.items" config="parent:auto;icon:ti ti-check-circle green">
+
+					<script type="text/html">
+						<div class="b" style="padding-top:10px">@(Time to relax!)</div>
+						<div class="help nmt">@(You don't have any tickets)</div>
+					</script>
+
+					<div class="padding tickets">
+						<ui-bind path="?.data.items" config="template:figure;changes" class="listing block">
+							<script type="text/html">
+								{{ foreach m in value }}
+									{{ if m.id }}
+										<figure data-id="{{ m.id }}" class="ticket {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority{{ fi }}{{ if m.isunread }} unread{{ fi }}">
+											<section class="exec exec3{{ if m.statusid === 'open' }} open{{ fi }}" data-exec="?/preview" data-exec3="?/contextmenu">
+												<div class="date">{{ if !m.postponed && (m.statusid === 'closed' || !m.deadline) }}{{ m.date | time3 }}{{ else if m.deadline && !m.postponed }}<b class="red">{{ m.deadline | deadline }}<i class="ti ti-start ml5" title="@(Deadline)"></i></b>{{ else }}<b class="green">{{ m.date | format('[date]') }}<i class="ti ti-start green ml5"></i></b>{{ fi }}</div>
+												<div class="worked">{{ if m.estimate }}<span>{{ m.estimate | logwork }} /</span>{{ fi }}{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</div>
+												<div class="status">{{ m.statusid | status }}</div>
+												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip">{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
+												<div class="name{{ if m.assigned }} assigned{{ fi }}">
+													{{ if m.assigned }}<i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i>{{ fi }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													{{ m.tags | tags }}
+													{{ if m.userid && m.userid.length }}
+													<div class="user">
+														{{ m.userid | users(true) }}
+													</div>
+													{{ fi }}
+													{{ if m.comments }}<i class="ti ti-comments comments" title="@(Comments)"></i>{{ fi }}
+												</div>
+											</section>
+										</figure>
+									{{ else }}
+										<figure data-id="{{ m.skip }}" class="separator">@(Next {{ m.count }} tickets)</figure>
+									{{ fi }}
+								{{ end }}
+							</script>
+						</ui-bind>
+						<ui-bind path="?.next" config="show" class="block hidden">
+							<div class="toolbar" style="margin:20px 0 20px 10px">
+								<button class="exec b" data-exec="?/next"><i class="ti ti-spinner"></i>@(Load more)</button>
+							</div>
+						</ui-bind>
+					</div>
+				</ui-component>
+			</ui-component>
+		</main>
+
+	</ui-component>
+</ui-plugin>
+
+<ui-import config="url:/parts/timers.html;path:parttimers"></ui-import>
+
+<script>
+
+	Thelpers.folder = function(val) {
+		var item = DEF.cl.folder.findItem('id', val);
+		return item ? ('<i class="ti ti-bull" style="color:{color}"></i>{name}'.args(item)) : DEF.empty;
+	};
+
+	Thelpers.uriencode = function(val) {
+		return encodeURIComponent(val);
+	};
+
+	Thelpers.ext = function(filename) {
+		var index = filename.lastIndexOf('.');
+		return index === -1 ? 'dat' : filename.substring(index + 1);
+	};
+
+	PLUGIN(function(exports) {
+
+		var folderid = null;
+		var limit = 50;
+		var skip = 0;
+		var prevunread = 0;
+
+		CACHEPATH('?.type__"pending"', '1 month');
+
+		common.plugins.forEach(function(plugin) {
+			$(document.body).append('<ui-import config="url:/_{0}/init.html;id:_{0}"></ui-import>'.format(plugin.id));
+		});
+
+		exports.reload = function() {
+
+			skip = 0;
+
+			var model = exports.model;
+
+			// exports.set('data', {});
+			exports.set('next', false);
+			exports.filter();
+
+			var id = location.hash.substring(1);
+			if (id && id.length > 9)
+				exports.preview(id);
+		};
+
+		exports.refresh = function() {
+
+			var model = exports.model || {};
+			var filter = {};
+
+			if (model.type && model.type.length > 9) {
+				folderid = filter.folderid = model.type;
+				delete filter.type;
+			} else {
+				filter.type = model.type;
+				delete filter.folderid;
+				folderid = null;
+			}
+
+			var search = model.search;
+			if (search) {
+
+				var reg = (/\#(\s|@|$)/);
+
+				if (reg.test(search)) {
+					search = search.replace(reg, text => text.substring(1)).trim();
+					filter.type = 'inprogress';
+				}
+
+				search = search.replace(/@all/gi, function() {
+					filter.admin = 1;
+					return '';
+				}).trim().replace(/\s{2,}/g, ' ');
+
+			}
+
+			filter.q = search;
+			filter.skip = skip;
+			filter.limit = limit;
+			filter.date = model.date;
+
+			if (model.filter) {
+				for (var key in model.filter)
+					filter[key] = model.filter[key];
+			}
+
+			exports.tapi(QUERIFY('tickets', filter) + ' ERROR', function(response) {
+
+				var dt = +NOW.format('yyyyMMdd');
+
+				for (var m of response) {
+					m.postponed = (+m.date.format('yyyyMMdd')) > dt;
+					m.assigned = m.statusid !== 'note' && m.ownerid === user.id && (m.userid.length > 1 || (m.userid.length && !m.userid.includes(user.id)));
+					m.isclosed = m.statusid === 'closed';
+					m.version = model.version; // for reseting of cache
+				}
+
+				if (skip) {
+					if (response.length) {
+						model.data.items.push({ skip: skip, count: limit });
+						model.data.items.push.apply(model.data.items, response);
+						exports.upd('data');
+					}
+				} else
+					exports.set('data.items', response);
+
+				exports.set('next', response.length === limit);
+			});
+		};
+
+		exports.preview = function(el, e) {
+
+			if (e && e.target.tagName === 'A')
+				return;
+
+			var id = ATTRD(el);
+
+			if (W.formdetail && W.formdetail.id === id)
+				return;
+
+			if (common.form === 'formdetail') {
+				NUL('common.form');
+				setTimeout(() => exports.preview(el), 800);
+				return;
+			}
+
+			// Removes unread class
+			exports.element.find('.tickets .ticket[data-id="{0}"]'.format(id)).rclass('unread').find('.unreadicon').remove();
+
+			exports.detail(id, function(response) {
+
+				if (response.isunread)
+					exports.counter();
+
+				response.iamowner = response.ownerid === user.id;
+				location.hash = id;
+				SET('formdetail @hideloading', response);
+				SET('common.form', 'formdetail');
+			});
+		};
+
+		exports.filter = function(el) {
+			skip = 0;
+
+			var id = NAV.params[0] || '';
+			var title = '';
+
+			switch (id) {
+				case '':
+					title = '@(Open tickets)';
+					break;
+				case 'review':
+					title = '@(Tickets for review)';
+					break;
+				case 'unread':
+					title = '@(Unread changes)';
+					break;
+				case 'bookmarks':
+					title = '@(Bookmarks)';
+					break;
+				case 'all':
+					title = '@(All tickets)';
+					break;
+				default:
+					var folder = DEF.cl.folder.findItem('id', id);
+					if (folder) {
+						title = folder.name;
+						break;
+					} else {
+						REDIRECT('/');
+						return;
+					}
+			}
+
+			SET('common.title', title);
+
+			exports.set('type', id);
+			exports.refresh();
+		};
+
+		exports.next = function() {
+			skip += limit;
+			exports.refresh();
+		};
+
+		exports.menu = function(el) {
+
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.align = 'left';
+			opt.items = [];
+			opt.items.push({ id: 'tickets', name: '@(Refresh tickets)', icon: 'ti ti-sync' });
+
+			if (user.sa || user.permissions.includes('admin')) {
+				opt.items.push('-');
+				opt.items.push({ id: 'folders', name: '@(Folders)', icon: 'ti ti-folders' });
+				opt.items.push({ id: 'tags', name: '@(Tags)', icon: 'ti ti-tags' });
+			}
+
+			if (user.sa) {
+				opt.items.push('-');
+				opt.items.push({ id: 'settings', name: '@(Settings)', icon: 'ti ti-cog' });
+			}
+
+			EMIT('tickets_menu', opt);
+
+			opt.callback = function(selected) {
+
+				selected.callback && selected.callback(model, selected);
+
+				switch (selected.id) {
+					case 'tickets':
+						REDIRECT('/ @showloading @hideloading');
+						break;
+					case 'folders':
+					case 'reports':
+					case 'settings':
+					case 'today':
+					case 'tags':
+						SET('common.form', 'form' + selected.id);
+						break;
+				}
+			};
+
+			EXEC('-menu/show', opt);
+
+		};
+
+		exports.create = function() {
+			var model = exports.model;
+			var folder = folderid ?  DEF.cl.folder.findItem('id', folderid) : null;
+			var date = NOW;
+			var day = date.getDay();
+
+			if (day === 5) {
+				if (date.getHours() > 16)
+					date = date.add('3 days');
+			} else if (day === 6)
+				date = date.add('2 days');
+			else if (day === 0)
+				date = date.add('1 day');
+			else if (date.getHours() > 16)
+				date = date.add('1 day');
+
+			date.setHours(12);
+			date.setMinutes(0);
+
+			SET('formcreateticket @default', { folderid: folderid, userid: [user.id], isbillable: folder ? folder.isbillable : true, date: date });
+			SET('common.form', 'formcreateticket');
+		};
+
+		exports.detail = function(id, callback) {
+			TAPI('tickets_detail/{0} ERROR @showloading'.format(id), callback);
+		};
+
+		exports.watch('search', function(value) {
+			skip = 0;
+			setTimeout2(exports.name + 'search', exports.refresh, 150);
+		});
+
+		exports.counter = function(force) {
+			var tkey = exports.name + 'counter';
+			setTimeout2(tkey, function() {
+				exports.tapi('tickets_counter', function(response) {
+
+					response.unresolved = response.open + response.pending;
+
+					if (response.unread && prevunread < response.unread) {
+
+						SETTER('sounds/play', 'message');
+						prevunread = response.unread;
+
+						if (NOTFOCUSED())
+							SETTER('nativenotifications/append', common.name, '@(You have unread changes ({0}) in the tickets)'.format(response.unread), () => REDIRECT('/unread/'));
+					}
+
+					exports.set('counter', response);
+
+				});
+			}, force ? 100 : 3000);
+		};
+
+		exports.calendar = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.value = model.date;
+			opt.callback = function(val) {
+				exports.set('date', val);
+				exports.refresh();
+			};
+
+			opt.badges = function(date, append) {
+
+				var filter = {};
+
+				if (model.type && model.type.length > 9) {
+					folderid = filter.folderid = model.type;
+					delete filter.type;
+				} else {
+					filter.type = model.type;
+					delete filter.folderid;
+					folderid = null;
+				}
+
+				filter.date = date.format('yyyy-MM-dd');
+				var url = QUERIFY('tickets_calendar', filter);
+				var key = 'filter_' + HASH(url).toString(36);
+
+				if (TEMP[key]) {
+					append(TEMP[key]);
+					return;
+				}
+
+				exports.tapi(url, function(response) {
+					var arr = [];
+					for (var m of response)
+						arr.push(m.date);
+					append(arr);
+					TEMP[key] = arr;
+				});
+			};
+			SETTER('datepicker/show', opt);
+		};
+
+		exports.contextmenu = function(el) {
+			var id = ATTRD(el);
+			// console.log(id);
+		};
+
+		ON('service', function() {
+			exports.counter();
+		});
+
+		ON('message', function(msg) {
+			if (msg.TYPE === 'refresh')
+				exports.refresh();
+		});
+
+		WATCH('#status', function() {
+			if (common.form === 'formtags') {
+				exports.model.version = Date.now();
+				exports.refresh();
+			}
+		});
+
+		exports.counter(true);
+
+	});
+
+</script>

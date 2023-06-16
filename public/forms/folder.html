@@ -1,0 +1,68 @@
+<ui-component name="miniform" path="common.form2" config="if:~PATH~;width:400;submit:?/submit;reload:?/reload;autofocus:1;icon:ti ti-folder;zindex:30" plugin="~PATH~" class="hidden">
+	<div class="padding">
+		<ui-bind path="?.id" config="template;show" class="block fs12 m">
+			<script type="text/html">
+				<div class="monospace">ID: <b>{{ value }}</b></div>
+			</script>
+		</ui-bind>
+		<div>
+			<div class="m">
+				<ui-component name="input" path="?.name" config="required:1">@(Name)</ui-component>
+			</div>
+			<div class="m">
+				<ui-component name="input" path="?.customer" config="required:1">@(Customer)</ui-component>
+			</div>
+			<div class="m">
+				<ui-component name="input" path="?.email" config="type:email;forcevalidation:0" default="'@'">@(Email address)</ui-component>
+			</div>
+		</div>
+	</div>
+	<hr class="nmt nmb" />
+	<div class="padding">
+		<div class="grid-2">
+			<div class="m">
+				<ui-component name="input" path="?.color" config="type:color" default="'#4285F4'">@(Color)</ui-component>
+			</div>
+			<div class="m">
+				<ui-component name="input" path="?.icon" config="type:icon" default="'ti ti-bull'">@(Icon)</ui-component>
+			</div>
+		</div>
+		<ui-component name="input" path="?.ispinned" config="type:checkbox" class="b">@(Pin to the top of the list)</ui-component>
+		<ui-component name="input" path="?.isprivate" config="type:checkbox">@(Flag as non-tasks folder)</ui-component>
+		<ui-component name="input" path="?.isarchived" config="type:checkbox">@(Archived)</ui-component>
+		<ui-component name="input" path="?.isbillable" config="type:checkbox" default="true">@(Billable)</ui-component>
+	</div>
+
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Close)</button>
+		</ui-component>
+	</nav>
+
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var caller;
+
+		exports.reload = function(header) {
+			var model = exports.model;
+			header.reconfigure({ title: model.id ? '@(Update folder)' : '@(Create folder)' });
+			caller = exports.caller;
+		};
+
+		exports.submit = function(hide) {
+			var form = exports.form;
+			exports.tapi('folders_{0} ERROR'.format(form.id ? ('update/' + form.id) : 'create'), form, function() {
+				hide();
+				CLRELOAD('cl');
+				SETTER('notify/success', '@(The folder has been saved successfully)');
+				caller.exec('refresh');
+			});
+		};
+
+	});
+</script>

@@ -1,0 +1,127 @@
+<style>
+	.CLASS { position: relative; margin-bottom: 5px; }
+	.CLASS table { margin: 5px 0 0; padding: 0; width: 100%; }
+	.CLASS table td { border: 1px solid #D0D0D0; padding: 6px 10px; }
+	.CLASS table td.name { background-color: #F8F8F8; color: #555; word-wrap: break-word; }
+	.CLASS table td.value { width: 68%; }
+	.CLASS .add { position: absolute; right: -20px; top: 8px; color: #68B25B; cursor: pointer; }
+	.readonly .CLASS .add { display: none; }
+</style>
+
+<body>
+	<div class="add"><i class="ti ti-plus"></i></div>
+	<table>
+		<tbody></tbody>
+	</table>
+</body>
+
+<script>
+
+	exports.id = 'keyvalue';
+	exports.name = '@(Key/value)';
+	exports.version = 1;
+	exports.icon = 'ti ti-list';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = { items: [] };
+	exports.sortindex = 5;
+
+	exports.make = function(widget, config, element) {
+
+		var isnew = false;
+		var template = '<tr data-id="{0}"><td class="name editable" data-id="name">{1}</td><td class="value editable" data-id="value">{2}</td></tr>';
+
+		widget.save = function() {
+
+			var rows = element.find('tbody').find('tr');
+			var arr = [];
+
+			for (var row of rows) {
+				row = $(row);
+				var cols = row.find('td');
+				var val = $(cols[1]);
+				arr.push({ id: row.attrd('id'), name: cols[0].innerHTML, value: cols[1].innerHTML });
+			}
+
+			return { items: arr };
+		};
+
+		var check = function() {
+			if (!element.find('tbody').find('tr').length)
+				widget.remove();
+		};
+
+		var append = function(el) {
+
+			if (widget.readonly)
+				return;
+
+			var id = widget.makeid();
+			var html = template.format(id, '', '');
+
+			if (el)
+				el.after(html);
+			else
+				element.find('tbody').append(html);
+
+			var tr = element.find('tr[data-id="{0}"]'.format(id));
+			var col = tr.find('.name');
+			col[0].$newbie = true;
+			col.trigger('click');
+		};
+
+		element.on('click', '.add', function(e) {
+			e.stopPropagation();
+			setTimeout(append, 100);
+		});
+
+		element.on('click', '.editable', function(e) {
+
+			if (widget.readonly)
+				return;
+
+			e.stopPropagation();
+
+			var el = $(this);
+			var opt = {};
+
+			opt.endwithtab = true;
+
+			widget.edit(el, opt, function(response) {
+
+				if (response.text) {
+					var newbie = el[0].$newbie;
+					if (newbie)
+						delete el[0].$newbie;
+
+					var name = el.attrd('id');
+
+					response.change && widget.change(newbie ? 'insert' : 'update', el.closest('tr'));
+
+					if (name === 'name' || response.key === 9) {
+						setTimeout(() => el.next().trigger('click'), 100);
+						return;
+					}
+
+					if (response.key === 13 || response.key === 8)
+						setTimeout(append, 100, el.closest('tr'));
+
+				} else {
+					el.closest('tr').remove();
+					widget.end();
+				}
+				check();
+			});
+		});
+
+		widget.newbie && append();
+
+		var builder = [];
+		for (var item of config.items)
+			builder.push(template.format(item.id, item.name, item.value, item.unit));
+
+		if (builder.length)
+			element.find('tbody').append(builder.join(''));
+
+	};
+</script>

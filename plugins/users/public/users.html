@@ -1,0 +1,90 @@
+<style>
+	.CLASS figure { font-size: 12px; }
+	.CLASS .buttons { float: right; padding-left: 10px; }
+	.CLASS .currency { float: right; width: 40px; color: #777; border-right: 1px solid #D0D0D0; margin-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: left; }
+	.CLASS .rate { float: right; width: 170px; color: #777; text-align: right; padding: 0 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+	.CLASS .name { margin-right: 300px; display: flex; align-items: center; }
+	.CLASS .name > i { width: 12px; margin-right: 5px; text-align: center; }
+	.CLASS .buttons span { line-height: 21px; margin:0px 2px 2px 2px ; border-radius: var(--radius); border: 0; margin: 0 5px; }
+	.CLASS .b.nob { font-weight: normal !important; }
+	.CLASS .name .photo { width: 24px; height: 24px; border-radius: 100px; margin-right: 5px; border: 0; }
+	.CLASS .initials { color: #FFF !important; background-color: #E0E0E0; width: 24px; height: 24px; line-height: 25px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin: -1px 5px 0 0; position: relative; display: inline-block; vertical-align: middle; }
+
+</style>
+
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:users;title:@(Users);autofocus:true;reload:?/reload;scrollbar:1;width:800" class="hidden CLASS" plugin="~PATH~">
+	<nav>
+		<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle green"></i>@(Create)</button>
+	</nav>
+	<div class="padding">
+		<ui-bind path="!?.items" config="template" class="block listing m">
+			<script type="text/html">
+				{{ foreach m in value }}
+				<figure data-id="{{ m.id }}" class="exec" data-exec="?/edit">
+					<section>
+						<div class="buttons">
+							<span class="exec" data-exec="?/edit" data-prevent="true"><i class="ti ti-pencil-alt"></i></span>
+							<span class="exec" data-exec="?/remove" data-prevent="true"><i class="ti ti-remove red"></i></span>
+						</div>
+						<div class="name">
+							{{ if m.photo }}
+								<img src="{{ m.photo }}" class="photo img-responsive" title="{{ m.name }}" loading="lazy"/>
+							{{ else }}
+								<span class="initials" style="background-color:{{ m.name | color }}">{{ m.initials }}</span>
+							{{ fi }}
+							<span class="{{ if m.isdisabled }}gray nob{{ fi }}">{{ m.name | empty }}</span>
+							{{ if m.isonline }}<span class="fs11 ml5 badge badge-medium badge-green">@(Online)</span>{{ fi }}
+							{{ if m.sa }}<span class="fs11 ml5 badge badge-medium">@(Super admin)</span>{{ fi }}
+							{{ if m.isdisabled }}<span class="fs11 ml5 badge badge-medium badge-silver">@(Disabled)</span>{{ fi }}
+						</div>
+					</section>
+				</figure>
+				{{ end }}
+			</script>
+		</ui-bind>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('users ERROR', function(response) {
+				for (var item of response)
+					item.initials = DEF.cl.user.findValue('id', item.id, 'initials');
+
+				exports.set('items', response)
+			});
+		};
+
+		exports.create = function(el) {
+			SET('formuser @default', { password: GUID(10) });
+			SET('common.form2', 'formuser');
+		};
+
+		exports.edit = function(el) {
+			var id = ATTRD(el);
+			exports.tapi('users_read/{0} ERROR'.format(id), function(response) {
+				SET('formuser @reset', response);
+				SET('common.form2', 'formuser');
+			});
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			EXEC('-approve/show', '@(Are you sure you want to remove selected user?)', '"ti ti-remove" @(Remove)', function() {
+				exports.tapi('users_remove/{0} ERROR'.format(id), exports.refresh);
+			});
+		};
+
+	});
+
+</script>

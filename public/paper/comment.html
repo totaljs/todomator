@@ -1,0 +1,75 @@
+<style>
+	.CLASS { position: relative; margin-top: 10px; border: 1px solid #e0e0e0; background-color: #f8f8f8; border-radius: 0 8px 8px 8px; padding: 10px 15px 15px; }
+	.CLASS:after { content: ''; border-top: 14px solid #f8f8f8; width: 12px; height: 0; position: absolute; left: -12px; top: 0; border-left: 14px solid transparent; }
+	.CLASS:before { content: ''; border-top: 14px solid #e0e0e0; width: 0; height: 0; position: absolute; left: -14px; top: -1px; border-left: 14px solid transparent; }
+	.CLASS .date { float: right; font-size: 11px; margin-top: 2px; color: #a0a0a0; }
+	.CLASS .user { font-size: 11px; font-weight: bold; color: #555; }
+	.CLASS .user img { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; }
+	.CLASS .user span { color: #FFF !important; background-color: #E0E0E0; width: 20px; height: 20px; line-height: 21px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
+	.CLASS .content { font-size: 14px; margin-bottom: 10px; }
+	.CLASS i.comment { font-size: 16px; margin-bottom: 10px; color: var(--color); }
+</style>
+
+<body>
+	<i class="ti ti-comments comment"></i>
+	<div class="content">@(Enter your comment)</div>
+	<span class="date"></span>
+	<div class="user"></div>
+</body>
+
+<script>
+
+	exports.id = 'comment';
+	exports.name = '@(Comment)';
+	exports.version = 1;
+	exports.icon = 'ti ti-comment';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = { html: '' };
+	exports.sortindex = 1;
+
+	exports.make = function(widget, config, element) {
+
+		widget.save = function() {
+			return { html: element.find('.content').html(), userid: config.userid, date: config.date };
+		};
+
+		var render = function() {
+			var user = DEF.cl.user.findItem('id', config.userid);
+			element.find('.date').html(Thelpers.time2(config.date));
+			element.find('.user').html(user ? (Thelpers.users([config.userid]) + '' + user.name) : '@(User has been removed)');
+			element.find('.content').html(config.html || '@(Enter a message)');
+		};
+
+		element.on('click', function(e) {
+
+			e.stopPropagation();
+
+			if (config.userid !== user.id) {
+				widget.focus();
+				return;
+			}
+
+			widget.edit(element.find('.content'), { multiline: true, select: widget.newbie }, function(response) {
+				if (response.text) {
+					widget.change();
+					widget.end(response.key);
+				} else
+					widget.remove();
+			});
+		});
+
+		widget.newbie && setTimeout(() => element.find('.content').trigger('click'), 150);
+
+		if (!config.userid)
+			config.userid = user.id;
+
+		if (!config.html)
+			config.html = '';
+
+		if (!config.date)
+			config.date = NOW;
+
+		render();
+	};
+</script>

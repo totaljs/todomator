@@ -1,0 +1,111 @@
+<style>
+	.CLASS .markdowninput { background-color: #F8F8F8; tab-size: 4; white-space: pre; font-family: Menlo, Consolas, monospace; font-size: 14px; display: inline-block; width: 100%; padding: 10px; border-radius: var(--radius); white-space: break-spaces; }
+</style>
+
+<body>
+	<div class="markdowninput hidden"></div>
+	<div class="markdownbody" data-prevent="true">Markdown</div>
+</body>
+
+<script>
+
+	exports.id = 'markdown';
+	exports.name = '@(Markdown)';
+	exports.version = 1;
+	exports.icon = 'ti ti-align-left';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = { body: '' };
+	exports.sortindex = 10;
+
+	exports.make = function(widget, config, element) {
+
+		var body = config.body || '';
+		var skip = false;
+
+		widget.save = function() {
+			return { body: body };
+		};
+
+		element.on('click', 'li', function(e) {
+
+			if (widget.readonly)
+				return;
+
+			var t = this;
+
+			if (!widget.iseditable(e.target))
+				return;
+
+			e.stopPropagation();
+
+			var el = $(t);
+			var line = ATTRD(el, 'line');
+
+			if (!line)
+				return;
+
+			line = +line;
+
+			var lines = body.split('\n');
+			var is = false;
+
+			lines[line] = lines[line].replace(/\[(x|\s)\]/, function(text) {
+				is = text.indexOf('x') === -1;
+				return is ? '[x]' : '[ ]';
+			});
+
+			body = lines.join('\n');
+			el.find('> i:first-child').tclass('ti-check-square green', is).tclass('ti-square', !is);
+
+			widget.change();
+		});
+
+		element.on('click', '.markdowninput', function(e) {
+			e.stopPropagation();
+		});
+
+		element.on('dblclick', '.markdownbody', function(e) {
+
+			if (widget.readonly)
+				return;
+
+			e.stopPropagation();
+			e.preventDefault();
+
+			var render = $(this);
+			render.aclass('hidden');
+
+			var el = element.find('.markdowninput');
+
+			el.rclass('hidden');
+
+			var opt = {};
+			opt.html = Thelpers.encode(body);
+			opt.multiline = true;
+			opt.tabs = true;
+			opt.format = false;
+
+			widget.edit(el, opt, function(response) {
+				if (response.text) {
+					body = response.text;
+					render.html(Thelpers.markdown(body)).rclass('hidden');
+					el.empty().aclass('hidden');
+					widget.change();
+					widget.end(response.key);
+				} else
+					widget.remove();
+			});
+		});
+
+		widget.on('focus', function() {
+			element.find('.markdownbody').trigger('dblclick');
+		});
+
+		widget.newbie && widget.emit('focus');
+
+		if (body)
+			element.find('.markdownbody').rclass('hidden').html(Thelpers.markdown(body));
+
+	};
+</script>

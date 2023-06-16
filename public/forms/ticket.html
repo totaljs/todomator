@@ -1,0 +1,80 @@
+<ui-component name="miniform" path="common.form" config="if:~PATH~;width:380;title:@(Create ticket);autofocus:1;submit:?/submit;icon:ti ti-check-square;enter:true" plugin="~PATH~" class="hidden">
+	<div class="padding npb">
+
+		<div class="m">
+			<ui-component name="input" path="?.name" config="type:string;required:1;maxlength:250;placeholder:@(Enter a ticket name)">@(Name)</ui-component>
+		</div>
+
+		<div class="m">
+			<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(Empty);placeholder:@(Choose a folder)">@(Folder)</ui-component>
+		</div>
+
+		<div class="m">
+			<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users);icon:ti ti-users">@(Assign to)</ui-component>
+		</div>
+
+		<div class="grid-2">
+			<div class="m">
+				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW">@(Date)</ui-component>
+			</div>
+			<div class="m">
+				<ui-bind path="?.logwork" config="disabled">
+					<ui-component name="input" path="?.worked" config="placeholder:@(2 h);align:1" default="'10'">@(Log time)</ui-component>
+				</ui-bind>
+			</div>
+		</div>
+	</div>
+
+	<hr />
+
+	<div class="padding npt">
+		<ui-component name="input" path="?.ispriority" config="type:checkbox"><b class="red">@(High priority)</b></ui-component>
+		<ui-component name="input" path="?.isbillable" config="type:checkbox">@(Billable)</ui-component>
+		<ui-component name="input" path="?.logwork" config="type:checkbox">@(Start work)</ui-component>
+	</div>
+
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Close)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.submit = function(hide) {
+			var model = CLONE(exports.form);
+
+			var minutes = model.worked;
+
+			if (minutes.indexOf('h') !== -1)
+				minutes = minutes.replace(/[^0-9,.]/g, '').parseFloat() * 60;
+			else if (minutes.indexOf('d') !== -1)
+				minutes = minutes.replace(/[^0-9,.]/g, '').parseFloat() * 1440;
+			else
+				minutes = minutes.replace(/[^0-9,.]/g, '').parseFloat();
+
+			model.worked = model.logwork ? 0 : minutes;
+
+			exports.tapi('tickets_create ERROR', model, function(response) {
+
+				hide();
+
+				var refresh = function() {
+					exports.caller.exec('refresh');
+					exports.caller.exec('preview', response.value);
+				};
+
+				if (model.logwork) {
+					EXEC('parttimers/toggle', response.value);
+					setTimeout(refresh, 1000);
+				} else
+					refresh();
+			});
+		};
+
+	});
+</script>

@@ -1,0 +1,32 @@
+<ui-component name="miniform" path="common.form2" config="if:~PATH~;title:@(Update link);icon:ti ti-link;autofocus:true;submit:?/submit;width:400;zindex:50" class="hidden ~PATH~" plugin="~PATH~">
+	<div class="padding">
+		<ui-component name="input" path="?.href" config="required:1" class="m">@(URL address)</ui-component>
+		<ui-component name="input" path="?.target" config="dirsource:|@(Current tab or Window),_blank|@(New tab or Window);dirplaceholder:@(Search)">@(Target)</ui-component>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.watch('href', function(value, path, type) {
+			if (type === 2 && value.length > 12 && (/^(http|https)\:\/\//i).test(value) && exports.model.target !== '_blank')
+				exports.set('target', '_blank');
+		}, true);
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			model.element.attr('href', model.href).attr('target', model.target);
+			model.element.closest('.widget')[0].$widget.change('update');
+			hide();
+		};
+
+	});
+
+</script>

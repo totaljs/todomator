@@ -1,0 +1,936 @@
+<style>
+	.CLASS .ui-box-icon { color: #68B25B; margin-right: 10px; }
+	.CLASS .ui-box-label { font-weight: normal; color: #A0A0A0; font-size: 13px; user-select: text; }
+	.CLASS .meta i { transform: scale(1); }
+	.CLASS .attachments { font-size: 12px; padding: 0; margin-top: 10px; }
+	.CLASS .attachments .file { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
+	.CLASS .keyvalue { min-height: 18px; }
+	.CLASS .keyvalue > div { padding: 2px 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-height: 16px }
+	.CLASS .keyvalue > span { padding-top: 2px; }
+	.CLASS .control { cursor: pointer; border-radius: var(--radius); }
+	.CLASS .control:hover { background-color: #FFF; }
+	.CLASS .options { float: right; }
+	.CLASS .options button { cursor: pointer; border: 1px solid #E0E0E0; border-left: 0; width: 30px; height: 26px; line-height: 24px; text-align: center; background-color: #F0F0F0; }
+	.CLASS .options button:hover { background-color: #FFF; }
+	.CLASS .options button:disabled { background-color: #F0F0F0 !important; cursor: not-allowed; }
+	.CLASS .options button:disabled i { color: #B0B0B0; }
+	.CLASS .options button:first-child { border-top-left-radius: var(--radius); border-bottom-left-radius: var(--radius); border-left: 1px solid #E0E0E0; }
+	.CLASS .options button:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+	.CLASS .users { padding: 10px; background-color: #F0F0F0; border-radius: var(--radius); line-height: 0; }
+	.CLASS .users:hover { background-color: #F3F3F3; }
+	.CLASS .users > div { position: relative; display: inline-block; font-size: 12px; padding-top: 2px; margin-left: 10px; color: #A0A0A0; vertical-align: middle; }
+	.CLASS .users > span { width: 32px; height: 32px; line-height: 32px; font-weight: bold; vertical-align: middle; }
+	.CLASS .users > img { width: 32px; height: 32px; vertical-align: middle; }
+	.CLASS .users i { font-size: 18px; padding-top: 2px; }
+	.CLASS .tags i { cursor: pointer; }
+	.CLASS .tabmenu li { padding: 0 10px; }
+	.CLASS .badge { margin: 0 5px 5px 0; font-size: 12px; padding: 5px 8px; }
+	.CLASS .badge i { margin-right: 0; }
+	.CLASS .addtag { cursor: pointer; }
+	.CLASS .addtag:hover { opacity: 0.8; }
+	.CLASS button.selected { background-color: var(--color); color: #FFF; }
+	.CLASS button.selected2 { background-color: #EC8632; color: #FFF; }
+	.CLASS button.selected3 { background-color: #E73323 !important; }
+	.CLASS button.bookmark i { margin: 0; }
+	.CLASS button.notifications i { margin: 0; }
+	.CLASS button.timer { background-color: #68B25B; color: #FFF; }
+	.CLASS button.timer i { margin: 0; }
+	.CLASS h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
+	.CLASS .a-bk { color: #000; }
+	.CLASS .ui-iframepreview { margin-bottom: 5px; padding-bottom: 15px; border-bottom: 1px solid #E0E0E0; }
+
+	.CLASS .relatedtickets .users { background-color: #fff; padding: 0; border-radius: 0; }
+	.CLASS .relatedtickets .users > img, .CLASS .relatedtickets .users > span { width: 20px; height: 20px; line-height: 20px; }
+	.CLASS .relatedtickets .users > span { line-height: 20px; font-size: 10px; }
+	.CLASS .relatedtickets { font-size: 12px; padding: 0; margin-top: 10px; }
+	.CLASS .relatedtickets .ticket { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
+	.CLASS .relatedtickets .ticket .status { width: 120px; display: inline-block; margin-right: 10px; padding-right: 10px; border-right: 1px solid #e0e0e0; }
+	.CLASS .badge-small, .badge.small { font-size: 10px; padding: 0px 3px 1px; }
+	.CLASS .relatedtickets .name { padding: 1px 4px; border-radius: var(--radius); }
+	.CLASS .relatedtickets .remicon { margin-top: 3px; }
+	.CLASS .relatedtickets .remicon i { transform: scale(1); }
+	.CLASS .addticketbtn { background-color: #e0e0e0; padding: 0 10px; border: 0; border-radius: var(--radius); color: #000; line-height: 23px; height: 28px; font-size: 12px; text-decoration: none; transition: all .3s; outline: 0; vertical-align: middle; margin-bottom: 10px; }
+	.CLASS .addticketbtn:hover { opacity: .7; }
+	.CLASS .addticketbtn i { width: 12px; text-align: center; margin-right: 5px; }
+	.CLASS .relatedtickets .ticket.child a { background-color: rgba(255,199,92,0.2); }
+	.CLASS .meta button { height: 30px; font-size: 12px; width: 120px; background: #FFF; }
+
+	.related-container ul li { padding: 5px 40px 5px 10px; font-size: 12px; }
+	.related-container ul li .status { display: inline-block; width: 100px; height: 14px; border-right: 1px solid #e0e0e0; padding-right: 15px; margin-right: 15px; }
+	.related-container ul li .folder { width: 140px; display: inline-block; padding: 0 5px; color: rgb(0 0 0 / 70%); border-radius: var(--radius); font-size: 12px; height: 18px; line-height: 21px; border-left: 1px solid #e0e0e0; }
+	.related-container ul li .name { padding-left: 15px; margin-left: 15px; border-left: 1px solid #e0e0e0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 565px; }
+	.related-container ul li .worked { float: right; color: gray; }
+	.ui-directory .widget { padding: 5px 10px; }
+	.ui-directory .widget i { width: 14px; text-align: center; }
+	.ui-directory .widget span { padding-left: 10px; margin-left: 10px; border-left: 1px solid rgba(0,0,0,0.1); }
+
+</style>
+
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-check-circle;reload:?/reload;scrollbar:1;submit:?/submit;width:800;hide:?/hide" class="hidden ~PATH~" plugin="~PATH~">
+	<nav>
+		<ui-bind path="?.bookmark.is" config=".selected" child=".bookmark">
+			<ui-bind path="?.istimer" config="macro:ticketdetailtimer" child=".timer">
+				<ui-bind path="?.isunread" config="macro:ticketnotificationsunread" child=".notifications">
+					<button class="exec exec2 timer" data-exec="?/timer" data-exec2="?/timer2" title="@(Toggle timer)"><i class="ti ti-play"></i></button>
+					<button class="exec bookmark" data-exec="?/bookmark" title="@(Toggle bookmark)"><i class="ti ti-bookmark"></i></button>
+					<button class="exec notifications" data-exec="?/notifications" title="@(Toggle notifications)"><i class="ti ti-bell"></i></button>
+					<button class="exec" data-exec="?/options"><i class="ti ti-sliders-h"></i>@(Options)</button>
+				</ui-bind>
+			</ui-bind>
+		</ui-bind>
+	</nav>
+	<div>
+		<div class="padding bg-smoke">
+			<ui-bind path="?" config="track:id;template" class="meta">
+				<script type="text/html">
+
+					{{ if value.statusid === 'pending' }}
+						<div class="toolbar m">
+							<button class="exec" data-exec="?/timer"><i class="ti ti-start red"></i>@(Start work)</button>
+						</div>
+					{{ else if value.statusid === 'open' }}
+						<div class="toolbar m">
+							<button class="exec" data-exec="?/forcestatus" data-id="review"><i class="ti ti-clean orange"></i>@(Review)</button>
+							{{ if value.iamowner }}
+							<button class="exec" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+							{{ fi }}
+						</div>
+					{{ else if value.statusid === 'review' }}
+						<div class="toolbar m">
+							<button class="exec" data-exec="?/forcestatus" data-id="open"><i class="ti ti-history blue"></i>@(Re-open)</button>
+							<button class="exec b" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+						</div>
+					{{ fi }}
+
+					<h2 class="edit2" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
+
+					<div style="height:70px">
+						<div class="exec users" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="keyvalue">
+								<span>@(Owner)</span>
+								<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
+							</div>
+							<div class="keyvalue">
+								<span>@(Status)</span>
+								<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
+							</div>
+							<div class="keyvalue">
+								<span>@(Folder)</span>
+								<div class="exec control" data-exec="?/folder">{{ if value.folder }}<i class="ti ti-circle-alt" style="color:{{ value.folder_color }}"></i>{{ fi }}{{ value.folder | empty }}</div>
+							</div>
+							<div class="keyvalue">
+								<span>@(Source)</span>
+								<div>{{ value.source | empty }}</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="keyvalue">
+								<span><i class="ti ti-start green"></i>@(Date from)</span>
+								<div class="exec control" data-exec="?/date">{{ value.date | format }}</div>
+							</div>
+							<div class="keyvalue">
+								<span><i class="ti ti-calendar red"></i>@(Deadline)</span>
+								<div class="exec control" data-exec="?/deadline">{{ value.deadline | format('[date]') | empty }}</div>
+							</div>
+							<div class="keyvalue">
+								<span>@(Estimate)</span>
+								<div class="exec control" data-exec="?/estimate">{{ value.estimate | logwork }}</div>
+							</div>
+							<div class="keyvalue">
+								<span>@(Worked)</span>
+								<div class="exec control b" data-exec="?/logwork">{{ value.worked | logwork }} <span class="green">&bull;</span></div>
+							</div>
+						</div>
+					</div>
+					<hr />
+					<div class="keyvalue">
+						<span style="padding-top:4px">@(Tags)</span>
+						<div class="tags">
+							{{ if value.tags }}
+								{{ foreach m in value.tags }}
+								<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
+								{{ end }}
+							{{ fi }}
+							<span class="badge badge-silver addtag exec" data-exec="?/addtag"><i class="ti ti-plus-circle green"></i>@(Add)</span>
+						</div>
+					</div>
+
+					{{ if value.attachments && value.attachments.length }}
+					<hr />
+					<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
+					<div class="attachments">
+						{{ foreach m in value.attachments }}
+						<a href="{{ m.url }}" target="_blank" class="file"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
+						{{ end }}
+					</div>
+					{{ fi }}
+				</script>
+			</ui-bind>
+
+			<hr />
+			<button class="addticketbtn exec" data-exec="?/addticket"><i class="t ti ti-search-plus"></i>@(Add a related ticket)</button>
+
+			<ui-bind path="?.links" config="template" class="relatedtickets">
+				<script type="text/html">
+					{{ foreach m in value }}
+					<div class="ticket {{ if m.type && m.type === 'child' }}child{{ fi }}" data-id="{{ m.id }}"><span class="status">{{ m.statusid | status }}</span><a href="#{{ m.id }}" class="name">{{ m.name }}</a><span class="users">{{ if m.userid && m.userid.length }}{{ m.userid | users(true) }}{{ fi }}</span><span class="remicon pull-right fs11 red ml5 exec" data-exec="?/remlink" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11" style="margin-top:3px">{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</span></div>
+					{{ end }}
+				</script>
+			</ui-bind>
+		</div>
+		<div class="padding">
+			<div class="padding npt npb">
+				<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
+				<ui-component name="paper" path="?.data" config="readonly:0;parent:auto;widgets:[widgets];autosave:1;margin:400;command:?/command;upload:?/upload;format:?/format;icon:?/icon;contextmenu:?/contextmenu;link:?/link;placeholder:@(Press / for adding rich content)" class="hidden invisible npt nmb"></ui-component>
+			</div>
+		</div>
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+</ui-component>
+
+
+<script>
+	PLUGIN(function(exports) {
+
+		var changed = false;
+		var caller;
+		var cache = {};
+		var ID;
+		var title = '';
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			com.reconfigure({ title: 'ID: ' + model.id });
+			changed = false;
+			ID = model.id;
+			exports.refresh();
+			exports.refresh_bookmark();
+			exports.refresh_paper();
+			exports.refresh_timer();
+			exports.refresh_links();
+			caller = exports.caller;
+			title = common.title;
+			SET('common.title', model.name);
+		};
+
+		exports.refresh_links = function() {
+			var model = exports.model;
+			exports.tapi('tickets_links/' + model.id, 'links');
+		};
+
+		exports.remlink = function(el) {
+			var model = exports.model;
+			var id = ATTRD(el);
+			SETTER('approve/show', '@(Are you sure you want to remove related ticket?)', '"ti ti-trash" @(Remove)', function() {
+				exports.tapi('tickets_link/' + model.id + ' ERROR', { ticketid: id, type: 'rem' }, exports.refresh_links);
+			});
+		};
+
+		exports.addticket = function(el) {
+
+			var model = exports.model;
+			var opt = {};
+
+			opt.element = el;
+			opt.align = 'left';
+			opt.offsetY = 40;
+			opt.minwidth = 770;
+			opt.height = 250;
+			opt.classname = 'related-container';
+			opt.custom = true;
+
+			opt.items = function(search, next) {
+				exports.tapi(QUERIFY('tickets', { q: search, type: 'all', folderid: model.folderid, limit: 50 }) + ' ERROR', next);
+			};
+
+			opt.render = function(item, name) {
+				return '<span class="status">{4}</span><span class="folder" style="background-color:{0}">{1}</span><span class="name" title="{2}">{2}</span><span class="worked">{3}</span>'.format(Thelpers.rgba(item.folder_color, 0.2), item.folder, name, item.worked > 0 ? Thelpers.logwork(item.worked) : null, Thelpers.status(item.statusid));
+			};
+
+			opt.callback = function(selected) {
+
+				if (typeof(selected) === 'string') {
+					var data = {};
+					data.folderid = model.folderid;
+					data.name = selected;
+					data.ownerid = user.id;
+					data.date = new Date();
+					data.worked = '10';
+					exports.tapi('tickets_create ERROR', data, response => opt.callback({ id: response.value, skip: true }));
+					return;
+				}
+
+				exports.tapi('tickets_link/' + model.id + ' ERROR', { ticketid: selected.id, type: 'add' }, function() {
+					if (selected.skip)
+						location.hash = selected.id;
+					else
+						exports.refresh_links();
+				});
+			};
+			SETTER('directory/show', opt);
+		};
+
+		exports.refresh_paper = function() {
+			var model = exports.model;
+			model.readonly = model.statusid === 'closed';
+			RECONFIGURE('paper', 'readonly:' + (model.readonly ? '2' : '0'));
+		};
+
+		exports.refresh = function() {
+			var model = exports.model;
+			cache = {};
+			exports.tapi('data_read/' + model.id, 'data');
+		};
+
+		exports.refresh_bookmark = function() {
+			var model = exports.model;
+			exports.tapi('tickets_bookmarks/{0} ERROR'.format(model.id), { type: 'check' }, 'bookmark');
+		};
+
+		exports.refresh_timer = function() {
+			var model = exports.model;
+			var timers = W.parttimers ? W.parttimers.items : EMPTYARRAY;
+			exports.set('istimer', timers.findIndex('ticketid', model.id) !== -1);
+		};
+
+		exports.bookmark = function() {
+			var model = exports.model;
+			exports.tapi('tickets_bookmarks/{0} ERROR @showloading'.format(model.id), { type: model.bookmark && model.bookmark.is ? 'remove' : 'create' }, function(response) {
+				exports.set('bookmark @hideloading', response);
+				caller.exec('counter');
+			});
+		};
+
+		exports.timer = function() {
+			var model = exports.model;
+			EXEC('parttimers/toggle', model.id);
+		};
+
+		exports.timer2 = function() {
+			var model = exports.model;
+			var data = {};
+			data.ticketid = model.id;
+			data.minutes = 5;
+			data.date = NOW;
+			exports.tapi('logwork_create ERROR', data, function(response) {
+				if (response.value)
+					model.worked = response.value;
+				exports.upd('id');
+				changed = true;
+				SETTER('sounds/play', 'badge');
+			});
+		};
+
+		exports.folder = function(el) {
+
+			var model = exports.model;
+			var opt = {};
+
+			opt.element = el;
+			opt.items = CLONE(DEF.cl.folder);
+
+			opt.callback = function(selected) {
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { folderid: selected.id || null }, function() {
+					model.folderid = selected.id;
+					model.folder = selected.name;
+					model.folder_color = selected.color;
+					model.folder_icon = selected.icon;
+					changed = true;
+					exports.upd('id');
+				});
+			};
+
+			EXEC('-directory/show', opt);
+		};
+
+		exports.forcestatus = function(el) {
+
+			var model = exports.model;
+			var opt = {};
+			var statusid = ATTRD(el);
+
+			exports.tapi('tickets_update/{0} ERROR'.format(model.id), { statusid: statusid }, function() {
+
+				model.statusid = statusid;
+				changed = true;
+				exports.upd('id');
+				caller.exec('counter');
+
+				var folder = model.folderid ? DEF.cl.folder.findItem('id', model.folderid) : null;
+
+				if ((statusid === 'review' || statusid === 'closed') && !model.istimer && !model.worked && (!folder || !folder.isprivate)) {
+					// Need to log a time
+					exports.logwork();
+				} else if (model.istimer && (statusid === 'review' || statusid === 'closed')) {
+					// Stop the timer
+					exports.timer();
+				}
+
+				exports.refresh_paper();
+
+			});
+		};
+
+		exports.status = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.align = 'left';
+			opt.element = el;
+			opt.items = CLONE(DEF.cl.status);
+			opt.callback = exports.forcestatus;
+			EXEC('-menu/show', opt);
+		};
+
+		exports.user = function(el) {
+
+			var model = exports.model;
+			var opt = {};
+			var sel = EMPTYARRAY;
+
+			opt.element = el;
+			opt.items = CLONE(DEF.cl.user);
+			opt.checkbox = true;
+			opt.offsetWidth = 20;
+			opt.offsetY = 25;
+
+			if (model.userid) {
+				for (var item of opt.items)
+					item.selected = model.userid.indexOf(item.id) !== -1;
+			}
+
+			opt.callback = function(selected) {
+				sel = selected;
+			};
+
+			opt.close = function() {
+				if (sel !== EMPTYARRAY) {
+					var items = sel.map(n => n.id);
+					exports.tapi('tickets_update/{0} ERROR'.format(model.id), { userid: items }, function() {
+						changed = true;
+						model.userid = items;
+						exports.upd('id');
+					});
+				}
+			};
+
+			EXEC('-directory/show', opt);
+		};
+
+		exports.owner = function(el) {
+
+			if (UNAUTHORIZED('admin'))
+				return;
+
+			var model = exports.model;
+			var opt = {};
+			var sel = EMPTYARRAY;
+
+			opt.element = el;
+			opt.items = DEF.cl.user;
+			opt.offsetWidth = 20;
+			opt.offsetY = 25;
+
+			opt.callback = function(selected) {
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { ownerid: selected.id }, function() {
+					changed = true;
+					model.ownerid = selected.id;
+					model.iamowner = model.ownerid === user.id;
+					exports.upd('id');
+				});
+			};
+
+			EXEC('-directory/show', opt);
+		};
+
+		exports.remtag = function(el) {
+			var model = exports.model;
+			var index = model.tags.indexOf(ATTRD(el));
+			if (index !== -1) {
+				model.tags.splice(index, 1);
+				exports.tapi('tickets_update/{0} ERROR @showloading'.format(model.id), { tags: model.tags }, function() {
+					changed = true;
+					exports.upd('id @hideloading');
+				});
+			}
+		};
+
+		exports.addtag = function(el) {
+
+			var model = exports.model;
+			var opt = {};
+
+			opt.element = el;
+			opt.items = CLONE(DEF.cl.tag).remove(tag => tag.folderid && tag.folderid !== model.folderid);
+			opt.offsetY = -10;
+			opt.offsetX = -10;
+			opt.offsetWidth = 200;
+
+			if (UNAUTHORIZED('admin')) {
+				opt.placeholder = '@(Choose a tag)';
+				opt.custom = 1;
+			} else {
+				opt.placeholder = '@(Choose or create new)';
+				opt.custom = 1;
+			}
+
+			opt.callback = function(val) {
+
+				// Create new tag
+				if (typeof(val) === 'string') {
+					if (!UNAUTHORIZED('admin')) {
+						var data = { folderid: model.folderid, name: val };
+						TAPI('tags_create ERROR', data, function(response) {
+							data.id = response.value;
+							DEF.cl.tag.push(data);
+							opt.callback({ id: response.value });
+						});
+					}
+					return;
+				}
+
+				val = val.id;
+
+				if (model.tags) {
+					if (model.tags.includes(val))
+						return;
+				} else
+					model.tags = [];
+
+				model.tags.push(val);
+
+				TAPI('tickets_update/{0} ERROR @showloading'.format(model.id), { tags: model.tags }, function() {
+					changed = true;
+					exports.upd('id @hideloading');
+				});
+
+			};
+
+			EXEC('-directory/show', opt);
+		};
+
+		exports.estimate = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.value = model.estimate || '';
+			opt.offsetY = -10;
+			opt.offsetX = -10;
+			opt.icon = 'ti ti-clock';
+			opt.summary = '@(Enter the estimated time in minutes.)';
+			opt.placeholder = '@(Minutes)';
+			opt.callback = function(val) {
+				var minutes = FUNC.parseminutes(val);
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { estimate: minutes }, function() {
+					model.estimate = minutes;
+					changed = true;
+					exports.upd('id');
+				});
+			};
+			EXEC('-floatinginput/show', opt);
+		};
+
+		exports.deadline = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.value = model.deadline || NOW;
+			opt.callback = function(val) {
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { deadline: val }, function() {
+					model.deadline = val;
+					changed = true;
+					exports.upd('id');
+				});
+			};
+			EXEC('-datepicker/show', opt);
+		};
+
+		exports.date = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.value = model.date || NOW;
+			opt.callback = function(val) {
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { date: val }, function() {
+					model.date = val;
+					changed = true;
+					exports.upd('id');
+				});
+			};
+			EXEC('-datepicker/show', opt);
+		};
+
+		exports.logs = function() {
+			var model = exports.model;
+			var data = {};
+			data.id = model.id;
+			data.name = model.name;
+			data.worked = model.worked;
+			data.estimate = model.estimate;
+			SET('formlogs', data);
+			SET('common.form2', 'formlogs');
+		};
+
+		exports.logwork = function() {
+
+			var model = exports.model;
+			var data = {};
+
+			data.name = '';
+			data.ticketid = model.id;
+			data.callback = function(time) {
+				if (time)
+					model.worked = time;
+				exports.upd('id');
+				changed = true;
+			};
+
+			SET('formtime @default', data);
+			SET('common.form3', 'formtime');
+		};
+
+		exports.drop = function(files) {
+
+			var model = exports.model;
+			var opt = {};
+			var op = common.openplatform;
+
+			if (op)
+				op = '&' + op.substring(1);
+
+			opt.url = '/upload/?ticketid={0}{1} ERROR'.format(model.id, op);
+			opt.files = files;
+			opt.callback = function(response) {
+				model.attachments.push.apply(model.attachments, response);
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { attachments: model.attachments }, function() {
+					changed = true;
+					exports.upd('id');
+				});
+			};
+
+			EXEC('-fileuploader/upload', opt);
+		};
+
+		exports.upload = function(opt, callback) {
+			var model = exports.model;
+			var op = common.openplatform;
+
+			if (op)
+				op = '&' + op.substring(1);
+
+			opt.url = '/upload/?ticketid={0}{1} ERROR'.format(model.id, op);
+			EXEC('-fileuploader/upload', opt, callback);
+		};
+
+		exports.remove = function() {
+			var model = exports.model;
+			EXEC('-approve/show', '@(Are you sure you want to remove selected ticket?)', '"ti ti-remove" @(Remove)', function() {
+				exports.tapi('tickets_remove/{0} ERROR'.format(model.id), function() {
+					changed = false;
+					NUL('common.form');
+					REDIRECT(NAV.url);
+				});
+			});
+		};
+
+		exports.remattachment = function(el) {
+			var id = ATTRD(el);
+			var model = exports.model;
+			var index = model.attachments.findIndex('id', id);
+			EXEC('-approve/show', '@(Are you sure you want to remove selected attachment?)', '"ti ti-remove" @(Remove)', function() {
+				model.attachments.splice(index, 1);
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { attachments: model.attachments }, function() {
+					changed = true;
+					exports.upd('id');
+				});
+			});
+		};
+
+		exports.toggle = function(el) {
+			var model = exports.model;
+			exports.tapi('tickets_update/{0} ERROR'.format(model.id), { isclosed: !model.isclosed }, function() {
+				changed = true;
+				model.isclosed = !model.isclosed;
+				exports.upd('id');
+			});
+		};
+
+		exports.clone = function() {
+
+			changed = false;
+
+			var model = exports.model;
+			var date = NOW;
+			var day = date.getDay();
+
+			if (day === 5) {
+				if (date.getHours() > 16)
+					date = date.add('3 days');
+			} else if (day === 6)
+				date = date.add('2 days');
+			else if (day === 0)
+				date = date.add('1 day');
+
+			date.setHours(12);
+			date.setMinutes(0);
+
+			var data = {};
+
+			data.id = model.id;
+			data.date = date;
+			data.name = model.name;
+			data.folderid = model.folderid;
+
+			SET('formclone @default', data);
+			SET('common.form2', 'formclone');
+
+		};
+
+		exports.options = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.align = 'right';
+			opt.items = [];
+			opt.items.push({ id: 'logwork', name: '@(Log work)', class: 'b', icon: 'ti ti-clock' });
+			// opt.items.push({ id: 'close', name: '@(Mark as solved)', classname: 'b', icon: 'ti ti-check-circle green' });
+			opt.items.push('-');
+			opt.items.push({ id: 'drop', name: '@(Upload attachment)', icon: 'ti ti-file' });
+			opt.items.push({ id: 'priority', name: '@(High priority)', icon: 'ti ti-arrow-up', selected: model.ispriority == true });
+			opt.items.push({ id: 'billable', name: '@(Billable)', icon: 'ti ti-invoice', selected: model.isbillable == true });
+			opt.items.push('-');
+			opt.items.push({ id: 'logs', name: '@(Logs)', icon: 'ti ti-clock' });
+			opt.items.push({ id: 'clone', name: '@(Clone)', icon: 'ti ti-clone' });
+			opt.items.push('-');
+			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-remove red' });
+
+			EMIT('detail_menu', opt);
+			EXEC('-menu/show', opt);
+
+			opt.callback = function(selected) {
+
+				selected.callback && selected.callback(model);
+
+				switch (selected.id) {
+					case 'priority':
+					case 'billable':
+						var data = {};
+						var key = 'is' + selected.id;
+						data[key] = !selected.selected;
+						exports.tapi('tickets_update/{0} ERROR'.format(model.id), data, function() {
+							model[key] = data[key];
+							exports.upd('id');
+						});
+						break;
+					default:
+						exports[selected.id]();
+						break;
+				}
+			};
+		};
+
+		exports.command = function(cmd) {
+			var opt = {};
+			opt.element = cmd.element;
+			opt.placeholder = '@(Search widget)';
+			opt.offsetY = 0;
+			opt.offsetX = -5;
+			opt.items = papercache.widgets;
+			opt.render = function(item) {
+				return '<div class="widget"><i class="{icon}"></i><span>{name}</span></div>'.args(item);
+			};
+
+			opt.callback = function(selected) {
+				cmd.append(selected.id);
+			};
+			SETTER('directory/show', opt);
+		};
+
+		exports.modify = function(opt, accept) {
+			var model = exports.model;
+			var data = {};
+			data[opt.prop] = opt.value;
+			model[opt.prop] = opt.value;
+			exports.tapi('tickets_update/{0} ERROR'.format(model.id), data, function() {
+				changed = true;
+				accept(true);
+			});
+		};
+
+		function savedata() {
+
+			var model = exports.model;
+			var data = CLONE(model.data);
+
+			for (var item of data) {
+				if (!item.newbie && !item.changed)
+					item.config = undefined;
+			}
+
+			exports.tapi('data_save/{0} ERROR'.format(model.id), { clientid: common.clientid, data: data }, function() {
+				changed = true;
+			});
+		}
+
+		exports.watch('data', function(value, path, type) {
+			if (type === 2)
+				setTimeout2('savedata', savedata, 500);
+		});
+
+		exports.changed = function() {
+			changed = true;
+		};
+
+		exports.hide = function() {
+			SET('common.title', title);
+			location.hash = '';
+			exports.model.id = '';
+			changed && caller && caller.exec('refresh');
+		};
+
+		exports.icon = function(meta, callback) {
+			var opt = {};
+			opt.element = meta.element;
+			opt.empty = true;
+			opt.callback = function(val) {
+				if (val)
+					meta.element.rclass2('ti').aclass(val);
+				else
+					meta.element.remove();
+				callback();
+			};
+			EXEC('-icons/show', opt);
+		};
+
+		exports.contextmenu = function(widget, e) {
+
+			var model = exports.model;
+
+			if (model.readonly)
+				return;
+
+			var opt = {};
+			opt.items = [];
+			opt.x = e.pageX;
+			opt.y = e.pageY;
+
+			if (e.target.classList.contains('plink')) {
+				opt.items.push({ id: 'editlink', name: '@(Edit link)', icon: 'ti ti-link' });
+				opt.items.push({ id: 'removelink', name: '@(Remove link)', icon: 'ti ti-trash red' });
+				opt.items.push('-');
+			} else if (e.target.classList.contains('picon')) {
+				opt.items.push({ id: 'removeicon', name: '@(Remove icon)', icon: 'ti ti-trash red' });
+				opt.items.push('-');
+			}
+
+			opt.items.push({ id: 'remove', name: '@(Remove object)', icon: 'ti ti-trash red' });
+
+			EMIT('detail_contextmenu', opt);
+
+			opt.callback = function(selected) {
+
+				EMIT('detail_contextmenu_selected', selected);
+
+				switch (selected.id) {
+					case 'editlink':
+						exports.editlink($(e.target));
+						break;
+					case 'removeicon':
+						e.target.parentNode.removeChild(e.target);
+						widget.change('update');
+						break;
+					case 'removelink':
+						$(e.target).replaceWith(e.target.innerHTML);
+						widget.change('update');
+						break;
+					case 'remove':
+						EXEC('-approve/show', '@(Are you sure you want to remove selected object?)', '"ti ti-remove" @(Remove)', widget.remove);
+						break;
+				}
+			};
+
+			EXEC('-menu/show', opt);
+			e.preventDefault();
+			e.stopPropagation();
+		};
+
+		exports.link = function(opt) {
+			if (opt.element.attr('href').charAt(0) === '#')
+				exports.editlink(opt.element);
+		};
+
+		exports.editlink = function(el) {
+			var model = {};
+			model.href = el.attr('href');
+			model.target = el.attr('target') || '';
+			model.element = el;
+			SET('formlink @reset', model);
+			SET('common.form2', 'formlink');
+		};
+
+		exports.notifications = function() {
+			var model = exports.model;
+
+			if (model.isunread) {
+				// set to read
+				exports.set('isunread', false);
+			}
+
+			SET('%ticketid', model.id);
+			SET('common.form2', 'formnotifications');
+		};
+
+		// Real-time binding
+		exports.on('message', function(msg) {
+
+			if (common.form === exports.name && msg.TYPE === 'data' && msg.id === ID && msg.clientid !== common.clientid) {
+				var model = exports.model;
+				var arr = [];
+				for (var i = 0; i < msg.data.length; i++) {
+					var change = msg.data[i];
+					var item = model.data.findItem('id', change.id);
+					if (item) {
+						if (change.config)
+							item.config = change.config;
+						arr.push(item);
+					} else
+						arr.push(change);
+				}
+				exports.set('data', arr);
+			}
+
+		});
+
+		WATCH('parttimers.items', function() {
+			if (common.form === 'formdetail')
+				setTimeout(exports.refresh_timer, 500);
+		});
+
+	});
+
+	MACRO('ticketdetailtimer', function(self, element) {
+
+		self.setter = function(value) {
+			var is = !!value;
+			element.tclass('selected3', is);
+			element.find('i').tclass('ti-play', !is).tclass('ti-stop-alt', is);
+		};
+
+	});
+
+	MACRO('ticketnotificationsunread', function(self, element) {
+
+		self.setter = function(value) {
+			var is = !!value;
+			element.tclass('selected2', is);
+			element.find('i').tclass('ti-bell', !is).tclass('ti-bell-alt', is);
+		};
+
+	});
+
+</script>

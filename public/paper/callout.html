@@ -1,0 +1,98 @@
+<style>
+	.CLASS { min-height: 75px; background-color: #F0F0F0; border-radius: 10px; padding: 20px 15px; position: relative; }
+	.CLASS .icon { width: 40px; font-size: 30px; float: left; text-align: center; cursor: pointer; margin: 2px 0 0; }
+	.CLASS .text { margin: 0 0 0 52px; }
+	.CLASS .color { position: absolute; font-size: 12px; cursor: pointer; right: 10px; top: 10px; }
+	.readonly .CLASS .color { display: none; }
+</style>
+
+<body>
+	<i class="ti ti-brush color"></i>
+	<i class="ti ti-warning icon"></i>
+	<div class="text"></div>
+</body>
+
+<script>
+
+	exports.id = 'callout';
+	exports.name = '@(Callout)';
+	exports.version = 1;
+	exports.icon = 'ti ti-receipt';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = { text: '', icon: '', color: '' };
+	exports.sortindex = 5;
+
+	exports.make = function(widget, config, element) {
+
+		widget.save = function() {
+			return { html: element.find('.text').html(), icon: element.attrd('icon'), color: element.attrd('color') };
+		};
+
+		element.on('click', '.text', function(e) {
+
+			if (widget.readonly)
+				return;
+
+			e.stopPropagation();
+
+			widget.edit(this, {}, function(response) {
+				if (response.text) {
+					widget.change();
+					widget.end(response.key);
+				} else
+					widget.remove();
+			});
+		});
+
+		widget.on('focus', function() {
+			element.find('.text').trigger('click');
+		});
+
+		element.on('click', '.icon', function(e) {
+
+			if (widget.readonly)
+				return;
+
+			e.stopPropagation();
+
+			var opt = {};
+			opt.element = $(this);
+			opt.callback = function(val) {
+				opt.element.rclass2('ti').aclass(val);
+				element.attrd('icon', val);
+				widget.change('update');
+			};
+			SETTER('icons/show', opt);
+		});
+
+		element.on('click', '.color', function(e) {
+
+			if (widget.readonly)
+				return;
+
+			e.stopPropagation();
+
+			var opt = {};
+			opt.element = $(this);
+			opt.align = 'center';
+			opt.callback = function(val) {
+				element.css('background', val);
+				element.attrd('color', val);
+				widget.change('update');
+			};
+			SETTER('colorpicker/show', opt);
+		});
+
+		widget.newbie && widget.emit('focus');
+
+		if (config.icon)
+			element.attrd('icon', config.icon).find('.icon').rclass2('fa').aclass(config.icon);
+
+		if (config.color)
+			element.attrd('color', config.color).css('background', config.color);
+
+		if (config.html)
+			element.find('.text').html(config.html);
+	};
+</script>

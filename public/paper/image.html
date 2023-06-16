@@ -1,0 +1,76 @@
+<style>
+	.CLASS .image > div { background-color: #F0F0F0; padding: 50px 20px; border-radius: var(--radius); text-align: center; color: #888; }
+	.CLASS .alt { min-height: 24px; margin-top: 10px; font-size: 12px; color: #999; }
+</style>
+
+<body>
+	<div class="image">
+		<div class="empty">@(Click for upload)</div>
+	</div>
+	<div class="alt">@(Description)</div>
+</body>
+
+<script>
+
+	exports.id = 'image';
+	exports.name = '@(Image)';
+	exports.version = 1;
+	exports.icon = 'ti ti-image';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = {};
+	exports.sortindex = 1;
+
+	exports.make = function(widget, config, element) {
+
+		var template = '<img src="{0}" class="img-responsive" loading="lazy" alt="{1}" />';
+
+		var upload = function(e) {
+
+			if (widget.readonly)
+				return;
+
+			e && e.stopPropagation();
+
+			var opt = {};
+			opt.accept = 'image/*';
+			opt.callback = function(files) {
+				var file = files[0];
+				var name = file.name.replace(new RegExp('\.{0}$'.format(file.ext)), '');
+				element.find('.image').html(template.format(file.url, name));
+				element.find('.alt').text(name);
+				widget.update('change');
+			};
+
+			widget.upload(opt);
+		};
+
+		widget.save = function() {
+			var img = element.find('img');
+			var alt = element.find('.alt');
+			return { url: img.attr('src'), name: img.attr('alt'), alt: alt.html() }
+		};
+
+		element.on('dblclick', 'img', upload);
+
+		element.on('click', '.alt', function(e) {
+
+			if (widget.readonly)
+				return;
+
+			e.stopPropagation();
+
+			widget.edit(this, {}, function(response) {
+				if (response.text) {
+					widget.change();
+					widget.end(response.key);
+				}
+			});
+		});
+
+		element.on('click', '.empty', upload);
+		widget.newbie && setTimeout(upload, 100);
+		config.url && element.find('.image').html(template.format(config.url, config.name));
+		config.alt && element.find('.alt').html(config.alt);
+	};
+</script>

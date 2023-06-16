@@ -1,0 +1,45 @@
+<ui-component name="miniform" path="common.form2" config="if:~PATH~;title:@(Clone ticket);icon:ti ti-clone;autofocus:true;submit:?/submit;width:400;zindex:50;enter:1" class="hidden" plugin="~PATH~">
+	<div class="padding">
+
+		<div class="m">
+			<ui-component name="input" path="?.name" config="type:string;required:1;maxlength:250;placeholder:@(Enter a ticket name)">@(Name)</ui-component>
+		</div>
+
+		<div class="m">
+			<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(Empty);placeholder:@(Choose a folder)">@(Folder)</ui-component>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6 m">
+				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW">@(Date)</ui-component>
+			</div>
+		</div>
+
+		<ui-component name="input" path="?.users" config="type:checkbox" default="true">@(Clone users)</ui-component>
+		<ui-component name="input" path="?.status" config="type:checkbox" default="false">@(Clone status)</ui-component>
+
+	</div>
+	<nav>
+		<ui-component name="validate" path="?" config="validonly:1">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			exports.tapi('tickets_clone/{0} ERROR @showloading'.format(model.id), model, function(response) {
+				setTimeout(() => EXEC('tickets/preview', response.value), 1000);
+				NULL('common.form');
+				hide();
+			});
+		};
+
+	});
+
+</script>

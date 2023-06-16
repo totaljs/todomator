@@ -1,0 +1,126 @@
+<style>
+	.CLASS .icon { width: 12px; margin-right: 5px; }
+</style>
+
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:tags;title:@(Tags);reload:?/reload;scrollbar:1;hide:?/close;width:800" class="hidden ~PATH~" plugin="~PATH~">
+
+	<nav>
+		<button class="exec" data-exec="?/add" data-type="type"><i class="ti ti-plus-circle green"></i>@(Add)</button>
+	</nav>
+
+	<div class="padding">
+
+		<ui-bind path="!?.group" config="template" class="block m">
+			<script type="text/html">
+				{{ if value.length }}
+					{{ foreach group in value }}
+					{{ if group.id !== '$' }}
+					<div class="caption m" style="margin-top:15px">
+						<label><i class="ti ti-folder"></i>{{ group.name }}</label>
+					</div>
+					{{ fi }}
+					<div class="listing2 fs12">
+						{{ foreach m in group.items }}
+						<figure data-id="{{ m.id }}" data-type="type" class="exec" data-exec="?/edit">
+							<section>
+								<span class="pull-right red exec" data-exec="?/remove" data-prevent="true"><i class="ti ti-remove"></i></span>
+								<div><i class="{{ m.icon }} icon"></i><span class="badge" style="background-color:{{ m.color }}">{{ m.name }}</span></div>
+							</section>
+						</figure>
+						{{ end }}
+					</div>
+					{{ end }}
+				{{ else }}
+				<div class="padding">
+					<br />
+					<br />
+					<div class="center padding gray"><i class="ti ti-database-alt mr5"></i>@(You don't have any defined tags)</div>
+				</div>
+				{{ fi }}
+			</script>
+		</ui-bind>
+
+	</div>
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var is = false;
+
+		exports.reload = function() {
+			is = false;
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('tags', function(response) {
+
+				var group = [];
+				var cache = {};
+
+				for (var m of response) {
+
+					if (!m.color)
+						m.color = DEF.color;
+
+					if (m.folderid)
+						m.folder = DEF.cl.folder.findItem('id', m.folderid);
+
+					if (!m.icon)
+						m.icon = 'ti ti-tag';
+
+					var key = m.folderid || '$';
+
+					if (cache[key])
+						cache[key].push(m);
+					else
+						cache[key] = [m];
+				}
+
+				for (var key in cache) {
+					var items = cache[key];
+					group.push({ id: key, name: key === '$' ? '' : items[0].folder.name, items: items });
+				}
+
+				group.quicksort('name');
+
+				exports.set('?.items', response);
+				exports.set('?.group', group);
+			});
+		};
+
+		exports.add = function(el) {
+			SET('formtag @reset', {});
+			SET('common.form2', 'formtag');
+		};
+
+		exports.edit = function(el) {
+			var id = ATTRD(el);
+			exports.tapi('tags_read/{0} ERROR'.format(id), function(response) {
+				SET('formtag @reset', response);
+				SET('common.form2', 'formtag');
+			});
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			EXEC('-approve/show', '@(Are you sure you want to remove selected tag?)', '"ti ti-remove" @(Remove)', function() {
+				exports.tapi('tags_remove/{0} ERROR'.format(id), function() {
+					is = true;
+					exports.refresh();
+				});
+			});
+		};
+
+		exports.close = function() {
+			is && CLRELOAD('cl');
+		};
+
+	});
+
+</script>

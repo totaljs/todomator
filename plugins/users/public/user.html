@@ -1,0 +1,68 @@
+<ui-component name="miniform" path="common.form2" config="if:~PATH~;icon:ti ti-user;autofocus:true;submit:?/submit;reload:?/reload;width:400;zindex:50" class="hidden CLASS" plugin="~PATH~">
+	<div>
+		<div class="padding bg-smoke center" style="padding:25px 20px">
+			<ui-component name="preview" path="?.photo" config="url:/upload/;output:file;width:200;height:200;map:value => value[0].url" style="width:150px;height:150px;margin:0 auto"></ui-component>
+			<div class="help">@(Photo 200x200 pixels)</div>
+		</div>
+		<div class="padding">
+			<ui-bind path="?.id" config="template;show" class="block fs12 m">
+				<script type="text/html">
+					<div class="monospace">ID: <b>{{ value }}</b></div>
+				</script>
+			</ui-bind>
+			<ui-component name="input" path="?.name" config="required:1" class="m">@(Name)</ui-component>
+			<ui-component name="input" path="?.email" config="required:1;type:email" class="m" default="'@'">@(Email)</ui-component>
+			<ui-component name="input" path="?.password" config="camouflage:1">@(New password)</ui-component>
+			<div class="help exec link" data-exec="?/generate"><i class="ti ti-key mr5"></i>@(Generate password)</div>
+			<hr />
+			<div class="grid-2">
+				<div class="m">
+					<ui-component name="input" path="?.language" config="type:lower;align:1;maxlength:2;icon:ti ti-language" default="'en'">@(Language)</ui-component>
+				</div>
+				<div class="m">
+					<ui-component name="input" path="?.reference" config="align:1">@(Reference)</ui-component>
+				</div>
+			</div>
+			<ui-component name="input" path="?.sa" config="type:checkbox" class="b">@(Super admin)</ui-component>
+			<ui-component name="input" path="?.notifications" config="type:checkbox" default="true">@(Enable notifications)</ui-component>
+			<ui-component name="input" path="?.isdisabled" config="type:checkbox">@(Disable user account)</ui-component>
+		</div>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var caller;
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			com.reconfigure({ title: model.id ? '@(Update user)' : '@(Create user)' });
+			caller = exports.caller;
+		};
+
+		exports.generate = function() {
+			exports.set('password', GUID(10));
+		};
+
+		exports.submit = function(hide) {
+			var form = exports.form;
+
+			exports.tapi('users_{0} ERROR'.format(form.id ? ('update/' + form.id) : 'create'), form, function() {
+				hide();
+				CLRELOAD('cl');
+				SETTER('notify/success', '@(The user has been saved successfully)');
+				caller.exec('refresh');
+			});
+		};
+
+	});
+
+</script>

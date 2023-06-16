@@ -1,0 +1,89 @@
+<style>
+	.CLASS figure { font-size: 12px; }
+	.CLASS .buttons { float: right; padding-left: 10px; }
+	.CLASS .currency { float: right; width: 40px; color: #777; border-right: 1px solid #D0D0D0; margin-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: left; }
+	.CLASS .rate { float: right; width: 170px; color: #777; text-align: right; padding: 0 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+	.CLASS .name { margin-right: 300px; }
+	.CLASS .name > i { width: 12px; margin-right: 5px; text-align: center; }
+	.CLASS .buttons span { line-height: 21px; margin:0px 2px 2px 2px ; border-radius: var(--radius); border: 0; margin: 0 5px; }
+	.CLASS figure .name .customer { margin-right: 15px; }
+	.CLASS figure .name .badges { display: inline-block; border-left: 1px solid #e0e0e0; padding-left: 15px; }
+</style>
+
+<ui-component name="box" path="common.form" config="if:~PATH~;width:920;icon:ti ti-folders;title:@(Folders);reload:?/reload;" class="hidden ~PATH~" plugin="~PATH~">
+	<nav>
+		<button class="exec" data-exec="?/add"><i class="ti ti-plus-circle green"></i>@(Create)</button>
+	</nav>
+	<ui-component name="empty" path="?.folders" config="parent:auto;icon:ti ti-frown red">
+		<script type="text/html">
+			@(You don't have any folders here)
+		</script>
+		<div class="padding">
+			<ui-bind path="?.folders" config="track:id;template" class="meta listing">
+				<script type="text/html">
+				{{ foreach m in value }}
+					<figure data-id="{{ m.id }}" class="exec items" data-exec="?/update">
+						<section>
+							<div class="buttons">
+								<span class="exec" data-exec="?/update" data-prevent="true"><i class="ti ti-pencil-alt"></i></span>
+								<span class="exec" data-exec="?/remove" data-prevent="true"><i class="ti ti-trash red"></i></span>
+							</div>
+							<div class="name">
+								<i class="{{ m.icon }}" style="color:{{ m.color }}"></i>
+								<b>{{ m.name | empty }}</b>
+								{{ if m.customer }}<span class="customer gray fs11 ml5">{{ m.customer }}</span>{{ fi }}
+								<div class="badges">
+									{{ if m.isprivate }}<span class="badge badge-small badge-green">@(Private)</span>{{ fi }}
+									{{ if m.ispinned }}<span class="badge badge-small badge-orange">@(Pinned)</span>{{ fi }}
+									{{ if m.isarchived }}<span class="badge badge-small badge-purple">@(Archived)</span>{{ fi }}
+								</div>
+							</div>
+						</section>
+					</figure>
+				{{ end }}
+				</script>
+			</ui-bind>
+		</div>
+	</ui-component>
+	<nav>
+		<button name="cancel" style="width:100%">@(Close)</button>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('folders ERROR', 'folders');
+		};
+
+		exports.add = function() {
+			SET('formfolder @default', {});
+			SET('common.form2', 'formfolder');
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			SETTER('approve/show', '@(Do you want to remove selected folder?)', '"ti ti-trash" @(Remove)', function() {
+				exports.tapi('folders_remove/{0} ERROR'.format(id),function() {
+					SETTER('notify/success', '@(Done)');
+					CLRELOAD('cl');
+					exports.refresh();
+				});
+			});
+		};
+
+		exports.update = function(el) {
+			var id = ATTRD(el);
+			exports.tapi('folders_read/{0} ERROR'.format(id), function(response) {
+				SET('formfolder @reset @hideloading', response);
+				SET('common.form2', 'formfolder');
+			});
+		};
+	});
+</script>

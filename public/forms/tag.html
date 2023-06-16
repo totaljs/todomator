@@ -1,0 +1,54 @@
+<ui-component name="miniform" path="common.form2" config="if:~PATH~;icon:ti ti-tag;autofocus:true;reload:?/reload;enter:1;submit:?/submit;width:360;zindex:40" class="hidden ~PATH~" plugin="~PATH~">
+	<div class="padding">
+		<ui-bind path="?.id" config="template;show" class="block fs12 m">
+			<script type="text/html">
+				<div class="monospace">ID: <b>{{ value }}</b></div>
+			</script>
+		</ui-bind>
+		<div class="m">
+			<ui-component name="input" path="?.name" config="required:1">@(Name)</ui-component>
+		</div>
+		<div class="m">
+			<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(No folder)">@(Folder)</ui-component>
+		</div>
+		<div class="grid-2">
+			<div class="m">
+				<ui-component name="input" path="?.color" config="type:color" default="DEF.color">@(Color)</ui-component>
+			</div>
+			<div class="m">
+				<ui-component name="input" path="?.icon" config="type:icon">@(Icon)</ui-component>
+			</div>
+		</div>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		var caller;
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update tag)' : '@(Create tag)' });
+			caller = exports.caller;
+		};
+
+		exports.submit = function(hide) {
+			var model = exports.form;
+			exports.tapi('tags_' + (model.id ? ('update/' + model.id) : 'create') + ' ERROR', model, function() {
+				caller.refresh();
+				CLRELOAD('cl', hide);
+			});
+		};
+
+	});
+
+</script>

@@ -1,1293 +1,339 @@
-@{title(user.name)}
 @{layout('')}
+@{title(config.name)}
 
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta http-equiv="X-UA-Compatible" content="IE=11" />
 	<meta name="format-detection" content="telephone=no" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="robots" content="all,follow" />
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-title" content="@{'%name'}">
-	<link rel="apple-touch-icon" href="/img/icon.png">
-	<link rel="apple-touch-startup-image" href="/img/startup.png">
-	<link rel="stylesheet" href="https://cdn.componentator.com/spa.min@18pro.css" />
-	<script src="https://cdn.componentator.com/spa.min@18.js"></script>
-	@{import('meta', 'head', 'default.css + ui.css', 'dep.min.js + default.js + syntax.js + ui.js + helpers.js', 'favicon.ico')}
+	<link href="@{'%cdn'}/spa.min@19.css" rel="stylesheet" />
+	<script src="@{'%cdn'}/spa.min@19.js"></script>
+	<script src="@{REPO.ui}"></script>
+	@{import('meta', 'head', 'default.js', 'default.css', 'favicon.ico')}
 </head>
-<body data---="exec">
+<body>
 
-	<div data---="LAZY approve"></div>
-	<div data---="LAZY menu__null__style:2"></div>
-	<div data---="LAZY colorpicker"></div>
-	<div data---="LAZY faicons"></div>
-	<div data---="LAZY notifybar"></div>
-	<div data---="LAZY autocomplete"></div>
-	<div data---="LAZY imageuploader"></div>
-	<div data---="LAZY directory__null__placeholder:@(Search)"></div>
-	<div data---="LAZY datepicker__null__firstday:@{user.datefirst}"></div>
-	<div data---="LAZY sounds"></div>
-	<div data---="infowindows__common.windows"></div>
-	<div data---="message__null__button:@(OK);style:2"></div>
-	<div data---="loading__null__style:1" class="ui-loading"></div>
-	<div data---="shortcuts"></div>
-	<div data---="idletime"></div>
+	<ui-component name="errorhandler"></ui-component>
+	<ui-component name="dropfiles" config="check:common/dropcheck;exec:common/dropsend" class="hidden">@(Drag &amp; Drop files here)</ui-component>
+	<ui-component name="loading" config="style:2" class="hidden"></ui-component>
+	<ui-component name="locale"></ui-component>
+	<ui-component name="exec"></ui-component>
+	<ui-component name="edit"></ui-component>
+	<ui-component name="title" path="common.title"></ui-component>
+	<ui-component name="nativenotifications"></ui-component>
+	<ui-component name="markdown"></ui-component>
+	<ui-component name="shortcuts"></ui-component>
+	<ui-component name="clipboardimage" config="output:file"></ui-component>
+	<ui-component name="faviconunread" path="tickets.counter.unread"></ui-component>
+	<ui-component name="directory" config="placeholder:@(Search)"></ui-component>
 
-	<div data---="layout__common.layout__parent:window" class="invisible">
-		<script type="text/plain">
-			{
-				top: { size: 45 },
-				left: { size: 180, minsize: 180, resize: true },
-				right: { size: 300, minsize: 200, resize: true },
-				main: {},
-				xs: {
-					top: { size: 60 },
-					main: { show: false },
-					left: { show: false, resize: false },
-					right: { size: '100%', resize: false }
-				},
-				xs_collections: {
-					main: { show: false },
-					left: { size: '100%', show: true },
-					right: { show: false }
-				},
-				xs_detail: {
-					top: { size: 60 },
-					main: { show: true },
-					left: { show: false },
-					right: { show: false }
-				}
-			}
-		</script>
+	<ui-component name="LAZY sounds"></ui-component>
+	<ui-component name="LAZY fileuploader"></ui-component>
+	<ui-component name="LAZY floatinginput"></ui-component>
+	<ui-component name="LAZY colorpicker"></ui-component>
+	<ui-component name="LAZY datepicker" config="today:@(Today);days:@(SU,MO,TU,WE,TH,FR,SA);clear:@(Clear);months:@(January,February,March,April,May,Juny,July,August,September,October,November,December)"></ui-component>
+	<ui-component name="LAZY approve"></ui-component>
+	<ui-component name="LAZY notify" config="position:bottom right"></ui-component>
+	<ui-component name="LAZY icons"></ui-component>
+	<ui-component name="LAZY menu" config="style:2"></ui-component>
+	<ui-component name="LAZY clipboard"></ui-component>
 
-		<section data-type="top2">
-			<div class="back exec" data-exec="common/backtodocs"><i class="fa fa-angle-left"></i></div>
-			<div class="header invisible" data-bind="common.document__visible">
-				<nav class="buttonmenu">
-					<button class="exec" data-exec="common/button" name="options"><i class="far fa-cog"></i>@(Options)</button>
-				</nav>
-				<nav class="iconmenu mr10" data-bind="common.mobile__hide__|__common.document.owner__show .O">
-					<button class="exec" title="@(Information)" data-exec="common/button" name="info"><i class="far fa-info-circle"></i></button>
-					<button class="exec" title="@(Pin)" data-exec="common/button" name="favorite"><i data-bind="common.document.isfavorited__.far:!value__.red:value__.fa:value" class="fa-thumbtack"></i></button>
-					<button class="exec" title="@(Sharing)" data-exec="common/button" name="sharing" data-bind="common.document.sharing__show:value&&value.length>0"><i class="far fa-users blue"></i></button>
-					<button class="exec O" title="@(Archive)" data-exec="common/button" name="archive" data-bind="common.document.isarchived__.red"><i class="far fa-archive"></i></button>
-					<button class="exec red" title="@(Files)" data-exec="common/button" name="files" data-bind="common.document.files__show:value&&value.length>0__text span:value?value.length:0"><span></span><i class="far fa-file-alt"></i></button>
-				</nav>
-				<div class="title">
-					<div class="b" data-bind="common.document.name__text"></div>
-					<div class="date exec" data-exec="common/button" data-name="date" style="cursor:pointer"><i class="far fa-calendar mr5"></i><span data-bind="common.document.date__text__format:[dateformat]"></span></div>
-				</div>
-			</div>
-		</section>
-
-		<section data-type="main">
-			<div data-bind="common.document__visible" class="invisible">
-				<div data---="editor__common.document.body__contextmenu:common/contextmenu;drop:common/drop;$assign:EDITOR"></div>
-			</div>
-		</section>
-
-		<section data-type="left">
-			<div class="profile exec" data-exec="common/account">
-				<div class="photo"><img data-bind="user__track:photo__src:value.photo||Thelpers.initialsbase64(value.name,300,300)" class="img-responsive" alt="@{user.name}" /></div>
-				<div class="name" data-bind="user.name__text"></div>
-				<div class="position" data-bind="user.position__text"></div>
-			</div>
-			<div data---="viewbox__null__parent:.ui-layout-section;margin:140;marginxs:150;scrollbar:1;visibleY:0">
-				<div data---="selected__common.collectionid__selector:.item">
-
-					<div class="nav" style="padding-bottom:0">
-						<div class="item b exec" data-if="open" data-exec="common/collection">
-							<i class="far fa-clock"></i>
-							<div>@(Open documents)</div>
-						</div>
-					</div>
-
-					<div @{if user.sa}data---="movable__null__selector:.item;exec:common/collectionmove"@{fi} data-bind="common.collections__template" class="nav npt">
-						<script type="text/html">
-						{{ foreach m in value }}
-						<div class="item exec" data-if="{{ m.id }}" data-exec="common/collection"@{if user.sa} draggable="true"@{fi}>
-							<i class="{{ if m.icon }}{{ m.icon }}{{ else }}far fa-book{{ fi }}"{{ if m.color }} style="color:{{ m.color }}"{{ fi }}></i>
-							<div>@{if user.sa}<i class="far fa-ellipsis-h exec" data-exec="common/collectionmenu"></i>@{fi}{{ m.name }}</div>
-						</div>
-						{{ end }}
-						</script>
-					</div>
-
-					<hr class="nmt nmb" />
-
-					<div class="nav">
-						<div class="item exec" data-if="" data-exec="common/collection">
-							<i class="far fa-book-open"></i>
-							<div>@(All collections)</div>
-						</div>
-						@{if user.sa}
-						<div class="item exec hidden-xs" data-exec="common/createcollection">
-							<i class="far fa-plus-circle green"></i>
-							<div>@(Add collection)</div>
-						</div>
-						@{fi}
-					</div>
-
-				</div>
-				<hr class="nmt nmb" />
-				<div class="nav">
-					<div class="item exec" data-exec="common/create">
-						<i class="far fa-file-alt"></i>
-						<div>@(Create document)</div>
-					</div>
-
-					<div class="item exec" data-exec="common/sessions">
-						<i class="fal fa-desktop-alt"></i>
-						<div>@(My sessions)</div>
-					</div>
-					@{if user.sa}
-					<div class="item exec" data-exec="common/users">
-						<i class="far fa-user-friends"></i>
-						<span>@(Users)</span>
-					</div>
-					<div class="item exec" data-exec="common/settings">
-						<i class="far fa-cog"></i>
-						<div>@(Settings)</div>
-					</div>
-					@{fi}
-					<div class="item exec" data-exec="common/help">
-						<i class="fal fa-life-ring"></i>
-						<span>@(Help)</span>
-					</div>
-					<div class="item exec" data-exec="common/logout">
-						<i class="far fa-power-off red"></i>
-						<div>@(Logout)</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<section data-type="right2">
-
-			<div class="back exec" data-exec="common/backtocollections"><i class="far fa-navicon"></i></div>
-
-			<div class="search" data---="search__common.collectionid__exec:common/search;$id:search">
-				<i class="filter far fa-filter"></i>
-				<i class="clear hidden far fa-times"></i>
-				<div><input type="text" placeholder="@(Search documents)" /></div>
-			</div>
-
-			<span class="create exec" data-exec="common/create"><i class="far fa-plus"></i></span>
-			<div data---="scrollbar__common.docs__parent:.ui-layout-section;margin:46;marginxs:15;shadow:1">
-				<div class="list" data-bind="common.docs__vbindarray" data---="selected__common.document.id__selector:.item;datasource:common.docs">
-					<script type="text/html">
-					<div class="item exec contextmenu" data-exec="common/document" data-bind=".__attr data-if:value.id__.favorite:value.isfavorited__.done:value.isarchived">
-						<!--span data-bind=".__exec:(value,path,el)=>el.css('background', value.collectioncolor || '#999')"></span>-->
-						<div>
-							<b class="count" data-bind=".countpending__show__text:value>100?99:value"></b>
-							<div class="name">
-								<!--<i data-bind=".__track:icon,color__exec:(value,path,el)=>el.rclass2('fa').aclass(value.countworking ? 'far fa-spinner fa-spin' : value.icon || 'far fa-dot-circle').css('color', value.isarchived ? '' : value.color)"></i>-->
-								<div class="project2 exec" data-bind=".__text:value.project__track:project__show:value.project&&value.project!==value.name__exec:(value,path,el)=>value.project?el.css('background',Thelpers.color(value.project)):null" data-exec="common/filterproject"></div>
-								<b data-bind=".name__text"></b>
-							</div>
-							<i class="priority far fa-exclamation-circle" data-bind=".countpriorities__show"></i>
-							<i class="modified fas fa-caret-right" data-bind=".ismodified__show"></i>
-							<div class="date" data-bind=".date__text .dd:value.format('[dateformat]')"><span class="dd"></span></div>
-							<div class="user" data-bind=".username__text"></div>
-						</div>
-					</div>
-					</script>
-				</div>
-			</div>
-		</section>
+	<div>
+		<ui-component name="page" path="common.page" config="if:tickets;url:/pages/tickets.html;reload:?/reload" class="invisible hidden"></ui-component>
 	</div>
 
-	<div data---="importer__common.form__if:docform;url:/forms/doc.html"></div>
-	<div data---="importer__common.form__if:accountform;url:/forms/account.html"></div>
-	<div data---="importer__common.form__if:collectionform;url:/forms/collection.html"></div>
-	<div data---="importer__common.form__if:sessionsform;url:/forms/sessions.html"></div>
-	<div data---="importer__common.form__if:backupsform;url:/forms/backups.html"></div>
-	<div data---="importer__common.form__if:sharingform;url:/forms/sharing.html"></div>
-	<div data---="importer__common.form__if:welcome;url:/forms/welcome.html"></div>
-	<div data---="importer__common.form__if:helpform;url:/forms/help.html"></div>
+	<ui-component name="importer" path="common.form" config="if:formdetail;url:/forms/detail.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formfolders;url:/forms/folders.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formcreateticket;url:/forms/ticket.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formsettings;url:/forms/settings.html"></ui-component>
+	<ui-component name="importer" path="common.form" config="if:formtags;url:/forms/tags.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formtag;url:/forms/tag.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formlink;url:/forms/link.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formfolder;url:/forms/folder.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formlogs;url:/forms/logs.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formnotifications;url:/forms/notifications.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formclone;url:/forms/clone.html"></ui-component>
+	<ui-component name="importer" path="common.form3" config="if:formtime;url:/forms/time.html"></ui-component>
 
-	@{if user.sa}
-	<div data---="importer__common.form__if:settingsform;url:/forms/settings.html"></div>
-	<div data---="importer__common.form__if:users;url:/forms/users.html"></div>
-	@{fi}
-
-	@{json(user.json(), 'userdata')}
+	@{json(model, 'pluginsdata')}
 
 	<script>
 
-		var common = { windows: [], infowindow: false, mobile: isMOBILE, token: GUID(10), collectionid: 'open' };
-		var user = PARSE('#userdata');
+		ENVIRONMENT('helpdesk');
 
-		DEF.ajaxerrors = true;
+		var user = EMPTYOBJECT;
+		var common = {};
 
-		ON('idletime', function(is) {
-			SETTER('websocket/idletime', is);
-		});
+		DEF.color = '#4285F4';
+		DEF.api = '/api/';
+		DEF.versionhtml = '1';
+		DEF.languagehtml = '@{user.language}';
 
-		CACHEPATH('common.infowindow', '1 month');
-		CACHEPATH('common.documentid', '1 month');
-		CACHEPATH('common.collectionid', '1 month');
+		common.clientid = GUID(5) + Date.now().toString(36);
+		common.plugins = PARSE('#pluginsdata');
+		common.name = document.title;
 
-		FUNC.refreshuser();
+		NAV.clientside('.jR');
 
-		Thelpers.hours = function(min, nomd) {
-			var hours = Math.ceil(min / 60);
-			return hours.pluralize(@('# hours', '# hour', '# hours', '# hours'));
+		(function() {
+
+			var arr = '@{REPO.paperwidgets}'.split(',');
+			for (var i = 0; i < arr.length; i++)
+				arr[i] = '/paper/{0}.html'.format(arr[i]);
+
+			ENV('widgets', arr.join(','));
+			ADD('websocket', { url: '/api/' });
+
+		})();
+
+		Thelpers.logwork = function(val, billing) {
+			var h = (val / 60);
+			return (billing ? Math.ceil(h) : h.floor(1)) + ' @(h)';
 		};
 
-		Thelpers.mandays = function(min, nomd) {
-			var hours = Math.ceil(min / 60);
-			return Math.ceil(hours / 8) + ' @(MD)';
-		};
+		Thelpers.tags = function(tags, larger) {
 
-		Thelpers.expire = function(val) {
-			var format = 'yyyyMMdd';
-			if ((+val.format(format)) < (+NOW.format(format)))
-				return '<span class="blink red">@(Expired)</span>';
-			if (val.format(format) === NOW.format(format))
-				return '<span class="blink">@(Today)</span>';
-			if (val.format(format) === NOW.add('1 day').format(format))
-				return '@(Tomorrow)';
-			return val.format('dddd') + ', ' + val.format(user.format);
-		};
+			if (typeof(tags) === 'string')
+				tags = [tags];
 
-		Thelpers.time = function(value) {
-
-			if (!value)
-				return;
-
-			var diff = Date.now() - value.parseDate().getTime();
-			var minutes = ((diff / 1000) / 60) >> 0;
-
-			if (minutes <= 1) {
-				var seconds = (diff / 1000) >> 0;
-				if (seconds < 60)
-					return @(seconds + ' ' + Tangular.helpers.pluralize(seconds >> 0, 'seconds', 'second', 'seconds', 'seconds') + ' ago');
+			var builder = [];
+			for (var m of tags) {
+				var item = DEF.cl.tag.findItem('id', m);
+				if (item)
+					builder.push(('<span class="badge{2} mr5" style="background-color:{1}">{0}</span>').format(item.name, item.color || DEF.color, larger ? '' : ' badge-small'));
 			}
-
-			if (minutes < 60)
-				return minutes < 3 ? '@(now)' : @(minutes + ' minutes ago');
-
-			var hours = (minutes / 60) >> 0;
-			if (hours < 24)
-				return @(hours + ' ' + Tangular.helpers.pluralize(hours, 'hours', 'hour', 'hours', 'hours') + ' ago');
-
-			var days = (hours / 24) >> 0;
-			if (days < 30)
-				return @(days + ' ' + Tangular.helpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago');
-
-			var months = (days / 29) >> 0;
-			if (months < 12)
-				return @(months + ' ' + Tangular.helpers.pluralize(months, 'months', 'month', 'months', 'months') + ' ago');
-
-			var years = (months / 12) >> 0;
-			return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
+			return builder.join('');
 		};
+
+		Thelpers.deadline = function(date) {
+			var now = date - NOW;
+			var m = Math.ceil(now / (1000 * 60));
+			var h = Math.ceil(now / (1000 * 60 * 60));
+			var d = Math.ceil(now / (1000 * 60 * 60 * 24));
+			if (d > 0)
+				return d.pluralize('@(# days,# day,# days, # days)');
+			return d === 0 ? '@(Today)' : '@(Expired)';
+		};
+
+		CLINIT('cl', function(next) {
+			TAPI('cl', function(response) {
+
+				for (var item of response.user) {
+					var tmp = item.name.split(' ');
+					item.initials = tmp[0].substring(0, 1) + (tmp[1] ? tmp[1].substring(0, 1) : '');
+					item.color = Thelpers.color(item.name);
+					item.template = '{{ if photo }}<img src="{{ photo }}" class="photo" />{{ fi }}{{ name }}';
+				}
+
+				var index = response.user.findIndex('id', 'bot');
+				if (index !== -1) {
+					var bot = response.user[index];
+					response.user.splice(index, 1);
+					response.user.push(bot);
+				}
+
+				next(response, true);
+
+			});
+		}, true);
 
 		PLUGIN('common', function(exports) {
 
-			exports.refresh = function() {
+			var model = exports.model;
 
-				AJAXCACHEREVIEW('GET /api/cl/', function(response) {
-
-					for (var i = 0; i < response.currencies.length; i++) {
-						var item = response.currencies[i];
-						(function(item) {
-							DEF.currencies[item.id] = function(val) {
-								return item.format.format(val.format(2));
-							};
-						})(item);
-					}
-
-					SET('common.cl', response);
-				}, 'session');
-
-				AJAXCACHEREVIEW('GET /api/collections/', function(collections) {
-					AJAXCACHEREVIEW('GET /api/collections/cl/', function(response) {
-
-						collections.quicksort('sortindex');
-
-						SET('common.collections', collections);
-						SET('common.projects', response.projects);
-						SET('common.tags', response.tags);
-						SET('common.groups', response.groups);
-						SET('common.roles', response.roles);
-
-						if (common.collectionid)
-							UPD('common.collectionid');
-						else
-							SET('common.collectionid', '');
-
-					}, 'session');
-				}, 'session');
-
-				// AJAX('GET /api/categories/', 'common.categories');
-				SETTER(true, 'loading/hide');
+			exports.dropcheck = function(e) {
+				return model.form === 'formdetail';
 			};
 
-			exports.create = function(colid) {
-				SET('docform @default', { collectionid: typeof(colid) === 'string' && colid !== 'open' ? colid : common.collectionid && common.collectionid !== 'open' ? common.collectionid : common.collections[0].id });
-				SET('common.form', 'docform');
+			exports.dropsend = function(files) {
+				EXEC(model.form + '/drop', files);
 			};
 
-			exports.createcollection = function() {
-				SET('collectionform @default', {});
-				SET('common.form', 'collectionform');
-			};
+		});
 
-			exports.account = function() {
-				SETTER('loading/show');
-				AJAX('GET /api/account/', ASETTER('message/response', function(response) {
-					SETTER('loading/hide', 500);
-					SET('accountform @reset', response);
-					SET('common.form', 'accountform');
-				}));
-			};
+		WAIT('#status', function() {
+			TAPI('account', 'user');
+		});
 
-			exports.collection = function(id) {
-				if (id instanceof jQuery)
-					id = id.attrd('if');
-				SET('common.collectionid', id || '');
-			};
+		MIDDLEWARE('init', next => WAIT(() => user != EMPTYOBJECT, next));
 
-			exports.collectionmove = function(list) {
-				var arr = [];
-				for (var i = 0; i < list.length; i++)
-					arr.push(list[i].getAttribute('data-if'));
-				AJAX('POST /api/collections/sort/ SYNC', { id: arr }, ASETTER('message/response', NOOP));
-			};
+		ROUTE('/', function() {
+			SET('common.page', 'tickets');
+		}, 'init');
 
-			exports.document = function(id, force, callback) {
+		ROUTE('/{folder}/', function() {
+			SET('common.page', 'tickets');
+		}, 'init');
 
-				if (!id)
-					return;
+		$(W).on('hashchange', function() {
+			var id = location.hash.substring(1);
+			if (id && id.length > 9)
+				EXEC(true, 'tickets/preview', id);
+		});
 
-				if (!common.clientid) {
-					SETTER('loading/show');
-					setTimeout(function(id, force, callback) {
-						exports.scope();
-						exports.document(id, force, callback);
-					}, 200, id, force, callback);
-					return;
-				}
+		ON('@flag soundbadge', function() {
+			SETTER('sounds/play', 'badge');
+		});
 
-				if (common.document && common.document.id)
-					exports.saveforce();
-
-				var ismodified = false;
-
-				if (id instanceof jQuery) {
-					var bind = id.vbind();
-					var item = bind.value;
-					id = item.id;
-					if (item.ismodified) {
-						ismodified = item.ismodified;
-						item.ismodified = false;
-						UPD('common.docs');
-					}
-				}
-
-				if (force !== true) {
-					SETTER('loading/show');
-					SETTER('websocket/send', { TYPE: 'open', id: id, ismodified: ismodified });
-					return;
-				}
-
-				AJAX('GET /api/docs/{0}/body/?token={1}'.format(id, common.token) + (ismodified ? '&read=1' : ''), ASETTER('message/response', function(response) {
-
-					SETTER('loading/hide', 500);
-
-					if (common.mobile)
-						SET('common.layout', 'xs_detail');
-
-					response.stats = {};
-					response.stats.hourlyrate = response.hourlyrate;
-					response.stats.currencyid = response.currencyid;
-					common.backup = response.body;
-
-					SET('common.document', response);
-					SET('common.documentid', id);
-
-					EDITOR.editor.focus();
-
-					if (response.dtupdated) {
-						var min = ((NOW - response.dtupdated) / 1000 / 60) >> 0;
-						min && SETTER(true, 'editor/increment', min);
-					}
-
-					callback && callback();
-				}));
-			};
-
-			ON('ready', function() {
-
-				if (!PREF.welcome || NAV.query.welcome === '1') {
-					SET('common.form', 'welcome', 2000);
-					PREF.set('welcome', '1', '1 year');
-				}
-
-				if (common.documentid)
-					exports.document(common.documentid);
-
-				var skip = false;
-
-				WATCH('common.infowindow', function(path, value) {
-
-					if (skip) {
-						skip = false;
-						return;
-					}
-
-					var index = common.windows.findIndex('id', 'infowindow');
-					if ((value && index !== -1) || (!value && index === -1))
-						return;
-
-					if (index !== -1) {
-						common.windows.splice(index, 1);
-						UPD('common.windows');
-					} else
-						PUSH('common.windows', { id: 'infowindow', offset: { x: common.mobile ? 100 : 400, y: common.mobile ? 100 : 200, width: 250, height: 440 }, title: '@(Info)', html: '<div data-import="url:/forms/infowindow.html"></div>', close: function(close) {
-							skip = true;
-							SET('common.infowindow', false);
-							close();
-						}, actions: { move: true, resize: false, autosave: true }});
-
-					skip = true;
-					SET('common.infowindow', index === -1);
-				}, true);
-
-				if (NAV.query.password)
-					exports.settings();
-
-			});
-
-			exports.users = function() {
-				SET('common.form', 'users');
-			};
-
-			exports.settings = function() {
-				AJAX('GET /api/settings/', ASETTER('message/response', function(response) {
-					SET('settingsform', response);
-					SET('common.form', 'settingsform');
-				}));
-			};
-
-			exports.saveforce = function(callback, nobackup) {
-
-				if (!common.document || !common.document.id)
-					return;
-
-				if (typeof(callback) === 'boolean') {
-					nobackup = callback;
-					callback = null;
-				}
-
-				var val = common.document.body;
-
-				if (common.backup === val) {
-					callback && callback();
-					return;
-				}
-
-				var qs = [];
-
-				clearTimeout2('save');
-
-				if (callback === true || nobackup == true)
-					qs.push('backup=0');
-
-				if (!common.document.owner)
-					qs.push('notify=1');
-
-				common.backup = val;
-
-				AJAX('POST /api/docs/{0}/body/{1} REPEAT SYNC'.format(common.document.id, (qs.length ? ('?' + qs.join('&')) : '')), { body: val }, ASETTER('message/response', function(response) {
-					var working = common.document.stats.working;
-					var priority = common.document.stats.priorities;
-					var pending = common.document.stats.pending;
-					var doc = common.docs.findItem('id', common.document.id);
-					if (doc) {
-
-						var update = false;
-
-						if (doc.countworking !== working) {
-							doc.countworking = working;
-							update = true;
-						}
-
-						if (doc.countpriorities !== priority) {
-							doc.countpriorities = priority;
-							update = true;
-						}
-
-						if (doc.countpending !== pending) {
-							doc.countpending = pending;
-							update = true;
-						}
-
-						update && UPD('common.docs');
-
-						if (common.sync)
-							SETTER('websocket/send', { TYPE: 'sync_save' });
-					}
-
-					callback && callback();
-				}));
-			};
-
-			exports.collectionmenu = function(el, e) {
-				e.preventDefault();
-				e.stopPropagation();
-				var id = el.closest('.item').attrd('if');
-				var opt = {};
-				opt.element = el;
-				opt.align = 'right';
-				opt.items = [];
-				opt.offsetY = -15;
-				opt.items.push({ id: 'add', name: '@(Add document)', icon: 'far fa-plus-circle green' });
-				opt.items.push('-');
-				opt.items.push({ id: 'edit', name: '@(Edit)', icon: 'far fa-pencil' });
-
-				if (common.collections.length > 1)
-					opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'far fa-trash-o red' });
-
-				opt.callback = function(item) {
-
-					if (item.id === 'add') {
-						exports.create(id);
-						return;
-					}
-
-					if (item.id === 'remove') {
-						SETTER('approve/show', '@(Are you sure you want to remove selected collection?)', '"trash-o" @(Remove)', function() {
-							SETTER('loading/show');
-							AJAX('DELETE /api/collections/{0}/'.format(id), ASETTER('message/response', function(response) {
-
-								if (common.document && common.document.collectionid === id) {
-									NULL('common.documentid');
-									NULL('common.document');
-								}
-
-								if (common.collectionid === id)
-									NULL('common.collectionid');
-
-								exports.refresh();
-								SETTER('loading/hide', 500);
-							}));
-						});
-						return;
-					}
-
-					SETTER('loading/show');
-					AJAX('GET /api/collections/{0}/'.format(id), ASETTER('message/response', function(response) {
-						SETTER('loading/hide', 500);
-						SET('collectionform @reset', response);
-						SET('common.form', 'collectionform');
-					}));
-				};
-				SETTER('menu/show', opt);
-			};
-
-			exports.sessions = function() {
-				SETTER('loading/show');
-				AJAX('GET /api/account/sessions/', function(response) {
-					SETTER('loading/hide', 500);
-					SET('sessionsform', response);
-					SET('common.form', 'sessionsform');
-				});
-			};
-
-			exports.help = function() {
-				SET('common.form', 'helpform');
-			};
-
-			exports.filterproject = function(el) {
-				var val = el.vbind().value.project;
-				var com = FIND('#search');
-				com.find('input').val('[' + val + '] ');
-				com.check2();
-				exports.search(val);
-			};
-
-			exports.search = function(search) {
-
-				var el = $('.list');
-				var items = el.find('.item');
-				var projects = [];
-				var tags = [];
-
-				search = search.replace(/(\[.*?\])|(#[a-z0-9]+)/gi, function(text) {
-					if (text.charAt(0) === '[')
-						projects.push(text.substring(1, text.length - 1).trim().toLowerCase());
-					else
-						tags.push(text.substring(1).toLowerCase());
-					return '';
-				});
-
-				var q = search.toSearch();
-				var can = projects.length || tags.length || q;
-
-				for (var i = 0; i < items.length; i++) {
-					var item = $(items[i]);
-					if (can) {
-
-						var obj = item.vbind().value;
-						var is = true;
-
-						if (tags.length) {
-							if (obj.tags) {
-								is = false;
-								for (var j = 0; j < obj.tags.length; j++) {
-									if (tags.indexOf(obj.tags[j].toLowerCase()) !== -1) {
-										is = true;
-										break;
-									}
-								}
-							} else
-								is = false;
-						}
-
-						if (projects.length) {
-							if (projects.indexOf(obj.project.toLowerCase()) === -1)
-								is = false;
-						}
-
-						if (is && q)
-							is = obj.search.indexOf(q) !== -1;
-
-						item.tclass('hidden', !is);
-
-					} else if (item.attr('class').indexOf('hidden') !== -1)
-						item.rclass('hidden');
-				}
-
-				var scrollbar = el.closest('.ui-scrollbar');
-				if (scrollbar) {
-					scrollbar = scrollbar.component();
-					scrollbar && scrollbar.resize();
-				}
-			};
-
-			exports.button = function(el) {
-				var name = el.attr('name') || el.attrd('name');
-				switch (name) {
-					case 'archive':
-					case 'edit':
-					case 'info':
-					case 'sharing':
-					case 'favorite':
-						exports.command(name);
-						break;
-					case 'options':
-						var opt = {};
-						opt.element = el;
-						opt.align = 'right';
-						opt.items = [];
-						opt.items.push({ id: 'info', name: '@(Toggle info)', icon: 'far fa-info-circle' });
-
-						if (common.document.owner)
-							opt.items.push({ id: 'favorite', name: '@(Pin)', icon: 'far fa-flag' });
-
-						if (common.document.sharing && common.document.sharing.length)
-							opt.items.push({ id: 'sharing', name: '@(Sharing)', icon: 'far fa-users' });
-
-						opt.items.push({ id: 'print', name: '@(Print)', icon: 'far fa-print' });
-						opt.items.push({ id: 'linewrapping', name: (common.document.islinewrapping ? '@(Disable line wrapping)' : '@(Enable line wrapping)'), icon: 'far fa-align-' + (common.document.islinewrapping ? 'left' : 'justify') });
-
-						if (common.document.owner || user.sa) {
-							opt.items.push('-');
-							opt.items.push({ id: 'clean', name: '@(Clean)', icon: 'far fa-recycle' });
-							opt.items.push({ id: 'archive', name: '@(Archive)', icon: 'far fa-archive' });
-							opt.items.push({ id: 'edit', name: '@(Edit meta)', icon: 'far fa-pencil' });
-							opt.items.push({ id: 'clone', name: '@(Clone)', icon: 'far fa-clone' });
-						}
-
-						// opt.items.push({ id: 'backups', name: '@(Restore from backup)', icon: 'far fa-history' });
-						opt.items.push('-');
-						opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'far fa-trash-o red', classname: 'b' });
-						opt.callback = function(item) {
-							exports.command(item.id);
-						};
-
-						SETTER('menu/show', opt);
-						break;
-
-					case 'date':
-						var opt = {};
-						opt.element = el;
-						opt.value = GET(el.binder().path);
-						opt.callback = function(date) {
-							AJAX(('GET /api/docs/{id}/date/?date=' + date.format('yyyy-MM-dd')).arg(common.document), ASETTER('message/response', function() {
-								var doc = common.docs.findItem('id', common.document.id);
-								if (doc) {
-									SETTER('sounds/play', 'badges');
-									doc.date = date;
-									FUNC.refreshsort();
-								}
-								SET('common.document.date', date);
-							}));
-						};
-						SETTER('datepicker/show', opt);
-						break;
-					case 'files':
-						var opt = {};
-						opt.element = el;
-						opt.offsetY = 30;
-						opt.offsetWidth = 300;
-						opt.items = common.document.files;
-						opt.items.quicksort('date_desc');
-						opt.classname = 'files';
-						opt.render = function(item) {
-							return '<div><i class="far fa-trash-alt red"></i><b>' + item.name + '</b></div><span>' + Thelpers.filesize(item.size) + '</span>' + item.date.format(user.dateformat);
-						};
-						opt.align = 'right';
-						opt.callback = function(file, el, custom, e) {
-							if (e.target.tagName === 'I') {
-								SETTER('approve/show', '@(Are you sure you want to remove selected file "{0}"?)'.format(file.name), '"far fa-trash-alt" @(Remove)', function() {
-									AJAX('DELETE /api/docs/{0}/files/{1}/'.format(common.document.id, file.id), ASETTER('message/response', ASETTER('sounds/play', 'badges')));
-								});
-							} else
-								location.href = '/files/' + file.id + '.file';
-						};
-
-						SETTER('directory/show', opt);
-						break;
-				}
-			};
-
-			exports.files_remove = function() {
-				console.log(arguments);
-			};
-
-			exports.backtodocs = function() {
-				NUL('common.document');
-				SET('common.layout', 'xs');
-			};
-
-			exports.backtocollections = function() {
-				SET('common.layout', 'xs_collections');
-			};
-
-			exports.command = function(type) {
-				switch (type) {
-
-					case 'priority':
-						SETTER('editor/task_priority');
-						break;
-
-					case 'clean':
-						SETTER('editor/clean');
-						break;
-
-					case 'working':
-						SETTER('editor/task_working');
-						break;
-
-					case 'done':
-						SETTER('editor/task_done');
-						break;
-
-					case 'cancel':
-						SETTER('editor/task_cancel');
-						break;
-
-					case 'sharing':
-						SET('common.form', 'sharingform');
-						break;
-					case 'linewrapping':
-						AJAX('GET /api/docs/{id}/linewrapping/'.arg(common.document), ASETTER('message/response', function(response) {
-							TOGGLE('common.document.islinewrapping');
-						}));
-						break;
-					case 'favorite':
-						AJAX('GET /api/docs/{id}/favorite/'.arg(common.document), ASETTER('message/response', function(response) {
-							SETTER('sounds/play', 'badges');
-							TOGGLE('common.document.isfavorited');
-							var doc = common.docs.findItem('id', common.document.id);
-							if (doc) {
-								doc.isfavorited = common.document.isfavorited;
-								FUNC.refreshsort();
-							}
-						}));
-						break;
-					case 'clone':
-						AJAX('GET /api/docs/{id}/clone/'.arg(common.document), ASETTER('message/response', function(response) {
-							UPD('common.collectionid');
-							AJAX('GET /api/docs/' + response.value, ASETTER('message/response', function(response) {
-								exports.document(response.id);
-								SETTER('loading/hide', 500);
-								SET('docform @reset', response);
-								SET('common.form', 'docform');
-							}));
-						}));
-						break;
-					case 'info':
-						TOGGLE('common.infowindow');
-						break;
-					case 'edit':
-						SETTER('loading/show');
-						AJAX('GET /api/docs/' + common.document.id, ASETTER('message/response', function(response) {
-							SETTER('loading/hide', 500);
-							SET('docform @reset', response);
-							SET('common.form', 'docform');
-						}));
-						break;
-					case 'print':
-						FUNC.note_print(common.document);
-						break;
-					case 'backups':
-						SETTER('loading/show');
-						AJAX('GET /api/docs/' + common.document.id + '/backups/', function(response) {
-
-							for (var i = 0; i < response.length; i++) {
-								response[i].name = common.document.name;
-								response[i].icon = common.document.icon || 'far fa-book';
-							}
-
-							SETTER('loading/hide', 500);
-							SET('backupsform', response);
-							SET('common.form', 'backupsform');
-						});
-						break;
-					case 'archive':
-						SETTER('loading/show');
-						AJAX('GET /api/docs/{id}/archive/'.arg(common.document), ASETTER('message/response', function(response) {
-							var doc = common.docs.findItem('id', common.document.id);
-							common.document.isarchived = doc.isarchived = !doc.isarchived;
-							common.document.dtarchived = doc.isarchived ? NOW : null;
-							UPD('common.document.isarchived');
-							UPD('common.document.dtarchived');
-							SETTER('sounds/play', 'badges');
-							FUNC.refreshsort();
-							SETTER('loading/hide', 500);
-						}));
-						break;
-					case 'remove':
-						SETTER('approve/show', '@(Are you sure you want to remove this document?)', '"trash-o" @(Remove)', function() {
-							SETTER('loading/show');
-							AJAX('DELETE /api/docs/{id}/'.arg(common.document), ASETTER('message/response', function(response) {
-								NUL('common.document');
-								UPD('common.docs');
-								SETTER('loading/hide', 500);
-								SETTER('sounds/play', 'success');
-							}));
-						});
-						break;
-				}
-			};
-
-			exports.drop = function(e) {
-				var files = e.dataTransfer.files;
-				var data = new FormData();
-				for (var i = 0; i < files.length; i++)
-					data.append('file' + i, files[i]);
-				UPLOAD('POST /api/upload/?id={id}'.arg(common.document), data, ASETTER('message/response', ASETTER('sounds/play', 'badges')));
-			};
-
-			exports.contextmenu = function(e, editor) {
-
-				var editor = RETURN('editor/editor');
-				var opt = {};
-				opt.items = [];
-				opt.x = e.pageX + 5;
-				opt.y = e.pageY - 15;
-				var line = editor.getLine(editor.getCursor().line);
-
-				if (line) {
-					line = line.trim();
-					if (line.charAt(0) === '-') {
-						opt.items.push({ id: 'done', name: '@(Done)', icon: 'far fa-check-circle green' });
-						opt.items.push({ id: 'cancel', name: '@(Cancel)', icon: 'far fa-times red' });
-						opt.items.push({ id: 'working', name: '@(In progress)', icon: 'far fa-spinner blue' });
-						opt.items.push({ id: 'priority', name: '@(Priority)', icon: 'far fa-exclamation-circle orange' });
-						opt.items.push('-');
-					}
-				}
-
-				opt.items.push({ id: 'date', name: '@(Insert date)', icon: 'fal fa-calendar-alt' });
-				opt.items.push({ id: 'time', name: '@(Insert time)', icon: 'fal fa-clock' });
-				opt.items.push({ id: 'week', name: '@(Insert week number)', icon: 'fal fa-calendar-plus' });
-				opt.items.push({ id: 'hash', name: '@(Generate secret)', icon: 'far fa-key' });
-
-				opt.callback = function(item) {
-					switch (item.id) {
-						case 'done':
-						case 'cancel':
-						case 'working':
-						case 'priority':
-							exports.command(item.id);
-							break;
-						case 'time':
-							editor.replaceSelection(NOW.format(user.timeformat === 12 ? '!HH:mm:ss a' : 'HH:mm:ss'));
-							break;
-						case 'date':
-							editor.replaceSelection(NOW.format('[dateformat]'));
-							break;
-						case 'week':
-							editor.replaceSelection(NOW.format('ww'));
-							break;
-						case 'hash':
-							var RANDOM_STRING = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'.split('');
-							var builder = '';
-							for (var i = 0; i < 25; i++) {
-								var index = Math.floor(Math.random() * RANDOM_STRING.length);
-								builder += RANDOM_STRING[index];
-							}
-							editor.replaceSelection(builder);
-							break;
-					}
-				};
-
-				SETTER('menu/show', opt);
-			};
-
-			exports.logout = function() {
-				SETTER('loading/show');
-				AJAX('GET /api/account/logout/', function() {
-					location.href = '/';
-				});
-			};
-
-			WATCH('?.collectionid', function(path, value) {
-				AJAXCACHEREVIEW('GET /api/docs/?collectionid=' + value, function(response) {
-
-					if (common.mobile && !common.documentid)
-						SET('common.layout', 'xs');
-
-					for (var i = 0; i < response.length; i++) {
-						var item = response[i];
-						item.collectioncolor = common.collections.findValue('id', item.collectionid, 'color', '');
-					}
-
-					common.docs = response;
-					FUNC.refreshsort();
-
-				}, 'session');
-			});
-
-			WATCH('?.document.islinewrapping', function(path, value) {
-				SETTER('editor/linewrapping', value);
-			});
-
-			WATCH('?.document', function(path, value) {
-				if (value == null) {
-					common.sync = false;
-					NUL('common.documentid');
-					SETTER('websocket/send', { TYPE: 'close' });
-				}
-			});
-
+		ON('@flag showloading', function() {
 			SETTER('loading/show');
+		});
 
-			FIND('websocket', function() {
-				exports.refresh();
-			});
+		ON('@flag hideloading', function() {
+			SETTER('loading/hide', 500);
+		});
 
-			ON('@flag showloading', function() {
-				SETTER('loading/show');
-			});
+		Thelpers.owner = function(val) {
+			return DEF.cl.user.findValue('id', val, 'name', DEF.empty);
+		};
 
-			ON('@flag hideloading', function() {
-				SETTER(true, 'loading/hide', 500);
-			});
+		Thelpers.users = function(val) {
 
-			WAIT('EDITOR', function() {
+			if (!val)
+				return '';
 
-				var sync_cursor = function() {
-					if (common.sync) {
-						var editor = EDITOR.editor;
-						var a = editor.getCursor(true);
-						var b = editor.getCursor(false);
-						var obj = {};
-						obj.TYPE = 'sync_cursor';
-						obj.fline = a.line;
-						obj.fch = a.ch;
-						obj.tline = b.line;
-						obj.tch = b.ch;
-						SETTER('websocket/send', obj);
-						sync_cursor_id = null;
+			var builder = [];
+
+			if (!(val instanceof Array))
+				val = [val];
+
+			for (var id of val) {
+				var item = DEF.cl.user.findItem('id', id);
+				if (item) {
+
+					if (item.photo) {
+						builder.push('<img src="{photo}" loading="lazy" class="photo" title="{name}" />'.args(item));
+						continue;
 					}
-				};
 
-				var sync_cursor_id;
+					var name = item.initials;
+					builder.push('<span class="initials" data-id="{id}" title="{1}" style="background:{color}">{0}</span>'.format(name.encode(), item.name.encode()).arg(item));
 
-				EDITOR.editor.on('cursorActivity', function(a) {
-					if (common.sync) {
-						sync_cursor_id && clearTimeout(sync_cursor_id);
-						sync_cursor_id = setTimeout(sync_cursor, 300, a);
-					}
-				});
+					/*
+					var name = item.name;
+					if (initials) {
+						name = item.initials;
+						builder.push('<span class="initials" data-id="{id}" title="{1}" style="background:{color}">{0}</span>'.format(name.encode(), item.name.encode()).arg(item));
+					} else
+						builder.push('<span class="initials" data-id="{id}" title="{1}"><i class="ti ti-account mr5" style="color:{color}"></i>{0}</span>'.format(name.encode(), item.name.encode()).arg(item));
+					*/
+				}
+			}
 
-				EDITOR.sync_cursor = sync_cursor;
+			return builder.join('');
+		};
 
-				EDITOR.editor.on('change', function(a, b) {
-					if (b.origin !== 'setValue' && common.sync) {
-						var obj = {};
-						obj.from = {};
-						obj.from.line = b.from.line;
-						obj.from.ch = b.from.ch;
-						obj.to = {};
-						obj.to.line = b.to.line;
-						obj.to.ch = b.to.ch;
-						obj.text = b.text;
-						var msg = {};
-						msg.TYPE = 'sync_change';
-						msg.data = JSON.stringify(obj);
-						SETTER('websocket/send', msg);
-					}
-				});
+		ON('clipboardimage', function(file) {
+			if (common.form === 'formdetail')
+				EXEC('formdetail/drop', [file]);
+		});
+
+		SETTER(true, 'shortcuts/register', 'esc', function(e) {
+
+			if (common.form3) {
+				NULL('common.form3');
+				return;
+			}
+
+			if (common.form2) {
+				NULL('common.form2');
+				return;
+			}
+
+			if (common.form === 'formdetail') {
+				W.focus();
+				EXEC('formdetail/hide');
+				NULL('common.form', 200);
+			} else
+				NULL('common.form');
+
+		});
+
+		Thelpers.status = function(id) {
+			var status = DEF.cl.status.findItem('id', id);
+			return status ? '<i class="{icon} mr5" style="color:{color}"></i>{name}'.arg(status) : DEF.empty;
+		};
+
+		ON('service', function(counter) {
+			if (counter % 10 === 0)
+				CLRELOAD('cl');
+		});
+
+		// Component: Tangular-Time
+		// Version: 1
+		// Updated: 2023-01-12 15:18
+		Thelpers.time = function(value) {
+
+			if (!value)
+				return value;
+
+			var diff = Date.now() - (value instanceof Date ? value : value.parseDate()).getTime();
+
+			var minutes = ((diff / 1000) / 60) >> 0;
+			if (minutes < 60) {
+				if (minutes < 3)
+					return '@(now)';
+				return Thelpers.pluralize(minutes, '@(# minutes ago,# minute ago,# minutes ago,# minutes ago)');
+			}
+
+			var hours = (minutes / 60) >> 0;
+			if (hours < 24)
+				return Thelpers.pluralize(hours, '@(# hours ago,# hour ago,# hours ago,# hours ago)');
+
+			var days = (hours / 24) >> 0;
+			if (days < 30)
+				return Thelpers.pluralize(days, '@(# days ago,# day ago,# days ago,# days ago)');
+
+			var months = (days / 29) >> 0;
+			if (months < 12)
+				return Thelpers.pluralize(months, '@(# months ago,# month ago,# months ago,# months ago)');
+
+			var years = (months / 12) >> 0;
+			return Thelpers.pluralize(years, '@(# years ago,# year ago,# years ago,# years ago)');
+		};
+
+		Thelpers.time3 = function(value) {
+
+			if (!value)
+				return value;
+
+			var date = value instanceof Date ? value : value.parseDate();
+			var diff = Date.now() - date.getTime();
+
+			if (date.format('yyyyMMdd') === NOW.format('yyyyMMdd'))
+				return '@(Today)';
+
+			var minutes = ((diff / 1000) / 60) >> 0;
+			var hours = (minutes / 60) >> 0;
+			var days = Math.ceil(hours / 24);
+
+			if (days < 30)
+				return Thelpers.pluralize(days, '@(# days ago,# day ago,# days ago,# days ago)');
+
+			var months = (days / 29) >> 0;
+			if (months < 12)
+				return Thelpers.pluralize(months, '@(# months ago,# month ago,# months ago,# months ago)');
+
+			var years = (months / 12) >> 0;
+			return Thelpers.pluralize(years, '@(# years ago,# year ago,# years ago,# years ago)');
+		};
+
+		Thelpers.time2 = function(value, use3) {
+			return value ? '<span class="ta-time" data-time="{0}" title="{2}">{1}</span>'.format(value.getTime(), use3 ? Thelpers.time3(value) : Thelpers.time(value), value.format(null)) : value;
+		};
+
+		ON('service', function() {
+			$('.ta-time').each(function() {
+				var el = $(this);
+				el.html(Thelpers.time(new Date(+el.attrd('time'))));
 			});
-
 		});
-
-		ON('message', function(msg) {
-
-			if (msg.TYPE === 'init') {
-
-				common.clientid = msg.id;
-
-				// New version ready
-				if (common.version && common.version !== msg.version) {
-					common.version = msg.version;
-					location.reload();
-					return;
-				}
-
-				common.version = msg.version;
-
-				// Open document
-				if (common.document)
-					EXEC('common/document', common.document.id);
-
-				return;
-			}
-
-			if (msg.TYPE === 'reload') {
-				location.reload();
-				return;
-			}
-
-			if (msg.TYPE === 'open') {
-				common.sync = false;
-				EDITOR.clearusers();
-				EXEC('common/document', msg.id, true);
-				return;
-			}
-
-			if (msg.TYPE === 'files') {
-				SET('common.document.files', msg.files);
-				return;
-			}
-
-			if (msg.TYPE === 'sync_init') {
-
-				// Stop all users
-				SETTER('loading/show', '@(Synchronizing ...)');
-				EDITOR.clearusers();
-				EDITOR.editor.setOption('readOnly', true);
-				clearTimeout2('save');
-				common.sync = true;
-
-				// Sending the content if I'm host
-				if (msg.fromclientid === common.clientid) {
-					// Saves the current content
-					EXEC('common/saveforce', function() {
-						// Sends a command to load the content from DB
-						SETTER('websocket/send', { TYPE: 'sync_load', clientid: msg.toclientid, id: msg.id });
-					});
-				}
-
-				return;
-			}
-
-			if (msg.TYPE === 'sync_save') {
-				clearTimeout2('save');
-				return;
-			}
-
-			if (msg.TYPE === 'sync_load') {
-				// Load content
-				EXEC('common/document', msg.id, true, function() {
-					SETTER('websocket/send', { TYPE: 'sync_done', id: msg.id });
-				});
-				return;
-			}
-
-			if (msg.TYPE === 'sync_done') {
-				// enable the editor
-				// all users synchronized
-				SETTER('loading/hide', 500);
-				EDITOR.sync_cursor();
-				EDITOR.editor.setOption('readOnly', false);
-				EDITOR.editor.focus();
-				return;
-			}
-
-			if (msg.TYPE === 'sync_cancel') {
-				common.sync = msg.sync;
-				EDITOR.user(msg.clientid);
-				return;
-			}
-
-			if (msg.TYPE === 'sync_change') {
-				var data = PARSE(msg.data);
-				if (data) {
-					common.sync = false;
-					EDITOR.editor.replaceRange(data.text, data.from, data.to);
-					var history = EDITOR.editor.doc.history.done;
-					history.pop();
-					history.pop();
-					common.sync = true;
-					EDITOR.user(msg.clientid, data.from.line, data.from.ch, data.to.line, data.to.ch, msg.user);
-					clearTimeout2('save');
-				}
-				return;
-			}
-
-			if (msg.TYPE === 'sync_cursor') {
-				// cursor position
-				EDITOR.user(msg.clientid, msg.fline, msg.fch, msg.tline, msg.tch, msg.user);
-				return;
-			}
-
-			if (msg.TYPE === 'close') {
-				NUL('common.document');
-				return;
-			}
-
-		});
-
-		ON('shortcut', function(type) {
-			if (type === 'save' && !EDITOR.editor.isReadOnly())
-				setTimeout2(type, FUNC.save(AEXEC('common/saveforce')), 30000, null, true);
-		});
-
-		ON('stats', function(stats) {
-			if (common.document)
-				SET('common.document.stats', stats);
-		});
-
-		ON('online', function(is) {
-			if (is) {
-				SETTER('loading/hide');
-			} else {
-				SETTER('loading/show', '@(Connecting ...)');
-				common.clientid = null;
-			}
-		});
-
-		SETTER(true, 'shortcuts/register', 'ctrl+f,cmd+f', function() {
-			if (!common.form) {
-				var input = $('.search').find('input').focus()[0];
-				input.select();
-			}
-		}, true);
-
-		$(document).on('contextmenu', '.contextmenu', function(e) {
-			var el = $(this);
-			e.preventDefault();
-
-			var doc = el.vbind().value;
-			var opt = {};
-			opt.x = e.pageX;
-			opt.y = e.pageY;
-			opt.items = [];
-
-			if (!doc.userid || doc.userid === user.id || user.sa) {
-
-				if (doc.isfavorited)
-					opt.items.push({ id: 'pin', name: '@(Unpin)', icon: 'fas fa-thumbtack' });
-				else
-					opt.items.push({ id: 'pin', name: '@(Pin)', icon: 'far fa-thumbtack' });
-
-				opt.items.push({ id: 'update', name: '@(Edit)', icon: 'far fa-pencil' });
-
-				if (doc.isarchived)
-					opt.items.push({ id: 'archive', name: '@(Re-open from archive)', icon: 'far fa-archive' });
-				else
-					opt.items.push({ id: 'archive', name: '@(Archive)', icon: 'far fa-archive' });
-			}
-
-			if (opt.items.length > 0)
-				opt.items.push('-');
-
-			if (!doc.userid || doc.userid === user.id || user.sa)
-				opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'far fa-trash-alt red' });
-
-			opt.callback = function(item) {
-				switch (item.id) {
-					case 'update':
-						SETTER('loading/show');
-						AJAX('GET /api/docs/' + doc.id, ASETTER('message/response', function(response) {
-							SETTER('loading/hide', 500);
-							SET('docform @reset', response);
-							SET('common.form', 'docform');
-						}));
-						break;
-					case 'pin':
-						AJAX('GET /api/docs/{id}/favorite/'.arg(doc), ASETTER('message/response', function(response) {
-							if (common.document && common.document.id === doc.id)
-								TOGGLE('common.document.isfavorited');
-							var d = common.docs.findItem('id', doc.id);
-							d.isfavorited = !d.isfavorited;
-							SETTER('sounds/play', 'badges');
-							FUNC.refreshsort();
-						}));
-						break;
-					case 'archive':
-						SETTER('loading/show');
-						AJAX('GET /api/docs/{id}/archive/'.arg(doc), ASETTER('message/response', function(response) {
-							var d = common.docs.findItem('id', doc.id);
-							d.isarchived = !d.isarchived;
-							if (common.document && common.document.id === doc.id) {
-								common.document.isarchived = d.isarchived;
-								common.document.dtarchived = d.isarchived ? NOW : null;
-								UPD('common.document.isarchived');
-								UPD('common.document.dtarchived');
-								SETTER('sounds/play', 'badges');
-							}
-							FUNC.refreshsort();
-							SETTER('loading/hide', 500);
-						}));
-						break;
-					case 'remove':
-						SETTER('approve/show', '@(Are you sure you want to remove this document?)', '"trash-o" @(Remove)', function() {
-							SETTER('loading/show');
-							AJAX('DELETE /api/docs/{id}/'.arg(doc), ASETTER('message/response', function(response) {
-								common.docs = common.docs.remove('id', doc.id);
-								if (common.document && common.document.id === doc.id)
-									NUL('common.document');
-								UPD('common.docs');
-								SETTER('loading/hide', 500);
-								SETTER('sounds/play', 'success');
-							}));
-						});
-						break;
-				}
-			};
-
-			if (opt.items.length)
-				SETTER('menu/show', opt);
-		});
-
-		setInterval(function() {
-
-			FUNC.usertheme();
-
-			AJAX('GET /api/check/', function(response) {
-				if (!response.success)
-					location.href = '/';
-			});
-
-		}, 30000);
-
-		FUNC.usertheme();
-		ADD('websocket__null__url:/?token=' + common.token);
+		// End: Tangular-Time
 
 	</script>
-	<script src="https://cdn.componentator.com/visitors.min@1.js" async defer></script>
 
 </body>
 </html>

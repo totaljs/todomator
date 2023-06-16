@@ -1,0 +1,50 @@
+<style>
+	.CLASS .column { background: #F0F0F0; min-height: 50px; padding: 20px; }
+</style>
+
+<body>
+	<div class="grid-2">
+		<div class="column">
+		</div>
+		<div class="column">
+		</div>
+	</div>
+</body>
+
+<script>
+
+	exports.id = 'layout';
+	exports.name = '@(Layout)';
+	exports.version = 1;
+	exports.icon = 'ti ti-columns';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = { a: [], b: [] };
+	exports.sortindex = 5;
+
+	exports.make = function(widget, config, element) {
+
+		widget.save = function() {
+			var arr = element.find('> .grid-2 > .column');
+			var obj = {};
+			obj.a = widget.widgets.save(arr[0]);
+			obj.b = widget.widgets.save(arr[1]);
+			return obj;
+		};
+
+		element.find('.column').on('click', function(e) {
+
+			if (e.target.classList.contains('column')) {
+				e.stopPropagation();
+				e.preventDefault();
+				widget.widgets.append(this);
+			}
+
+		});
+
+		var arr = element.find('.grid-2 > .column');
+		widget.widgets.load(arr[0], config.a);
+		widget.widgets.load(arr[1], config.b);
+	};
+
+</script>

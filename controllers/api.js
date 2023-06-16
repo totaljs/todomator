@@ -1,126 +1,111 @@
 exports.install = function() {
 
-	// Collections
-	ROUTE('+GET       /api/collections/                     *Collections        --> query');
-	ROUTE('+GET       /api/collections/{id}/                *Collections        --> read');
-	ROUTE('+DELETE    /api/collections/{id}/                *Collections        --> remove');
-	ROUTE('+POST      /api/collections/                     *Collections        --> insert');
-	ROUTE('+POST      /api/collections/{id}/                *Collections        --> update');
-	ROUTE('+GET       /api/collections/cl/                  *Collections        --> cl');
-	ROUTE('+POST      /api/collections/sort/                *Collections/Sort   --> save');
+	// Misc
+	ROUTE('+API    /api/       -account                   *Account    --> read');
+	ROUTE('+API    /api/       +cl                        *Common     --> cl');
 
-	// Users
-	ROUTE('+GET       /api/users/                           *Users              --> query');
-	ROUTE('+GET       /api/users/{id}/                      *Users              --> read');
-	ROUTE('+DELETE    /api/users/{id}/                      *Users              --> remove');
-	ROUTE('+POST      /api/users/                           *Users              --> insert');
-	ROUTE('+POST      /api/users/{id}/                      *Users              --> update');
+	// Tickets
+	ROUTE('+API    /api/       -tickets                   *Tickets    --> list');
+	ROUTE('+API    /api/       -tickets_calendar          *Tickets    --> calendar');
+	ROUTE('+API    /api/       -tickets_detail/{id}       *Tickets    --> read');
+	ROUTE('+API    /api/       -tickets_users             *Tickets    --> users');
+	ROUTE('+API    /api/       +tickets_create            *Tickets    --> create');
+	ROUTE('+API    /api/       #tickets_update/{id}       *Tickets    --> update');
+	ROUTE('+API    /api/       +tickets_clone/{id}        *Tickets    --> clone');
+	ROUTE('+API    /api/       -tickets_remove/{id}       *Tickets    --> remove');
+	ROUTE('+API    /api/       -tickets_logs/{id}         *Tickets    --> logs');
+	ROUTE('+API    /api/       -tickets_history/{id}      *Tickets    --> history');
+	ROUTE('+API    /api/       +tickets_bookmarks/{id}    *Tickets    --> bookmark');
+	ROUTE('+API    /api/       -tickets_unread            *Tickets    --> unread');
+	ROUTE('+API    /api/       -tickets_counter           *Tickets    --> counter');
+	ROUTE('+API    /api/       +tickets_link/{id}         *Tickets    --> link');
+	ROUTE('+API    /api/       -tickets_links/{id}        *Tickets    --> links');
+	ROUTE('+API    /api/       -tickets_reset/{id}        *Tickets    --> reset');
+	ROUTE('+API    /api/       +logwork_create            *Tickets    --> logwork_create');
+	ROUTE('+API    /api/       +logwork_update/{id}       *Tickets    --> logwork_update');
+	ROUTE('+API    /api/       -logwork_remove/{id}       *Tickets    --> logwork_remove');
+	ROUTE('+API    /api/       -logwork_open              *Tickets    --> logwork_open');
+	ROUTE('+API    /api/       +logwork_start             *Tickets    --> logwork_start');
+	ROUTE('+API    /api/       +logwork_stop              *Tickets    --> logwork_stop');
+	ROUTE('+API    /api/       -data_read/{id}            *Tickets    --> data_read');
+	ROUTE('+API    /api/       +data_save/{id}            *Tickets    --> data_save');
 
-	// Docs
-	ROUTE('+GET       /api/docs/                            *Docs               --> query');
-	ROUTE('+GET       /api/docs/{id}/                       *Docs               --> read');
-	ROUTE('+POST      /api/docs/                            *Docs               --> insert');
-	ROUTE('+POST      /api/docs/{id}/                       *Docs               --> update');
-	ROUTE('+GET       /api/docs/{id}/date/                  *Docs               --> date');
-	ROUTE('+DELETE    /api/docs/{id}/                       *Docs               --> remove');
-	ROUTE('+GET       /api/docs/{id}/body/                  *Docs/Body          --> read');
-	ROUTE('+POST      /api/docs/{id}/body/                  *Docs/Body          --> save');
-	ROUTE('+GET       /api/docs/{id}/archive/               *Docs               --> archive');
-	ROUTE('+GET       /api/docs/{id}/clone/                 *Docs               --> clone');
-	ROUTE('+GET       /api/docs/{id}/linewrapping/          *Docs               --> linewrapping');
-	ROUTE('+GET       /api/docs/{id}/favorite/              *Docs               --> favorite');
-	ROUTE('+DELETE    /api/docs/{id}/files/{fileid}/        *Docs               --> removefile');
-	// ROUTE('+GET       /api/docs/{id}/backups/               *Docs               --> backups');
-	// ROUTE('+GET       /api/docs/{id}/backups/{backupid}/    *Docs               --> restore');
+	// Folders
+	ROUTE('+API    /api/       -folders                   *Folders    --> list');
+	ROUTE('+API    /api/       -folders_read/{id}         *Folders    --> read');
+	ROUTE('+API    /api/       +folders_create            *Folders    --> create');
+	ROUTE('+API    /api/       +folders_update/{id}       *Folders    --> update');
+	ROUTE('+API    /api/       -folders_remove/{id}       *Folders    --> remove');
 
-	// Codelists
-	ROUTE('GET        /api/cl/                              *                   --> cl');
+	// Tags
+	ROUTE('+API    /api/       -tags                      *Tags       --> list');
+	ROUTE('+API    /api/       -tags_read/{id}            *Tags       --> read');
+	ROUTE('+API    /api/       +tags_create               *Tags       --> create');
+	ROUTE('+API    /api/       +tags_update/{id}          *Tags       --> update');
+	ROUTE('+API    /api/       -tags_remove/{id}          *Tags       --> remove');
 
 	// Settings
-	ROUTE('+GET       /api/settings/                        *Settings           --> read');
-	ROUTE('+POST      /api/settings/                        *Settings           --> save');
-	ROUTE('+POST      /api/settings/smtp/                   *Settings/SMTP      --> exec');
-	ROUTE('+POST      /api/settings/totalapi/               *Settings/TotalAPI  --> exec');
+	ROUTE('+API    /api/       -settings_read             *Settings   --> read');
+	ROUTE('+API    /api/       +settings_save             *Settings   --> save');
 
-	// Accounts
-	ROUTE('+GET       /api/account/                         *Account            --> read');
-	ROUTE('+POST      /api/account/                         *Account            --> save');
-	ROUTE('+GET       /api/account/logout/                  *Account            --> logout');
-	ROUTE('+GET       /api/account/logout/{id}/             *Account            --> logout');
-	ROUTE('-POST      /api/account/login/                   *Login              --> exec');
-	ROUTE('-POST      /api/account/login/token/             *Token              --> exec');
-	ROUTE('-POST      /api/account/reset/                   *Password           --> exec');
-	ROUTE('+GET       /api/account/sessions/                *Account            --> sessions');
+	// Files
+	ROUTE('+POST  /upload/', upload, ['upload'], 1024 * 5);
+	ROUTE('FILE   /download/*.*', files);
 
-	ROUTE('POST       /api/upload/base64/', json_upload_base64, [10000], 2048); // 2 MB
-	ROUTE('POST       /api/upload/', json_upload, [10000], 1024 * 10); // 10 MB
-	ROUTE('GET        /api/check/', checksession);
-
-	ROUTE('FILE       /files/', files);
-	ROUTE('FILE       /download/', download);
+	ROUTE('+SOCKET  /api/', socket);
 };
 
-function checksession() {
-	this.success(!!this.user);
+function socket() {
+	var self = this;
+	MAIN.ws = self;
+	self.autodestroy(() => MAIN.ws = null);
 }
+
+async function upload() {
+
+	var $ = this;
+	var output = [];
+
+	var db = DB();
+
+	for (var file of $.files) {
+		var obj = {};
+		obj.id = UID();
+		obj.type = file.type;
+		obj.size = file.size;
+		obj.ext = file.extension;
+		obj.url = '/download/' + obj.id.sign(CONF.salt) + '.' + obj.ext;
+		obj.name = file.filename;
+		obj.width = file.width;
+		obj.height = file.height;
+		obj.dtcreated = NOW;
+		await file.fs('attachments', obj.id);
+		output.push(obj);
+	}
+
+	$.json(output);
+
+	// Write to DB
+	for (var obj of output) {
+		if ($.query.folderid)
+			obj.folderid = $.query.folderid;
+		if ($.query.ticketid)
+			obj.ticketid = $.query.ticketid;
+		obj.userid = $.user.id;
+		obj.search = obj.name.toSearch();
+		db.insert('tbl_file', obj);
+	}
+}
+
+const Download = { js: 1, html: 1, md: 1, css: 1 };
 
 function files(req, res) {
-	var id = req.split[1];
-	res.filefs('files', id.substring(0, id.lastIndexOf('.')), true);
-}
-
-function download(req, res) {
-	var id = req.split[1];
-	res.filefs('photos', id.substring(0, id.lastIndexOf('.')));
-}
-
-function json_upload() {
-	var $ = this;
-
-	if (!$.query.id) {
-		$.invalid('@(Missing document ID)');
-		return;
-	}
-
-	var doc = DB.docs.findItem('id', $.query.id);
-	if (!doc) {
-		$.invalid('@(Missing document ID)');
-		return;
-	}
-
-	var output = [];
-	$.files.wait(function(file, next) {
-
-		var tmp = {};
-		tmp.id = UID();
-		tmp.name = file.filename;
-		tmp.userid = $.user.id;
-		tmp.size = file.size;
-		tmp.date = NOW;
-		output.push(tmp);
-		file.fs('files', tmp.id, next);
-
-	}, function() {
-		if (!doc.files)
-			doc.files = [];
-		doc.files.push.apply(doc.files, output);
-		FUNC.save('docs');
-		MAIN.ws && MAIN.ws.send({ TYPE: 'files', files: doc.files }, client => client.docid === doc.id);
-		$.success();
-	});
-}
-
-function json_upload_base64() {
-	var self = this;
-	var data = (self.body.base64 || self.body.file).base64ToBuffer();
-
-	if (!data) {
-		self.invalid('error-data');
-		return;
-	}
-
-	var id = UID();
-	FILESTORAGE('photos').save(id, self.user.name.slug() + '.jpg', data, function() {
-		self.json('/download/' + id + '.jpg');
-	});
+	var filename = req.split[1];
+	var id = filename.substring(0, filename.lastIndexOf('.'));
+	var arr = id.split('-');
+	if (arr[0].sign(CONF.salt) === id) {
+		var download = req.query.download === '1' || Download[req.extension] == 1;
+		res.filefs('attachments', arr[0], download, null, null);
+	} else
+		res.throw404();
 }

@@ -1,0 +1,34 @@
+<style>
+	.CLASS { padding: 15px 0; }
+	.CLASS hr { margin: 0; }
+</style>
+
+<body>
+	<hr />
+</body>
+
+<script>
+
+	exports.id = 'hr';
+	exports.name = '@(Horizontal line)';
+	exports.version = 1;
+	exports.icon = 'ti ti-minus';
+	exports.author = 'Total.js';
+	exports.version = '1';
+	exports.config = {};
+	exports.sortindex = 4;
+
+	exports.make = function(widget) {
+
+		widget.save = function() {
+			return { width: 1 };
+		};
+
+		if (widget.newbie) {
+			widget.change();
+			widget.next();
+		}
+
+	};
+
+</script>

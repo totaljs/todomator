@@ -1,0 +1,48 @@
+<ui-component name="miniform" path="common.form3" config="if:~PATH~;icon:ti ti-clock;autofocus:true;reload:?/reload;submit:?/submit;width:400;zindex:50;enter:1" class="hidden" plugin="~PATH~">
+	<div class="padding">
+
+		<ui-component name="input" path="?.name" config="innerlabel:1;placeholder:@(What did you do?)" class="m">@(Summary)</ui-component>
+
+		<p>@(Log how many minutes did you spend on this ticket.)</p>
+		<div class="grid-2">
+			<div class="m">
+				<ui-component name="input" path="?.minutes" config="required:1;placeholder:@(2 h);align:1" default="'60'">@(Time)</ui-component>
+			</div>
+			<div class="m">
+				<ui-component name="input" path="?.date" config="required:1;type:date" default="NOW">@(Date)</ui-component>
+			</div>
+		</div>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?" config="validonly:1">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.reload = function(com) {
+			var model = exports.model;
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Modify time)' : '@(Log work)' });
+		};
+
+		exports.submit = function(hide) {
+			var form = exports.form;
+			var model = CLONE(form);
+
+			model.minutes = FUNC.parseminutes(model.minutes);
+
+			exports.tapi((model.id ? 'logwork_update/{0}' : 'logwork_create').format(model.id) + ' ERROR', model, function(response) {
+				form.callback && form.callback(response.value);
+				hide();
+			});
+		};
+
+	});
+
+</script>
