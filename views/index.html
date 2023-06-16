@@ -125,7 +125,7 @@
 					var tmp = item.name.split(' ');
 					item.initials = tmp[0].substring(0, 1) + (tmp[1] ? tmp[1].substring(0, 1) : '');
 					item.color = Thelpers.color(item.name);
-					item.template = '{{ if photo }}<img src="{{ photo }}" class="photo" />{{ fi }}{{ name }}';
+					item.template = '{{ name }}{{ if photo }}<img src="{{ photo }}" class="photo" />{{ fi }}';
 				}
 
 				var index = response.user.findIndex('id', 'bot');

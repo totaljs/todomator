@@ -131,6 +131,6 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown-tasks > li { cursor: pointer; }
 
 .photo { border: 1px solid rgba(0,0,0,0.1); }
-.ui-directory .photo { border: 1px solid rgba(0,0,0,0.1); width: 22px; height: 22px; margin-right: 5px; border-radius: 100px; }
+.ui-directory .photo { border: 1px solid rgba(0,0,0,0.1); width: 22px; height: 22px; margin: 5px 0 0; border-radius: 100px; float: right; }
 
 .ui-datepicker-container { z-index: 102; }
