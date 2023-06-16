@@ -232,3 +232,4 @@ Tqrzza8      : Prístupový token pre Todomator API.
 T8hthgd      : Todomator
 T14kr00      : Od:
 T1szj        : Do:
+T1gfprg8     : Nižšie sú uvedené úlohy, na ktorých používatelia dnes pracovali:
