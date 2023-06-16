@@ -115,7 +115,7 @@
 								<script type="text/html">
 									{{ foreach m in value }}
 										{{ if !m.isarchived }}
-											<a href="/{{ m.id }}/" class="exec item hellip jR{{ if m.ispinned }} b{{ fi }}" data-id="{{ m.id }}" data-search="{{ m.name }}"><i class="{{ m.icon }} fs12" style="color:{{ m.color }}"></i>{{ m.name }}{{ if m.isprivate }}<i class="ti ti-star-alt isprivate"></i>{{ fi }}</a>
+											<a href="/{{ m.id }}/" class="exec item hellip jR{{ if m.ispinned }} b{{ fi }}" data-id="{{ m.id }}" data-search="{{ m.name }}"><i class="{{ m.icon }} fs12" style="color:{{ m.color }}"></i>{{ m.name }}{{ if m.ispinned }}<i class="ti ti-pin-alt isprivate" title="@(Pinned)"></i>{{ else if m.isprivate }}<i class="ti ti-star-alt isprivate" title="@(Private)"></i>{{ fi }}</a>
 										{{ fi }}
 									{{ end }}
 								</script>
