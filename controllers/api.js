@@ -21,12 +21,17 @@ exports.install = function() {
 	ROUTE('+API    /api/       +tickets_link/{id}         *Tickets    --> link');
 	ROUTE('+API    /api/       -tickets_links/{id}        *Tickets    --> links');
 	ROUTE('+API    /api/       -tickets_reset/{id}        *Tickets    --> reset');
+	ROUTE('+API    /api/       -tickets_markdown/{id}     *Tickets    --> markdown');
 	ROUTE('+API    /api/       +logwork_create            *Tickets    --> logwork_create');
 	ROUTE('+API    /api/       +logwork_update/{id}       *Tickets    --> logwork_update');
 	ROUTE('+API    /api/       -logwork_remove/{id}       *Tickets    --> logwork_remove');
 	ROUTE('+API    /api/       -logwork_open              *Tickets    --> logwork_open');
 	ROUTE('+API    /api/       +logwork_start             *Tickets    --> logwork_start');
 	ROUTE('+API    /api/       +logwork_stop              *Tickets    --> logwork_stop');
+	ROUTE('+API    /api/       -comments/{id}             *Tickets    --> comments');
+	ROUTE('+API    /api/       +comments_create           *Tickets    --> comments_create');
+	ROUTE('+API    /api/       +comments_update/{id}      *Tickets    --> comments_update');
+	ROUTE('+API    /api/       -comments_remove/{id}      *Tickets    --> comments_remove');
 	ROUTE('+API    /api/       -data_read/{id}            *Tickets    --> data_read');
 	ROUTE('+API    /api/       +data_save/{id}            *Tickets    --> data_save');
 

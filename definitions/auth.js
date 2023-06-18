@@ -27,7 +27,7 @@ opt.onauthorize = function($) {
 opt.onread = async function(meta, next) {
 	var session = DATA.read('tbl_session').id(meta.sessionid).where('userid', meta.userid).where('dtexpire>NOW()').promise();
 	if (session) {
-		var user = await DATA.read('tbl_user').fields('id,language,name,email,notifications,permissions,sa').id(meta.userid).where('isdisabled=FALSE AND isremoved=FALSE').promise();
+		var user = await DATA.read('tbl_user').fields('id,language,name,photo,email,notifications,permissions,sa').id(meta.userid).where('isdisabled=FALSE AND isremoved=FALSE').promise();
 		if (user) {
 
 			if (!user.language)

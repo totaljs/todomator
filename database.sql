@@ -92,6 +92,7 @@ CREATE TABLE "public"."tbl_ticket" (
 	"name" text,
 	"search" text,
 	"html" text,
+	"markdown" text,
 	"attachments" json,
 	"tags" _text,
 	"comments" int2 DEFAULT 0,
@@ -125,6 +126,20 @@ CREATE TABLE "public"."tbl_ticket_bookmark" (
 	PRIMARY KEY ("id")
 );
 
+CREATE TABLE "public"."tbl_ticket_comment" (
+	"id" text NOT NULL,
+	"ticketid" text,
+	"userid" text,
+	"username" text,
+	"userphoto" text,
+	"markdown" text,
+	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
+	"dtupdated" timestamp,
+	CONSTRAINT "tbl_ticket_comment_ticketid_fkey" FOREIGN KEY ("ticketid") REFERENCES "public"."tbl_ticket"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT "tbl_ticket_comment_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE SET NULL ON UPDATE CASCADE,
+	PRIMARY KEY ("id")
+);
+
 CREATE TABLE "public"."tbl_ticket_data" (
 	"id" text NOT NULL,
 	"ticketid" text NOT NULL,
@@ -154,6 +169,7 @@ CREATE TABLE "public"."tbl_ticket_unread" (
 	"id" text NOT NULL,
 	"ticketid" text,
 	"userid" text,
+	"iscomment" bool DEFAULT false,
 	"isunread" bool DEFAULT true,
 	"isprocessed" bool DEFAULT false,
 	CONSTRAINT "tbl_ticket_unread_ticketid_fkey" FOREIGN KEY ("ticketid") REFERENCES "public"."tbl_ticket"("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -205,7 +221,7 @@ CREATE TABLE "public"."tbl_notification" (
 	"typeid" text,
 	"createdby" text,
 	"value" text,
-	"dataid" _text,
+	"reference" text,
 	"isunread" bool DEFAULT true,
 	"isprocessed" bool DEFAULT false,
 	"dtread" timestamp,
@@ -245,6 +261,7 @@ CREATE VIEW view_ticket AS
 		a.search,
 		b.isprivate,
 		a.html,
+		a.markdown,
 		a.dtparent,
 		a.dtcreated,
 		a.reference,
@@ -293,10 +310,11 @@ INSERT INTO "public"."tbl_user" ("id", "name", "search", "email", "password", "p
 
 CREATE INDEX "tbl_ticket_idxstatus" ON "public"."tbl_ticket" USING BTREE ("statusid", "folderid", "userid");
 CREATE INDEX "tbl_ticket_idxparent" ON "public"."tbl_ticket" USING BTREE ("parentid");
-CREATE INDEX "tbl_notification_idxticket" ON "public"."tbl_notification" USING BTREE ("ticketid", "userid");
 CREATE INDEX "tbl_ticket_data_idx" ON "public"."tbl_ticket_data" USING BTREE ("ticketid");
 CREATE INDEX "tbl_ticket_time_idxuser" ON "public"."tbl_ticket_time" USING BTREE ("userid", "start");
 CREATE INDEX "tbl_ticket_time_idxticket" ON "public"."tbl_ticket_time" USING BTREE ("ticketid");
 CREATE INDEX "tbl_ticket_unread_idxuserid" ON "public"."tbl_ticket_unread" USING BTREE ("userid", "isunread");
+CREATE INDEX "tbl_ticket_comment_idxticket" ON "public"."tbl_ticket_comment" USING BTREE ("ticketid");
+CREATE INDEX "tbl_notification_idxticket" ON "public"."tbl_notification" USING BTREE ("ticketid", "userid");
 
 COMMIT;

@@ -125,10 +125,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .pcode { font-family: Menlo,Consolas,monospace; background-color: #F0F0F0; font-size: 14px; border-radius: var(--radius); padding: 1px 2px; }
 
 .ui-box-title > nav button { border-left-color: #FFF; }
-.markdown p { margin: 0 0 15px; padding-left: 0; padding-right: 0; font-size: 15px !important; color: #000; }
-.markdown { font-size: 15px; }
-.markdown pre { margin-top: 0; }
-.markdown-tasks > li { cursor: pointer; }
+.ui-box-title > nav button:hover { opacity: 1; }
 
 .photo { border: 1px solid rgba(0,0,0,0.1); }
 .ui-directory .photo { border: 1px solid rgba(0,0,0,0.1); width: 22px; height: 22px; margin: 5px 0 0; border-radius: 100px; float: right; }

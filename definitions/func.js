@@ -16,13 +16,13 @@ function unreadinsert(obj, params) {
 	obj.isunread = true;
 }
 
-FUNC.notify = async function(ticketid, userid, typeid, createdby, value, dataid, unread) {
+FUNC.notify = async function(ticketid, userid, typeid, createdby, value, reference, unread) {
 
 	// Skip notification for the bot
 	if (userid === 'bot')
 		return true;
 
-	var data = { id: UID(), userid: userid, ticketid: ticketid, typeid: typeid, createdby: createdby, value: value, dataid: dataid, isunread: unread };
+	var data = { id: UID(), userid: userid, ticketid: ticketid, typeid: typeid, createdby: createdby, value: value, reference: reference, isunread: unread };
 	await DATA.insert('tbl_notification', data).promise();
 
 	if (unread === undefined)
@@ -33,8 +33,14 @@ FUNC.notify = async function(ticketid, userid, typeid, createdby, value, dataid,
 			unread = false;
 	}
 
-	if (unread)
-		await DATA.modify('tbl_ticket_unread', { isunread: true, isprocessed: false }, true).id(ticketid + userid).insert(unreadinsert, data).promise();
+	if (unread) {
+		var udata = {};
+		udata.isunread = true;
+		udata.isprocessed = false;
+		if (typeid === 'comment')
+			udata.iscomment = true;
+		await DATA.modify('tbl_ticket_unread', udata, true).id(ticketid + userid).insert(unreadinsert, data).promise();
+	}
 
 	return true;
 };

@@ -4,6 +4,8 @@ Tg8p2lz      : Čaká
 T1uivwxa     : Odložené
 T14fdt2w     : Kontrola
 T18ly6bo     : Znova otvoriť
+T14fdt2w     : Kontrola
+T18ly6bo     : Znova otvoriť
 T1txzylf     : Adresár sa nenašiel
 T1s452ip     : Úloha sa nenašla
 T1090ddm     : Časovač sa nenašiel
@@ -111,7 +113,6 @@ T1ml78da     : Časový odhad
 T1gtpq6c     : Priorita
 T1px50ix     : Modifikované
 T179lwex     : Obsah
-Tzny7nm      : Modifikovaný obsah
 T1tzdr72     : Priradené
 T1kpnv       : Používateľ
 T8ev4i3      : Zaznamenaný čas
@@ -119,7 +120,6 @@ T41pkh7      : Zmeniť heslo
 Twmjby3      : Nové heslo
 T1qdfqh2     : Generovať heslo
 Txz3wkp      : Prihlasovacie heslo bolo úspešne zmenené
-Tiu1zqx      : HelpDesk réporty
 T14eixwp     : Zvoľte obdobie
 T13h80kh     : Obdobie
 Tni3fg       : Kopírovať
@@ -159,7 +159,6 @@ T13zu2bu     : Super admin
 T1350pkj     : Online
 T5jsqzg      : Zablokovaný
 T1cxujbr     : Naozaj chcete vymazať vybraného používateľa?
-T1n13s0q     : HelpDesk
 Tniqzic      : Vyhľadať v úlohách
 T1gtii       : Otvorené
 T14fdt2w     : Na kontrolu
@@ -178,8 +177,6 @@ T1gty3cy     : Aktualizovať úlohy
 T19msfxb     : Reporty
 Tx5md02      : Odhlásiť sa
 Tqu98zv      : Máte neprečítané zmeny ({0}) v úlohách
-T1iyjboa     : Napíšte komentár
-T1x4oxjb     : Používateľ bol vymazaný
 T179dkv4     : Zadajte správu
 T1ljb8av     : Zastaviť časovač
 T71haa6      : Nezaradené úlohy
@@ -188,27 +185,7 @@ Tmekd0p      : NE,PO,UT,ST,ŠT,PI,SO
 T1maqqy3     : Január,Február,Marec,Apríl,Máj,Jún,Júl,August,September,Október,November,December
 T12tbn1      : Vyčistiť
 T19ewry0     : Jazyk
-Tehhog7      : Prázdny riadok
-T10lqpe8     : Popis
-T194wd       : Zdrojový kód
 T178xmwv     : Komentár
-T17dcxjw     : Počítadlo
-Twd1kgs      : Prístupové údaje
-T14exqv      : Súbory
-T1rd         : H1
-T8gh1s       : Horizontálna čiara
-T10alscs     : Odsadenie
-T1i9mx0h     : Kľúč/hodnota
-T11iyy4q     : Rozloženie
-T55iaz3      : Markdown
-T18xach      : Poznámky
-Tsdy2uu      : Číselný zoznam
-T1jpnp       : Úloha
-T1nzm84q     : Zoznam / Odrážky
-T1wd2v2n     : Stlačením tlačidla / pridáte špeciálny obsah
-T1v7gp9s     : Kliknite pre nahranie súboru
-T1y3d9ek     : Popis
-T164ncr      : Obrázok
 Ty3r036      : Vyberte si tag
 T11wqn4d     : Žiadny adresár
 Ts1r203      : Aktualizovať tag
@@ -233,3 +210,8 @@ T8hthgd      : Todomator
 T14kr00      : Od:
 T1szj        : Do:
 T1gfprg8     : Nižšie sú uvedené úlohy, na ktorých používatelia dnes pracovali:
+T1j5ig       : Odoslať
+Tomdhkt      : Komentáre ({0})
+T4ke5uo      : Zapnúť komentáre
+T10bsjtg     : Dvojitým kliknutím môžete editovať text
+T136ejw      : Dátum:

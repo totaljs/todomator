@@ -41,7 +41,12 @@ Tyw5spa      : Folder
 T19hvy       : Date
 T14mox7c     : SUBMIT
 Tx9d2fu      : Cancel
+T1q4xqtw     : Comments
+T1j5ig       : Send
+T179dkv4     : Enter a message
+Tomdhkt      : Comments ({0})
 T1w4pod5     : Toggle timer
+T4ke5uo      : Toggle comments
 T1bp08ki     : Toggle bookmark
 T1picjss     : Toggle notifications
 T6v6poe      : Options
@@ -50,7 +55,7 @@ T19m2dv      : Owner
 T151wx17     : Source
 Ts22apo      : Date from
 Th2qwan      : Add a related ticket
-T1wd2v2n     : Press / for adding rich content
+T10bsjtg     : Double-click to edit markdown
 T1410sqe     : Are you sure you want to remove related ticket?
 Ty3r036      : Choose a tag
 Tc0qoxc      : Choose or create new
@@ -115,14 +120,13 @@ T1k7dm       : Type
 T1d2jpt      : Value
 T16dbrot     : You don't have any notifications
 T1c4854      : Title
+T179lwex     : Content
 T1ml78da     : Time estimation
 T1gtpq6c     : Priority
 T1px50ix     : Modified
-T179lwex     : Content
-Tzny7nm      : Modified content
+T178xmwv     : Comment
 T1tzdr72     : Assigned
 T1kpnv       : User
-T178xmwv     : Comment
 T8ev4i3      : Logged time
 Tosmo8z      : Settings
 T1hsbma5     : Min. log time
@@ -156,7 +160,6 @@ Ty3ml2a      : Search in folders
 T84f2oz      : Time to relax!
 Tukiw8c      : You don't have any tickets
 Td59b9p      : The ticket is assigned to another ticket
-T1q4xqtw     : Comments
 T1qhu6ek     : Next {{ m.count }} tickets
 T1j5o9bj     : Load more
 Tjuo0mp      : Open tickets
@@ -164,28 +167,6 @@ T1s5jo20     : Tickets for review
 Tk9gd4i      : Unread changes
 T1gty3cy     : Refresh tickets
 Tqu98zv      : You have unread changes ({0}) in the tickets
-Tehhog7      : Empty line
-T10lqpe8     : Callout
-T194wd       : Code
-T1iyjboa     : Enter your comment
-T1x4oxjb     : User has been removed
-T179dkv4     : Enter a message
-T17dcxjw     : Counter
-Twd1kgs      : Credentials
-T14exqv      : Files
-T1rd         : H1
-T8gh1s       : Horizontal line
-T1v7gp9s     : Click for upload
-T1y3d9ek     : Description
-T164ncr      : Image
-T10alscs     : Indent
-T1i9mx0h     : Key/value
-T11iyy4q     : Layout
-T55iaz3      : Markdown
-T18xach      : Notes
-Tsdy2uu      : Numbered list
-T1jpnp       : Task
-T1nzm84q     : Unordered list
 T1ljb8av     : Stop timer
 T14eixwp     : Choose a period
 T13h80kh     : Period
@@ -194,6 +175,7 @@ T1soq        : Tag
 T1c81t0      : Total
 Tv3o7om      : Your report has been copied to your clipboard successfully
 Tcx95w3      : Today report
+T136ejw      : Date:
 T11si7c0     : User name
 T1lp90       : Week
 T18ddnk      : Month

@@ -519,8 +519,16 @@
 		});
 
 		ON('message', function(msg) {
-			if (msg.TYPE === 'refresh')
+			if (msg.TYPE === 'refresh') {
+
+				if (msg.markdown) {
+					if (common.form === 'formdetail' && msg.id === W.formdetail.id)
+						SET('formdetail.markdown', msg.markdown);
+					return;
+				}
+
 				exports.refresh();
+			}
 		});
 
 		WATCH('#status', function() {

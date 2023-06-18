@@ -32,6 +32,8 @@
 	.CLASS button.selected2 { background-color: #EC8632; color: #FFF; }
 	.CLASS button.selected3 { background-color: #E73323 !important; }
 	.CLASS button.bookmark i { margin: 0; }
+	.CLASS button.comments i { margin: 0; }
+	.CLASS button.comments ui-bind { position: absolute; background-color: #E73323; color: #FFF; font-size: 11px; width: 18px; height: 18px; text-align: center; line-height: 18px; z-index: 10; pointer-events: none; border-radius: 100px; margin: -10px 0 0 10px; }
 	.CLASS button.notifications i { margin: 0; }
 	.CLASS button.timer { background-color: #68B25B; color: #FFF; }
 	.CLASS button.timer i { margin: 0; }
@@ -54,6 +56,10 @@
 	.CLASS .addticketbtn i { width: 12px; text-align: center; margin-right: 5px; }
 	.CLASS .relatedtickets .ticket.child a { background-color: rgba(255,199,92,0.2); }
 	.CLASS .meta button { height: 30px; font-size: 12px; width: 120px; background: #FFF; }
+	.CLASS .mbody .markdown p { margin: 0 0 15px; padding-left: 0; padding-right: 0; font-size: 15px !important; color: #000; }
+	.CLASS .mbody .markdown { font-size: 15px; }
+	.CLASS .mbody .markdown pre { margin-top: 0; }
+	.CLASS .mbody .markdown-tasks > li { cursor: pointer; }
 
 	.related-container ul li { padding: 5px 40px 5px 10px; font-size: 12px; }
 	.related-container ul li .status { display: inline-block; width: 100px; height: 14px; border-right: 1px solid #e0e0e0; padding-right: 15px; margin-right: 15px; }
@@ -66,12 +72,13 @@
 
 </style>
 
-<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-check-circle;reload:?/reload;scrollbar:1;submit:?/submit;width:800;hide:?/hide" class="hidden ~PATH~" plugin="~PATH~">
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-check-circle;reload:?/reload;scrollbar:1;submit:?/submit;scrollbar:0;width:800;hide:?/hide" class="hidden ~PATH~" plugin="~PATH~">
 	<nav>
 		<ui-bind path="?.bookmark.is" config=".selected" child=".bookmark">
 			<ui-bind path="?.istimer" config="macro:ticketdetailtimer" child=".timer">
 				<ui-bind path="?.isunread" config="macro:ticketnotificationsunread" child=".notifications">
 					<button class="exec exec2 timer" data-exec="?/timer" data-exec2="?/timer2" title="@(Toggle timer)"><i class="ti ti-play"></i></button>
+					<button class="exec comments" data-exec="?/comments" title="@(Toggle comments)"><ui-bind path="?.comments" config="text;show"></ui-bind><i class="ti ti-comment"></i></button>
 					<button class="exec bookmark" data-exec="?/bookmark" title="@(Toggle bookmark)"><i class="ti ti-bookmark"></i></button>
 					<button class="exec notifications" data-exec="?/notifications" title="@(Toggle notifications)"><i class="ti ti-bell"></i></button>
 					<button class="exec" data-exec="?/options"><i class="ti ti-sliders-h"></i>@(Options)</button>
@@ -80,114 +87,115 @@
 		</ui-bind>
 	</nav>
 	<div>
-		<div class="padding bg-smoke">
-			<ui-bind path="?" config="track:id;template" class="meta">
-				<script type="text/html">
+		<ui-component name="extend" config="name:detail"></ui-component>
+		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1" class="invisible">
+			<div class="padding bg-smoke">
+				<ui-bind path="?" config="track:id;template" class="meta">
+					<script type="text/html">
 
-					{{ if value.statusid === 'pending' }}
-						<div class="toolbar m">
-							<button class="exec" data-exec="?/timer"><i class="ti ti-start red"></i>@(Start work)</button>
-						</div>
-					{{ else if value.statusid === 'open' }}
-						<div class="toolbar m">
-							<button class="exec" data-exec="?/forcestatus" data-id="review"><i class="ti ti-clean orange"></i>@(Review)</button>
-							{{ if value.iamowner }}
-							<button class="exec" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
-							{{ fi }}
-						</div>
-					{{ else if value.statusid === 'review' }}
-						<div class="toolbar m">
-							<button class="exec" data-exec="?/forcestatus" data-id="open"><i class="ti ti-history blue"></i>@(Re-open)</button>
-							<button class="exec b" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
-						</div>
-					{{ fi }}
+						{{ if value.statusid === 'pending' }}
+							<div class="toolbar m">
+								<button class="exec" data-exec="?/timer"><i class="ti ti-start red"></i>@(Start work)</button>
+							</div>
+						{{ else if value.statusid === 'open' }}
+							<div class="toolbar m">
+								<button class="exec" data-exec="?/forcestatus" data-id="review"><i class="ti ti-clean orange"></i>@(Review)</button>
+								{{ if value.iamowner }}
+								<button class="exec" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+								{{ fi }}
+							</div>
+						{{ else if value.statusid === 'review' }}
+							<div class="toolbar m">
+								<button class="exec" data-exec="?/forcestatus" data-id="open"><i class="ti ti-history blue"></i>@(Re-open)</button>
+								<button class="exec b" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+							</div>
+						{{ fi }}
 
-					<h2 class="edit2" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
+						<h2 class="edit2" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
 
-					<div style="height:70px">
-						<div class="exec users" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
-					</div>
+						<div style="height:70px">
+							<div class="exec users" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
+						</div>
 
-					<div class="row">
-						<div class="col-md-6">
-							<div class="keyvalue">
-								<span>@(Owner)</span>
-								<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="keyvalue">
+									<span>@(Owner)</span>
+									<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
+								</div>
+								<div class="keyvalue">
+									<span>@(Status)</span>
+									<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
+								</div>
+								<div class="keyvalue">
+									<span>@(Folder)</span>
+									<div class="exec control" data-exec="?/folder">{{ if value.folder }}<i class="ti ti-circle-alt" style="color:{{ value.folder_color }}"></i>{{ fi }}{{ value.folder | empty }}</div>
+								</div>
+								<div class="keyvalue">
+									<span>@(Source)</span>
+									<div>{{ value.source | empty }}</div>
+								</div>
 							</div>
-							<div class="keyvalue">
-								<span>@(Status)</span>
-								<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
-							</div>
-							<div class="keyvalue">
-								<span>@(Folder)</span>
-								<div class="exec control" data-exec="?/folder">{{ if value.folder }}<i class="ti ti-circle-alt" style="color:{{ value.folder_color }}"></i>{{ fi }}{{ value.folder | empty }}</div>
-							</div>
-							<div class="keyvalue">
-								<span>@(Source)</span>
-								<div>{{ value.source | empty }}</div>
+							<div class="col-md-6">
+								<div class="keyvalue">
+									<span><i class="ti ti-start green"></i>@(Date from)</span>
+									<div class="exec control" data-exec="?/date">{{ value.date | format }}</div>
+								</div>
+								<div class="keyvalue">
+									<span><i class="ti ti-calendar red"></i>@(Deadline)</span>
+									<div class="exec control" data-exec="?/deadline">{{ value.deadline | format('[date]') | empty }}</div>
+								</div>
+								<div class="keyvalue">
+									<span>@(Estimate)</span>
+									<div class="exec control" data-exec="?/estimate">{{ value.estimate | logwork }}</div>
+								</div>
+								<div class="keyvalue">
+									<span>@(Worked)</span>
+									<div class="exec control b" data-exec="?/logwork">{{ value.worked | logwork }} <span class="green">&bull;</span></div>
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6">
-							<div class="keyvalue">
-								<span><i class="ti ti-start green"></i>@(Date from)</span>
-								<div class="exec control" data-exec="?/date">{{ value.date | format }}</div>
-							</div>
-							<div class="keyvalue">
-								<span><i class="ti ti-calendar red"></i>@(Deadline)</span>
-								<div class="exec control" data-exec="?/deadline">{{ value.deadline | format('[date]') | empty }}</div>
-							</div>
-							<div class="keyvalue">
-								<span>@(Estimate)</span>
-								<div class="exec control" data-exec="?/estimate">{{ value.estimate | logwork }}</div>
-							</div>
-							<div class="keyvalue">
-								<span>@(Worked)</span>
-								<div class="exec control b" data-exec="?/logwork">{{ value.worked | logwork }} <span class="green">&bull;</span></div>
+						<hr />
+						<div class="keyvalue">
+							<span style="padding-top:4px">@(Tags)</span>
+							<div class="tags">
+								{{ if value.tags }}
+									{{ foreach m in value.tags }}
+									<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
+									{{ end }}
+								{{ fi }}
+								<span class="badge badge-silver addtag exec" data-exec="?/addtag"><i class="ti ti-plus-circle green"></i>@(Add)</span>
 							</div>
 						</div>
-					</div>
-					<hr />
-					<div class="keyvalue">
-						<span style="padding-top:4px">@(Tags)</span>
-						<div class="tags">
-							{{ if value.tags }}
-								{{ foreach m in value.tags }}
-								<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
-								{{ end }}
-							{{ fi }}
-							<span class="badge badge-silver addtag exec" data-exec="?/addtag"><i class="ti ti-plus-circle green"></i>@(Add)</span>
-						</div>
-					</div>
 
-					{{ if value.attachments && value.attachments.length }}
-					<hr />
-					<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
-					<div class="attachments">
-						{{ foreach m in value.attachments }}
-						<a href="{{ m.url }}" target="_blank" class="file"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
+						{{ if value.attachments && value.attachments.length }}
+						<hr />
+						<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
+						<div class="attachments">
+							{{ foreach m in value.attachments }}
+							<a href="{{ m.url }}" target="_blank" class="file"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
+							{{ end }}
+						</div>
+						{{ fi }}
+					</script>
+				</ui-bind>
+
+				<hr />
+				<button class="addticketbtn exec" data-exec="?/addticket"><i class="t ti ti-search-plus"></i>@(Add a related ticket)</button>
+
+				<ui-bind path="?.links" config="template" class="relatedtickets">
+					<script type="text/html">
+						{{ foreach m in value }}
+						<div class="ticket {{ if m.type && m.type === 'child' }}child{{ fi }}" data-id="{{ m.id }}"><span class="status">{{ m.statusid | status }}</span><a href="#{{ m.id }}" class="name">{{ m.name }}</a><span class="users">{{ if m.userid && m.userid.length }}{{ m.userid | users(true) }}{{ fi }}</span><span class="remicon pull-right fs11 red ml5 exec" data-exec="?/remlink" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11" style="margin-top:3px">{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</span></div>
 						{{ end }}
-					</div>
-					{{ fi }}
-				</script>
-			</ui-bind>
-
-			<hr />
-			<button class="addticketbtn exec" data-exec="?/addticket"><i class="t ti ti-search-plus"></i>@(Add a related ticket)</button>
-
-			<ui-bind path="?.links" config="template" class="relatedtickets">
-				<script type="text/html">
-					{{ foreach m in value }}
-					<div class="ticket {{ if m.type && m.type === 'child' }}child{{ fi }}" data-id="{{ m.id }}"><span class="status">{{ m.statusid | status }}</span><a href="#{{ m.id }}" class="name">{{ m.name }}</a><span class="users">{{ if m.userid && m.userid.length }}{{ m.userid | users(true) }}{{ fi }}</span><span class="remicon pull-right fs11 red ml5 exec" data-exec="?/remlink" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11" style="margin-top:3px">{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</span></div>
-					{{ end }}
-				</script>
-			</ui-bind>
-		</div>
-		<div class="padding">
-			<div class="padding npt npb">
-				<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
-				<ui-component name="paper" path="?.data" config="readonly:0;parent:auto;widgets:[widgets];autosave:1;margin:400;command:?/command;upload:?/upload;format:?/format;icon:?/icon;contextmenu:?/contextmenu;link:?/link;placeholder:@(Press / for adding rich content)" class="hidden invisible npt nmb"></ui-component>
+					</script>
+				</ui-bind>
 			</div>
-		</div>
+			<div class="padding">
+				<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
+				<ui-component name="markdownbody" path="?.markdown" config="save:?/savemarkdown;placeholder:@(Double-click to edit markdown)" class="hidden invisible npt nmb"></ui-component>
+			</div>
+		</ui-component>
 	</div>
 	<nav>
 		<button name="cancel" style="width:100%">@(Close)</button>
@@ -217,6 +225,7 @@
 			caller = exports.caller;
 			title = common.title;
 			SET('common.title', model.name);
+			model.iscomment && setTimeout(exports.comments, 1000);
 		};
 
 		exports.refresh_links = function() {
@@ -230,6 +239,10 @@
 			SETTER('approve/show', '@(Are you sure you want to remove related ticket?)', '"ti ti-trash" @(Remove)', function() {
 				exports.tapi('tickets_link/' + model.id + ' ERROR', { ticketid: id, type: 'rem' }, exports.refresh_links);
 			});
+		};
+
+		exports.comments = function() {
+			SET('common.form2', 'formcomments');
 		};
 
 		exports.addticket = function(el) {
@@ -285,7 +298,7 @@
 		exports.refresh = function() {
 			var model = exports.model;
 			cache = {};
-			exports.tapi('data_read/' + model.id, 'data');
+			exports.tapi('tickets_markdown/' + model.id, 'markdown -> markdown');
 		};
 
 		exports.refresh_bookmark = function() {
@@ -606,6 +619,34 @@
 			opt.url = '/upload/?ticketid={0}{1} ERROR'.format(model.id, op);
 			opt.files = files;
 			opt.callback = function(response) {
+
+				if (W.$Editable) {
+
+					var builder = [];
+					var onlyimages = true;
+
+					// Are images?
+					for (var m of response) {
+						if (!m.width || !m.height) {
+							onlyimages = false;
+							break;
+						}
+					}
+
+					if (onlyimages) {
+						for (var m of response)
+							builder.push('![{name}]({url})'.args(m));
+					} else {
+						for (var m of response) {
+							m.size = Thelpers.filesize(m.size);
+							builder.push('- [{name} ({size})]({url})'.args(m));
+						}
+					}
+
+					W.$Editable.insert(builder.join('\n'));
+					return;
+				}
+
 				model.attachments.push.apply(model.attachments, response);
 				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { attachments: model.attachments }, function() {
 					changed = true;
@@ -762,26 +803,6 @@
 			});
 		};
 
-		function savedata() {
-
-			var model = exports.model;
-			var data = CLONE(model.data);
-
-			for (var item of data) {
-				if (!item.newbie && !item.changed)
-					item.config = undefined;
-			}
-
-			exports.tapi('data_save/{0} ERROR'.format(model.id), { clientid: common.clientid, data: data }, function() {
-				changed = true;
-			});
-		}
-
-		exports.watch('data', function(value, path, type) {
-			if (type === 2)
-				setTimeout2('savedata', savedata, 500);
-		});
-
 		exports.changed = function() {
 			changed = true;
 		};
@@ -871,6 +892,11 @@
 			model.element = el;
 			SET('formlink @reset', model);
 			SET('common.form2', 'formlink');
+		};
+
+		exports.savemarkdown = function(val) {
+			var model = exports.model;
+			setTimeout2('savemarkdown', () => exports.tapi('tickets_update/{0} ERROR'.format(model.id), { markdown: val }, NOOP), 500);
 		};
 
 		exports.notifications = function() {

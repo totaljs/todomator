@@ -66,6 +66,9 @@
 				var fields = {};
 				fields.folderid = '@(Folder)';
 				fields.name = '@(Title)';
+				fields.html = '@(Content)';
+				fields.content = '@(Content)';
+				fields.markdown = '@(Content)';
 				fields.estimate = '@(Time estimation)';
 				fields.ispriority = '@(Priority)';
 				fields.isbillable = '@(Billable)';
@@ -84,20 +87,19 @@
 							break;
 						case 'metadata':
 							tmp = m.value.split(',');
-
 							for (var i = 0; i < tmp.length; i++)
 								tmp[i] = fields[tmp[i]] || tmp[i];
-
 							m.type = '@(Modified)';
 							m.body = '<i class="ti ti-pencil"></i><span class="gray">{0}</span>'.format(tmp.join(', '));
 							break;
+						case 'markdown':
 						case 'content':
-							m.type = '@(Content)';
-							m.body = '<i class="ti ti-pencil-paintbrush"></i><span class="gray">@(Modified content)</span>';
+							m.type = '@(Modified)';
+							m.body = '<i class="ti ti-pencil"></i><span class="gray">@(Content)</span>';
 							break;
 						case 'comment':
 							m.type = '@(Comment)';
-							m.body = '<i class="ti ti-comment"></i><span class="gray">@(Comment)</span>';
+							m.body = '<i class="ti ti-comment"></i><span class="gray">{0}</span>'.format(m.value.replace(/_|\*|`|<|>|#/g, ''));
 							break;
 						case 'logwork':
 							m.type = '@(Logged time)';

@@ -99,7 +99,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number',
 		public: true,
 		action: function($) {
-			var builder = DATA.query('SELECT a.id,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,b.isunread FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
+			var builder = DATA.query('SELECT a.id,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,b.isunread,b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
 			var query = $.query;
 			makefilter($, builder);
 			builder.sort('sortindex');
@@ -138,7 +138,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		action: async function($) {
 
 			var params = $.params;
-			var builder = DATA.query('SELECT a.*, b.isunread FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
+			var builder = DATA.query('SELECT a.*, b.isunread, b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
 
 			builder.where('a.id', params.id);
 
@@ -152,14 +152,14 @@ NEWSCHEMA('Tickets', function(schema) {
 			$.callback(response);
 
 			if (response.isunread)
-				DATA.modify('tbl_ticket_unread', { isunread: false }).id(params.id + $.user.id);
+				DATA.modify('tbl_ticket_unread', { isunread: false, iscomment: false }).id(params.id + $.user.id);
 
 		}
 	});
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, source:String, tags:[String], html:String, reference:String, date:Date, worked:Number',
+		input: '*name:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, worked:Number',
 		public: true,
 		action: async function($, model) {
 
@@ -226,7 +226,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], *folderid:UID, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date',
+		input: 'userid:[String], *folderid:UID, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String',
 		params: '*id:String',
 		public: true,
 		action: async function($, model) {
@@ -289,7 +289,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			}
 
 			var filter = client => response.ownerid === client.user.id || response.userid.includes(client.user.id);
-			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id }, filter);
+			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown }, filter);
 
 			response.type = 'udpate';
 			EMIT('ticket', response);
@@ -298,90 +298,20 @@ NEWSCHEMA('Tickets', function(schema) {
 		}
 	});
 
-	schema.action('data_read', {
-		name: 'Reads ticket data',
+	schema.action('markdown', {
+		name: 'Reads ticket markdown',
 		params: '*id:String',
 		public: true,
 		action: function($) {
 			var params = $.params;
-			DATA.find('tbl_ticket_data').fields('id,widget,config').where('ticketid', params.id).sort('sortindex').callback($);
-		}
-	});
-
-	schema.action('data_save', {
-		name: 'Updates ticket data',
-		input: '*clientid:String, data:[*id:String, *widget:String, newbie:Boolean, changed:Boolean, config:Object]',
-		params: '*id:String',
-		public: true,
-		action: async function($, model) {
-
-			var params = $.params;
-			var ticket = await DATA.read('tbl_ticket').fields('userid,comments,changed').id(params.id).where('isremoved=FALSE').error(404).promise($);
-			var nin = [];
-			var changed = [];
-			var types = {};
-			var is = false;
-			var comments = 0;
-
-			for (var i = 0; i < model.data.length; i++) {
-
-				var item = model.data[i];
-				var insert = true;
-				var modify = {};
-
-				if (item.widget === 'comment')
-					comments++;
-
-				if (item.newbie || item.changed) {
-					modify.id = item.id;
-					modify.ticketid = params.id;
-					modify.config = JSON.stringify(item.config);
-					modify.dtupdated = NOW;
-					modify.widget = item.widget;
-					types[modify.widget] = 1;
-					changed.push(item.id);
-					is = true;
-				} else {
-					item.config = undefined;
-					item.widget = undefined;
-					insert = false;
-				}
-
-				item.newbie = undefined;
-				item.changed = undefined;
-
-				modify.sortindex = i + 1;
-
-				nin.push(item.id);
-				await DATA.modify('tbl_ticket_data', modify, insert).id(item.id).where('ticketid', params.id).promise($);
-			}
-
-			MAIN.ws && MAIN.ws.send({ TYPE: 'data', clientid: model.clientid, id: params.id, data: model.data });
-
-			var builder = DATA.remove('tbl_ticket_data');
-			builder.where('ticketid', params.id);
-			nin.length && builder.notin('id', nin);
-			await builder.promise($);
-
-			var change = types.comment ? 'comment' : 'content';
-			var currticket = await DATA.modify('tbl_ticket', { comments: comments, changed: change, dtupdated: NOW }).id(params.id).returning(Returning).first().promise($);
-
-			if (is && (change == 'comment' || ticket.changed !== change)) {
-				for (var m of ticket.userid)
-					FUNC.notify(params.id, m, change, $.user.name, Object.keys(types).join(','), changed, m !== $.user.id);
-			}
-
-			currticket.type = change;
-			EMIT('ticket', currticket);
-
-			$.success();
+			DATA.read('tbl_ticket').fields('markdown').id(params.id).error(404).callback($);
 		}
 	});
 
 	schema.action('clone', {
 		name: 'Clone ticket',
 		params: '*id:String',
-		input: '*name:String,*folderid:UID,*date:Date,users:Boolean,status:Boolean',
+		input: 'name:String,folderid:UID,*date:Date,users:Boolean,status:Boolean',
 		public: true,
 		action: async function($, model) {
 
@@ -401,8 +331,15 @@ NEWSCHEMA('Tickets', function(schema) {
 			item.date = model.date || NOW;
 			item.dtcreated = NOW;
 			item.dtupdated = null;
-			item.name = model.name;
-			item.folderid = model.folderid;
+
+			if (model.name)
+				item.name = model.name;
+			else
+				item.name += ' (CLONED)';
+
+			if (model.folderid)
+				item.folderid = model.folderid;
+
 			item.ownerid = $.user.id;
 			item.isprocessed = false;
 
@@ -412,18 +349,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (!model.users)
 				item.userid = [];
 
-			var content = await DATA.find('tbl_ticket_data').where('ticketid', params.id).promise($);
 			var response = await DATA.insert('tbl_ticket', item).returning(Returning).promise($);
-
-			var contentid = Date.now().toString(36) + U.random_text(3);
-			for (var i = 0; i < content.length; i++) {
-				let m = content[i];
-				m.id = contentid + 'X' + i;
-				m.ticketid = item.id;
-				m.dtupdated = NOW;
-				await DATA.insert('tbl_ticket_data', m).promise($);
-			}
-
 			var filter = client => response.ownerid === client.user.id || response.userid.includes(client.user.id);
 
 			for (var m of response.userid) {
@@ -716,6 +642,82 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			$.callback(response);
 
+		}
+	});
+
+	schema.action('comments', {
+		name: 'List of comments',
+		params: '*id:String',
+		public: true,
+		action: function($) {
+			var params = $.params;
+			DATA.find('tbl_ticket_comment').fields('id,userid,username,userphoto,markdown,dtcreated').where('ticketid', params.id).sort('dtcreated').callback($);
+		}
+	});
+
+	var updatecommentscount = function(id) {
+		DATA.query('UPDATE tbl_ticket a SET comments=(SELECT COUNT(1) FROM tbl_ticket_comment x WHERE x.ticketid=a.id) WHERE a.id=' + PG_ESCAPE(id));
+	};
+
+	schema.action('comments_create', {
+		name: 'Create comment',
+		input: '*ticketid:String,*markdown:String',
+		public: true,
+		action: async function($, model) {
+
+			var item = await DATA.read('tbl_ticket').fields(Returning).id(model.ticketid).error(404).promise($);
+
+			model.id = UID();
+			model.userid = $.user.id;
+			model.username = $.user.name;
+			model.userphoto = $.user.photo;
+			model.dtcreated = NOW = new Date();
+
+			await DATA.insert('tbl_ticket_comment', model).promise($);
+			updatecommentscount(model.ticketid);
+
+			for (var m of item.userid)
+				FUNC.notify(model.ticketid, m, 'comment', $.user.name, model.markdown.max(50), model.id, m !== $.user.id);
+
+			item.type = 'comment';
+			EMIT('ticket', item);
+
+			MAIN.ws && MAIN.ws.send({ TYPE: 'comment', id: model.ticketid });
+
+			$.success(model.id);
+		}
+	});
+
+	schema.action('comments_update', {
+		name: 'Update comment',
+		input: '*markdown:String',
+		params: '*id:String',
+		action: async function($, model) {
+
+			var params = $.params;
+			var item = await DATA.read('tbl_ticket_comment').id(params.id).where('userid', $.user.id).error(404).promise($);
+
+			model.username = $.user.name;
+			model.userphoto = $.user.photo;
+			model.ticketid = undefined;
+
+			await DATA.modify('tbl_ticket_comment', model).id(params.id).promise($);
+
+			var filter = client => item.ownerid === client.user.id || item.userid.includes(client.user.id);
+			MAIN.ws && MAIN.ws.send({ TYPE: 'comment', id: params.id }, filter);
+
+			$.success(params.id);
+		}
+	});
+
+	schema.action('comments_remove', {
+		name: 'Remove comment',
+		params: '*id:String',
+		action: async function($) {
+			var params = $.params;
+			await DATA.remove('tbl_ticket_comment').id(params.id).where('userid', $.user.id).error(404).promise($);
+			updatecommentscount(params.id);
+			$.success(params.id);
 		}
 	});
 

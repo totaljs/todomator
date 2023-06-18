@@ -8,6 +8,7 @@ NEWSCHEMA('Account', function(schema) {
 			obj.id = user.id;
 			obj.name = user.name;
 			obj.sa = user.sa;
+			obj.photo = user.photo;
 			obj.language = user.language;
 			obj.permissions = user.permissions;
 			$.callback(obj);

@@ -12,7 +12,7 @@
 	<link href="@{'%cdn'}/spa.min@19.css" rel="stylesheet" />
 	<script src="@{'%cdn'}/spa.min@19.js"></script>
 	<script src="@{REPO.ui}"></script>
-	@{import('meta', 'head', 'default.js', 'default.css', 'favicon.ico')}
+	@{import('meta', 'head', 'default.js + ui.js', 'default.css + ui.css', 'favicon.ico')}
 </head>
 <body>
 
@@ -54,6 +54,7 @@
 	<ui-component name="importer" path="common.form2" config="if:formlink;url:/forms/link.html"></ui-component>
 	<ui-component name="importer" path="common.form2" config="if:formfolder;url:/forms/folder.html"></ui-component>
 	<ui-component name="importer" path="common.form2" config="if:formlogs;url:/forms/logs.html"></ui-component>
+	<ui-component name="importer" path="common.form2" config="if:formcomments;url:/forms/comments.html"></ui-component>
 	<ui-component name="importer" path="common.form2" config="if:formnotifications;url:/forms/notifications.html"></ui-component>
 	<ui-component name="importer" path="common.form2" config="if:formclone;url:/forms/clone.html"></ui-component>
 	<ui-component name="importer" path="common.form3" config="if:formtime;url:/forms/time.html"></ui-component>
@@ -79,14 +80,7 @@
 		NAV.clientside('.jR');
 
 		(function() {
-
-			var arr = '@{REPO.paperwidgets}'.split(',');
-			for (var i = 0; i < arr.length; i++)
-				arr[i] = '/paper/{0}.html'.format(arr[i]);
-
-			ENV('widgets', arr.join(','));
 			ADD('websocket', { url: '/api/' });
-
 		})();
 
 		Thelpers.logwork = function(val, billing) {
