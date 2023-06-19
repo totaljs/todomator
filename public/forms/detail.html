@@ -173,7 +173,7 @@
 						<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
 						<div class="attachments">
 							{{ foreach m in value.attachments }}
-							<a href="{{ m.url }}" target="_blank" class="file"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
+							<a href="{{ m.url }}" target="_blank" class="file quickpreview"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
 							{{ end }}
 						</div>
 						{{ fi }}
@@ -957,6 +957,27 @@
 			element.find('i').tclass('ti-bell', !is).tclass('ti-bell-alt', is);
 		};
 
+	});
+
+	$(document).on('mouseenter mouseleave', '.quickpreview', function(e) {
+
+		if (e.type === 'mouseleave') {
+			clearTimeout2('quickpreview');
+			return;
+		}
+
+		var el = $(this);
+		var url = el.attr('href');
+
+		if (!((/\.(jpg|png|gif|jpeg|webp)$/gi).test(url)))
+			return;
+
+		var opt = {};
+		opt.element = el;
+		opt.offsetY = 5;
+		opt.html = '<div class="quickpreview-window"><img src="{0}" style="max-width:700px;max-height:500px" /></div>'.format(url);
+
+		setTimeout2('quickpreview', opt => SETTER('quickpreview/show', opt), 1000, null, opt);
 	});
 
 </script>

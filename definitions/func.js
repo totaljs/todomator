@@ -29,7 +29,7 @@ FUNC.notify = async function(ticketid, userid, typeid, createdby, value, referen
 		unread = typeid !== 'logwork';
 
 	if (unread) {
-		if (typeid === 'status' && value === 'open')
+		if (typeid === 'markdown' || (typeid === 'status' && value === 'open'))
 			unread = false;
 	}
 

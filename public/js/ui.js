@@ -184,3 +184,103 @@ COMPONENT('chatmessage', function(self, config, cls) {
 	};
 
 });
+
+COMPONENT('quickpreview', function(self, config, cls) {
+
+	var content = null;
+	var container = null;
+	var cls2 = '.' + cls;
+	var is = false;
+
+	self.readonly();
+
+	self.make = function() {
+		self.append('<div class="{0}-content"></div><div class="{0}-container"></div>'.format(cls));
+		content = self.find(cls2 + '-content');
+		container = self.find(cls2 + '-container');
+
+		content.on('click mouseleave', function(e) {
+			if (is) {
+				if (e.target.tagName !== 'A')
+					self.hide();
+			}
+		});
+
+		container.on('click mousemove', function() {
+			if (is)
+				self.hide();
+		});
+	};
+
+	self.hide = function() {
+		if (self.hclass('hidden'))
+			return;
+		self.aclass('hidden invisible');
+		content.empty();
+		is = false;
+	};
+
+	self.show = function(opt) {
+
+		self.rclass('hidden').aclass('invisible');
+
+		content.html(opt.html);
+
+		var el = $(opt.element);
+		var w = content.width();
+		var offset = el.offset();
+		var css = {};
+
+		if (opt.element) {
+			switch (opt.align) {
+				case 'center':
+					css.left = Math.ceil((offset.left - w / 2) + (el.innerWidth() / 2));
+					break;
+				case 'right':
+					css.left = (offset.left - w) + el.innerWidth();
+					break;
+				default:
+					css.left = offset.left;
+					break;
+			}
+			css.top = opt.position === 'bottom' ? (offset.top - content.height() - 10) : (offset.top + el.innerHeight() + 10);
+		} else {
+			css.left = opt.x;
+			css.top = opt.y;
+		}
+
+		if (opt.position === 'bottom')
+			css.top += 10;
+		else
+			css.top -= 10;
+
+		if (opt.offsetX)
+			css.left += opt.offsetX;
+
+		if (opt.offsetY)
+			css.top += opt.offsetY;
+
+		var mw = w;
+		var mh = content.height();
+
+		if (css.left < 0)
+			css.left = 10;
+		else if ((mw + css.left) > WW)
+			css.left = (WW - mw) - 10;
+
+		if (css.top < 0)
+			css.top = 10;
+		else if ((mh + css.top) > WH)
+			css.top = (WH - mh) - 10;
+
+		var zindex = opt.zindex || 100;
+
+		container.css('z-idnex', zindex);
+		css['z-index'] = zindex + 1;
+		content.css(css);
+
+		self.rclass('invisible', 300);
+		setTimeout(() => is = true, 1000);
+	};
+
+});

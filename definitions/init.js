@@ -6,10 +6,10 @@ if (!MAIN.db.config)
 	MAIN.db.config = { name: 'Todomator', minlogtime: 10 };
 
 CONF.allow_custom_titles = true;
-CONF.version = '2';
+CONF.version = '3';
 
 // Componentator
-COMPONENTATOR('ui', 'exec,menu,icons,columns,extend,input,loading,floatingbox,autofill,edit,rawinput,errorhandler,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,selection,validate,selected,searchinput,box,tangular-color,tangular-filesize,intranetcss,notify,ready,tabmenu,iframepreview,preview,datepicker,paper,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,sounds,markdown,clipboardimage,shortcuts,faviconunread', true);
+COMPONENTATOR('ui', 'exec,menu,icons,columns,extend,input,loading,floatingbox,tooltip,autofill,edit,rawinput,errorhandler,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,selection,validate,selected,searchinput,box,tangular-color,tangular-filesize,intranetcss,notify,ready,tabmenu,iframepreview,preview,datepicker,paper,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,sounds,markdown,clipboardimage,shortcuts,faviconunread', true);
 
 // UI components
 ON('ready', function() {

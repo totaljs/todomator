@@ -131,3 +131,6 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .ui-directory .photo { border: 1px solid rgba(0,0,0,0.1); width: 22px; height: 22px; margin: 5px 0 0; border-radius: 100px; float: right; }
 
 .ui-datepicker-container { z-index: 102; }
+
+.quickpreview-window { background-color: #FFF; border-radius: var(--radius); box-shadow: 0 0 15px rgba(0,0,0,0.2); padding: 10px; border: 1px solid #F0F0F0; }
+.quickpreview-window img { border-radius: var(--radius); }
