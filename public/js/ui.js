@@ -109,7 +109,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 		self.rclass('editmode');
 		medit.aclass('hidden');
 		mplaceholder.tclass('hidden', !!val);
-		mbody.rclass('hidden').html(val ? Thelpers.markdown(val) : '');
+		mbody.rclass('hidden').html(val ? Thelpers.markdown2(val) : '');
 		self.resize();
 		setTimeout(self.resize, 1000);
 	};

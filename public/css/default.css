@@ -1,7 +1,5 @@
 html,body { overflow: hidden; margin: 0; padding: 0; color: #303030; }
 
-h2 { margin: 0 0 15px; padding: 0 0 8px; font-size: 16px; border-bottom: 1px solid #E0E0E0; }
-h2 span { float: right; color: gray; font-weight: normal; font-size: 12px; margin: 5px 0 0; }
 .ui-dark h2 { border-bottom-color: #404040; color: #FFF; }
 
 .color { color: var(--color); }
@@ -134,3 +132,10 @@ header .toolbar button { height: 26px; font-size: 12px; }
 
 .quickpreview-window { background-color: #FFF; border-radius: var(--radius); box-shadow: 0 0 15px rgba(0,0,0,0.2); padding: 10px; border: 1px solid #F0F0F0; }
 .quickpreview-window img { border-radius: var(--radius); }
+
+.markdown .user { background-color: rgba(232,74,151,0.2); padding: 2px 3px; border-radius: var(--radius); }
+.markdown .user img { width: 16px; vertical-align: top; border-radius: 100px; margin-right: 5px; margin-top: 3px; position: relative; display: inline-block; }
+.markdown h1 .user img { width: 28px; margin-top: 3px; }
+.markdown h2 .user img { width: 24px; margin-top: 3px; }
+.markdown h3 .user img { width: 20px; margin-top: 1px; }
+.markdown h4 .user img { width: 18px; }

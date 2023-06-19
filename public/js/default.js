@@ -1,3 +1,25 @@
+Thelpers.markdown2 = function(val) {
+	var opt = {};
+	opt.html = function(line) {
+		return line.replace(/(^|\s)@[a-z0-9]+(.|,|\s|$)/gi, function(text) {
+			var last = text.substring(text.length - 1);
+
+			if (last !== '.' && last !== ',' && last !== ' ')
+				last = '';
+
+			var first = text.substring(0, 1);
+			if (first === '@')
+				first = '';
+			for (var m of DEF.cl.user) {
+				if (m.search.indexOf(text.trim().substring(1).toLowerCase()) !== -1)
+					return first + '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>' + last;
+			}
+			return text;
+		});
+	};
+	return val.markdown(opt);
+};
+
 Thelpers.color2 = function(val) {
 	return Thelpers.color(HASH(val + val).toString(36));
 };

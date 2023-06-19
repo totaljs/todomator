@@ -1,19 +1,23 @@
 <style>
 	.CLASS figure { margin-top: 15px; }
-	.CLASS figure .msg { padding: 10px; border: 1px solid #E0E0E0; background-color: #F8F8F8; border-radius: var(--radius); min-width: 250px; float: left; max-width: 70%; }
+	.CLASS figure .msg { padding: 10px 10px 0; border: 1px solid #E0E0E0; background-color: #F8F8F8; border-radius: var(--radius); min-width: 250px; float: left; max-width: 70%; }
 	.CLASS figure:first-child { margin-top: 0; }
 	.CLASS figure .date { float: right; font-size: 11px; margin-top: 2px; color: #a0a0a0; }
-	.CLASS figure .user { font-size: 11px; font-weight: bold; color: #555; }
-	.CLASS figure .user img { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; }
-	.CLASS figure .user span { color: #FFF !important; background-color: #E0E0E0; width: 20px; height: 20px; line-height: 21px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
-	.CLASS figure .content { font-size: 14px; margin-top: 7px; }
+	.CLASS figure .msg > .user { font-size: 11px; font-weight: bold; color: #555; }
+	.CLASS figure .msg > .user img { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; }
+	.CLASS figure .msg > .user span { color: #FFF !important; background-color: #E0E0E0; width: 20px; height: 20px; line-height: 21px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
+	.CLASS figure .content { margin-top: 7px; }
 	.CLASS figure.owner .msg { border-color: #FADADA; background-color: #FFF3F3; float: right; max-width: 70%; }
 	.CLASS .messages { padding: 15px; display: block; }
+	.CLASS .markdown p { margin: 0 0 15px; padding-left: 0; padding-right: 0; font-size: 15px !important; color: #000; }
+	.CLASS .markdown { font-size: 15px; }
+	.CLASS .markdown pre { margin-top: 0; }
+	.CLASS .markdown-tasks > li { cursor: not-allowed; }
 </style>
 
-<ui-component name="box" path="common.form2" config="if:CLASS;width:640;icon:ti ti-comments;title:@(Comments);reload:?/reload;scrollbar:0" class="hidden CLASS" plugin="CLASS">
+<ui-component name="box" path="common.form2" config="if:CLASS;width:680;icon:ti ti-comments;title:@(Comments);reload:?/reload;scrollbar:0" class="hidden CLASS" plugin="CLASS">
 	<div>
-		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1;margin:80;$assign:?|viewbox" class="markdown-small">
+		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1;margin:80;$assign:?|viewbox">
 			<ui-bind path="?.messages" config="template:figure" class="messages">
 				<script type="text/html">
 					{{ foreach m in value }}
@@ -21,7 +25,7 @@
 						<div class="msg">
 							<span class="date">{{ m.dtcreated | time2 }}</span>
 							<div class="user">{{ if m.userphoto }}<img src="{{ m.userphoto }}" class="photo" />{{ fi }}{{ m.username }}</div>
-							<div class="content">{{ m.markdown | markdown }}</div>
+							<div class="content">{{ m.markdown | markdown2 }}</div>
 						</div>
 						<div class="clearfix"></div>
 					</figure>

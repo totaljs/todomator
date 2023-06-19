@@ -6,7 +6,7 @@ NEWSCHEMA('Common', function(schema) {
 		action: async function($) {
 			var db = DB();
 			db.find('cl_status').sort('sortindex').set('status');
-			db.find('tbl_user').fields('id,name,photo').where('isremoved=FALSE').sort('name').set('user');
+			db.find('tbl_user').fields('id,name,photo,search').where('isremoved=FALSE').sort('name').set('user');
 			db.find('tbl_tag').fields('id,name,folderid,color').set('tag');
 
 			var builder = db.find('tbl_folder');
