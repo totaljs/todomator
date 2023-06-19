@@ -292,7 +292,6 @@
 		exports.refresh_paper = function() {
 			var model = exports.model;
 			model.readonly = model.statusid === 'closed';
-			RECONFIGURE('paper', 'readonly:' + (model.readonly ? '2' : '0'));
 		};
 
 		exports.refresh = function() {
@@ -386,6 +385,9 @@
 				}
 
 				exports.refresh_paper();
+
+				if (el instanceof jQuery && statusid === 'closed')
+					NUL('common.form');
 
 			});
 		};

@@ -73,12 +73,10 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 			Editable(medit, opt, function(response) {
 
-				if (!response.text)
-					throw new Error('FET');
-
 				self.rclass('editmode');
+
 				var text = response.text.trim();
-				if (md !== text) {
+				if (text && md !== text) {
 					body = text.trim();
 					self.set(body, 'content');
 					config.save && self.EXEC(config.save, body);
