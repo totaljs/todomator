@@ -32,6 +32,7 @@ NEWSCHEMA('Users', function(schema) {
 				model.password = model.password.sha256(CONF.auth_secret);
 			model.search = model.name.toSearch().replace(/\s/g, '');
 			model.dtupdated = NOW;
+			MAIN.session.refresh(params.id);
 			DATA.modify('tbl_user', model).id(params.id).where('isremoved=FALSE').error(404).callback($.done(params.id));
 		}
 	});
@@ -54,8 +55,10 @@ NEWSCHEMA('Users', function(schema) {
 			var params = $.params;
 			if (params.id === 'bot')
 				$.invalid("@(You can't remove HelpDesk bot)");
-			else
+			else {
 				DATA.modify('tbl_user', { isremoved: true, dtupdated: NOW }).id(params.id).where('isremoved=FALSE').error(404).callback($.done(params.id));
+				MAIN.session.refresh(params.id);
+			}
 		}
 	});
 
