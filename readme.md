@@ -14,7 +14,8 @@ There are several ways to provide Todomator. You can use our cloud services and 
 ### Locally
 
 - install [Node.js platform](https://nodejs.org/en/)
-- download Flow source code
+- download source code
+- update `/config` PostgreSQL connection
 - open terminal/command-line:
 	- `cd todomator`
 	- `npm install`
