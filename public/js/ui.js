@@ -60,7 +60,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 			e.preventDefault();
 
 			mbody.aclass('hidden');
-			medit.rclass('hidden');
+			medit.empty().rclass('hidden');
 
 			var opt = {};
 			var md = (self.get() || '').trim();
