@@ -1,4 +1,6 @@
-# Total.js Todomator
+# Todomator
+
+Todomator is a task manager app for small teams up to 30 members (recommended).
 
 - [Website](https://www.totaljs.com/todomator/)
 - [__Documentation__](https://docs.totaljs.com/todomator/)
