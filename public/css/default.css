@@ -139,3 +139,4 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown h2 .user img { width: 24px; margin-top: 3px; }
 .markdown h3 .user img { width: 20px; margin-top: 1px; }
 .markdown h4 .user img { width: 18px; }
+.markdown-container > *:last-child { margin-bottom: 0 !important; }

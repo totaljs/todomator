@@ -4,8 +4,8 @@
 	.CLASS .meta i { transform: scale(1); }
 	.CLASS .attachments { font-size: 12px; padding: 0; margin-top: 10px; }
 	.CLASS .attachments .file { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
-	.CLASS .keyvalue { min-height: 18px; }
-	.CLASS .keyvalue > div { padding: 2px 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-height: 16px }
+	.CLASS .keyvalue { min-height: 20px; }
+	.CLASS .keyvalue > div { padding: 3px 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-height: 18px }
 	.CLASS .keyvalue > span { padding-top: 2px; }
 	.CLASS .control { cursor: pointer; border-radius: var(--radius); }
 	.CLASS .control:hover { background-color: #FFF; }
@@ -121,16 +121,16 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="keyvalue">
-									<span>@(Owner)</span>
-									<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
-								</div>
-								<div class="keyvalue">
 									<span>@(Status)</span>
 									<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
 								</div>
 								<div class="keyvalue">
 									<span>@(Folder)</span>
-									<div class="exec control" data-exec="?/folder">{{ if value.folder }}<i class="ti ti-circle-alt" style="color:{{ value.folder_color }}"></i>{{ fi }}{{ value.folder | empty }}</div>
+									<div class="exec control" data-exec="?/folder"{{ if value.folder }} style="background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</div>
+								</div>
+								<div class="keyvalue">
+									<span>@(Owner)</span>
+									<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
 								</div>
 								<div class="keyvalue">
 									<span>@(Source)</span>
