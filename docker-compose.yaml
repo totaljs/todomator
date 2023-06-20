@@ -11,7 +11,7 @@ services:
     environment:
       - POSTGRES_USER=total
       - POSTGRES_PASSWORD=platform
-      - POSTGRES_DB=openplatform
+      - POSTGRES_DB=todomator
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "total", "-d", "todomator"]
       interval: 3s
