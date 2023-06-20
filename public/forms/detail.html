@@ -89,6 +89,7 @@
 	<div>
 		<ui-component name="extend" config="name:detail"></ui-component>
 		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1" class="invisible">
+			<ui-bind path="?" config="show:value.ispriority && value.statusid==='open'||value.statusid==='review'||value.statusid==='pending'" class="hidden block" style="border-top:4px solid #E8483F;height:4px"></ui-bind>
 			<div class="padding bg-smoke">
 				<ui-bind path="?" config="track:id;template" class="meta">
 					<script type="text/html">
@@ -767,6 +768,7 @@
 						data[key] = !selected.selected;
 						exports.tapi('tickets_update/{0} ERROR'.format(model.id), data, function() {
 							model[key] = data[key];
+							exports.upd(key);
 							exports.upd('id');
 						});
 						break;
