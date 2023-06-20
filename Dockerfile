@@ -8,6 +8,7 @@ RUN mkdir -p /www/bundles
 COPY index.js .
 COPY config .
 COPY package.json .
+COPY database.sql .
 COPY app.bundle ./bundles/
 
 RUN npm install
