@@ -9,33 +9,37 @@ Todomator is a task manager app for small teams up to 30 members (recommended).
 
 ## Installation
 
-There are several ways to provide Todomator. You can use our cloud services and run Todomator without installation, or use Docker, or download the source code locally.
+WARNING: Please do not execute `database.sql`, this script will use Todomator internally.
 
-### Locally
+__Manual installation__:
 
-- install [Node.js platform](https://nodejs.org/en/)
-- download source code
-- update `/config` PostgreSQL connection
-- open terminal/command-line:
-	- `cd todomator`
-	- `npm install`
-	- `npm start`
+- Install latest version of [__Node.js platform__](https://nodejs.org/en/)
+- Install PostgreSQL
+- [Download __Source-Code__](https://github.com/totaljs/todomator)
+- Create a database for the Todomator
+- Install NPM dependencies via terminal `$ npm install` in the root of application
+- Update connection strings in `/config` file
+- Run it `$ node index.js`
+- Open `http://127.0.0.1:8000` in your web browser
 
-__Run__:
-
-```
-npm run start
-```
-
-or directly using node executable (port is optional, default 8000)
-
-```
-node index.js <port>
-```
-
-### Todomator in Docker
+__Docker Hub__:
 
 ```bash
 docker pull totalplatform/todomator
-docker run -p 8000:8000 totalplatform/todomator
+docker run --env DATABASE='postgresql://user:pass@hostname/database' -p 8000:8000 totalplatform/todomator
 ````
+
+__Docker Compose__:
+
+```bash
+git clone https://github.com/totaljs/todomator.git
+cd todomator
+docker compose up
+````
+
+## Default credentials
+
+```html
+login : info@totaljs.com
+password : admin
+```
