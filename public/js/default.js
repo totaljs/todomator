@@ -103,7 +103,6 @@ function Editable(el, opt, callback) {
 	// opt.callback {Function}
 	// opt.html {String}
 	// opt.commands {Boolean}
-	// opt.widget {Widget}
 	// opt.backslashremove {Boolean}
 	// opt.param {Object} a custom parameter
 	// opt.parent {Element}
@@ -145,6 +144,17 @@ function Editable(el, opt, callback) {
 		e.preventDefault();
 		var text = (e.originalEvent || e).clipboardData.getData('text/plain');
 		document.execCommand('insertHTML', false, text);
+	};
+
+	var keyup = function(e) {
+		e && opt.keyup && opt.keyup(e);
+		if (opt.resize) {
+			var tmp = el.height();
+			if (openeditor.height !== tmp) {
+				opt.resize(tmp);
+				openeditor.height = tmp;
+			}
+		}
 	};
 
 	var keydown = function(e) {
@@ -278,6 +288,7 @@ function Editable(el, opt, callback) {
 		$(W).off('click', clickoutside);
 		el.rattr('contenteditable');
 		el.off('keydown', keydown);
+		el.off('keyup', keyup);
 		el.off('paste', paste);
 		el.off('input');
 
@@ -296,11 +307,14 @@ function Editable(el, opt, callback) {
 			opt.callback(arg);
 		}
 
+		keyup();
 		openeditor = W.$Editable = null;
 	};
 
+	keyup();
 	$(W).on('click', clickoutside);
 	el.on('keydown', keydown);
+	el.on('keyup', keyup);
 
 	if (opt.placeholder) {
 		var placeholder = opt.placeholder;

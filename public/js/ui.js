@@ -124,6 +124,7 @@ COMPONENT('chatmessage', function(self, config, cls) {
 	var editable = false;
 	var ticketid;
 	var cache = {};
+	var viewbox;
 
 	var send = function() {
 
@@ -145,6 +146,10 @@ COMPONENT('chatmessage', function(self, config, cls) {
 		placeholder = self.find('.placeholder');
 		self.rclass('invisible', 1000);
 		self.event('click', '.send', send);
+
+		if (config.autoheight)
+			viewbox = self.parent().parent().find('ui-component[name="viewbox"]')[0];
+
 	};
 
 	self.edit = function() {
@@ -154,6 +159,9 @@ COMPONENT('chatmessage', function(self, config, cls) {
 		opt.tabs = true;
 		opt.format = false;
 		opt.placeholder = placeholder[0];
+		opt.resize = function(h) {
+			setTimeout(() => viewbox.ui.reconfigure({ margin: h + 25 }), 5);
+		};
 		input.aclass('editmode');
 		editable = true;
 		Editable(input, opt, function(response) {
