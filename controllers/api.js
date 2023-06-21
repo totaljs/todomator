@@ -102,14 +102,14 @@ async function upload() {
 	}
 }
 
-const Download = { js: 1, html: 1, md: 1, css: 1 };
+const Download = { jpeg: 1, jpg: 1, png: 1, gif: 1, ico: 1, webp: 1, mp4: 1, mov: 1, mpeg: 1, svg: 1 };
 
 function files(req, res) {
 	var filename = req.split[1];
 	var id = filename.substring(0, filename.lastIndexOf('.'));
 	var arr = id.split('-');
 	if (arr[0].sign(CONF.salt) === id) {
-		var download = req.query.download === '1' || Download[req.extension] == 1;
+		var download = req.query.download === '1' || Download[req.extension] !== 1;
 		res.filefs('attachments', arr[0], download, null, null);
 	} else
 		res.throw404();
