@@ -10,6 +10,7 @@
 	.CLASS .control { cursor: pointer; border-radius: var(--radius); }
 	.CLASS .control:hover { background-color: #FFF; }
 	.CLASS .options { float: right; }
+	.CLASS .title { margin-top: 0; }
 	.CLASS .options button { cursor: pointer; border: 1px solid #E0E0E0; border-left: 0; width: 30px; height: 26px; line-height: 24px; text-align: center; background-color: #F0F0F0; }
 	.CLASS .options button:hover { background-color: #FFF; }
 	.CLASS .options button:disabled { background-color: #F0F0F0 !important; cursor: not-allowed; }
@@ -112,7 +113,7 @@
 							</div>
 						{{ fi }}
 
-						<h2 class="edit2" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
+						<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
 
 						<div style="height:70px">
 							<div class="exec users" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>

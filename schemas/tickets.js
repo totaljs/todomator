@@ -278,7 +278,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				}
 			} else if (model.statusid) {
 				await FUNC.notify(response.id, response.ownerid, 'status', $.user.name, model.statusid, null, response.ownerid && response.ownerid !== $.user.id);
-			} else {
+			} else if (response.ownerid === $.user.id) {
 				for (let m of response.userid)
 					await FUNC.notify(response.id, m, 'metadata', $.user.name, keys.join(','), null, m !== $.user.id);
 			}
