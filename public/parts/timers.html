@@ -8,7 +8,7 @@
 	<ui-bind path="?.items" config="template:.item -> data-cache">
 		<script type="text/html">
 			{{ foreach m in value }}
-				<div class="item exec" data-id="{{ m.ticketid }}" data-cache="{{ m.id }}{{ m.ticks }}" data-exec="tickets/preview">
+				<div class="item exec" data-id="{{ m.ticketid }}" data-cache="{{ m.id }}{{ m.ticks }}" data-exec="tickets/preview" title="{{ m.name }}">
 					<span class="exec mr5" data-exec="?/stop" data-prevent="true" data-id="{{ m.id }}" title="@(Stop timer)"><i class="ti ti-stop-alt"></i></span>
 					<ui-bind config="macro:timer" data-ticks="{{ m.ticks }}" class="monospace">00:00:00</ui-bind>
 					<div>{{ m.name }}</div>
