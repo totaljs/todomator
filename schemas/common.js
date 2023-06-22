@@ -30,4 +30,11 @@ NEWSCHEMA('Common', function(schema) {
 		}
 	});
 
+	schema.action('version', {
+		name: 'Version',
+		action: function($) {
+			$.success(CONF.version);
+		}
+	});
+
 });

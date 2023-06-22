@@ -148,6 +148,17 @@
 				EXEC(model.form + '/drop', files);
 			};
 
+			exports.version = function() {
+				exports.tapi('version', function(response) {
+					if (response.value !== DEF.versionhtml)
+						location.reload();
+				});
+			};
+
+			exports.on('service', function() {
+				exports.version();
+			});
+
 		});
 
 		WAIT('#status', function() {

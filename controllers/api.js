@@ -3,6 +3,7 @@ exports.install = function() {
 	// Misc
 	ROUTE('+API    /api/       -account                   *Account    --> read');
 	ROUTE('+API    /api/       +cl                        *Common     --> cl');
+	ROUTE('+API    /api/       -version                   *Common     --> version');
 
 	// Tickets
 	ROUTE('+API    /api/       -tickets                   *Tickets    --> list');
