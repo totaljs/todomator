@@ -315,8 +315,8 @@
 
 		exports.bookmark = function() {
 			var model = exports.model;
-			exports.tapi('tickets_bookmarks/{0} ERROR @showloading'.format(model.id), { type: model.bookmark && model.bookmark.is ? 'remove' : 'create' }, function(response) {
-				exports.set('bookmark @hideloading', response);
+			exports.tapi('tickets_bookmarks/{0} ERROR'.format(model.id), { type: model.bookmark && model.bookmark.is ? 'remove' : 'create' }, function(response) {
+				exports.set('bookmark', response);
 				caller.exec('counter');
 			});
 		};
@@ -470,9 +470,9 @@
 			var index = model.tags.indexOf(ATTRD(el));
 			if (index !== -1) {
 				model.tags.splice(index, 1);
-				exports.tapi('tickets_update/{0} ERROR @showloading'.format(model.id), { tags: model.tags }, function() {
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { tags: model.tags }, function() {
 					changed = true;
-					exports.upd('id @hideloading');
+					exports.upd('id');
 				});
 			}
 		};
@@ -521,9 +521,9 @@
 
 				model.tags.push(val);
 
-				TAPI('tickets_update/{0} ERROR @showloading'.format(model.id), { tags: model.tags }, function() {
+				TAPI('tickets_update/{0} ERROR'.format(model.id), { tags: model.tags }, function() {
 					changed = true;
-					exports.upd('id @hideloading');
+					exports.upd('id');
 				});
 
 			};
