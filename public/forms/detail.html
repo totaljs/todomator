@@ -175,7 +175,7 @@
 						<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
 						<div class="attachments">
 							{{ foreach m in value.attachments }}
-							<a href="{{ m.url }}" target="_blank" class="file quickpreview"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
+							<a href="{{ m.url }}" target="_blank" class="file quickpreview"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11 ml10">{{ m.dtcreated | format('[date]') }}</span><span class="pull-right silver fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
 							{{ end }}
 						</div>
 						{{ fi }}
