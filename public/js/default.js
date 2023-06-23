@@ -8,12 +8,19 @@ Thelpers.markdown2 = function(val) {
 			if (last !== '.' && last !== ',' && last !== ' ')
 				last = '';
 
+			if (last)
+				text = text.substring(0, text.length - 1);
+
 			var first = text.substring(0, 1);
+
+			if (first !== '@')
+				text = text.substring(1);
+
 			if (first === '@')
 				first = '';
 
-			for (var m of DEF.cl.user) {
-				if (m.search.indexOf(text.trim().substring(1).toLowerCase()) !== -1)
+			for (var m of DEF.cl.user)
+				if (m.search.indexOf(text.trim().substring(1).toLowerCase()) !== -1) {
 					return first + '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>' + last;
 			}
 			return text;
