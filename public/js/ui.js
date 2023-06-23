@@ -283,7 +283,7 @@ COMPONENT('quickpreview', function(self, config, cls) {
 			css.top += opt.offsetY;
 
 		var mw = w;
-		var mh = content.height();
+		var mh = (opt.height || 0) + content.height();
 
 		if (css.left < 0)
 			css.left = 10;
@@ -297,7 +297,7 @@ COMPONENT('quickpreview', function(self, config, cls) {
 
 		var zindex = opt.zindex || 100;
 
-		container.css('z-idnex', zindex);
+		container.css('z-index', zindex);
 		css['z-index'] = zindex + 1;
 		content.css(css);
 

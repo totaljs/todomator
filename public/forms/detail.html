@@ -964,22 +964,24 @@
 
 	});
 
-	$(document).on('mouseenter mouseleave', '.quickpreview', function(e) {
+	$(document).on('mouseenter mouseleave', '.quickpreview,.markdown-gallery', function(e) {
 
 		if (e.type === 'mouseleave') {
 			clearTimeout2('quickpreview');
 			return;
 		}
 
-		var el = $(this);
-		var url = el.attr('href');
+		var t = this;
+		var el = $(t);
+		var url = el.attr('href') || el.attr('src');
 
 		if (!((/\.(jpg|png|gif|jpeg|webp)$/gi).test(url)))
 			return;
 
+		var isimage = t.tagName === 'IMG';
 		var opt = {};
 		opt.element = el;
-		opt.offsetY = 5;
+		opt.offsetY = 5 + (isimage ? 10 : 0);
 		opt.html = '<div class="quickpreview-window"><img src="{0}" style="max-width:700px;max-height:500px" /></div>'.format(url);
 
 		setTimeout2('quickpreview', opt => SETTER('quickpreview/show', opt), 1000, null, opt);

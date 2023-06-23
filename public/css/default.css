@@ -140,3 +140,4 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown h3 .user img { width: 20px; margin-top: 1px; }
 .markdown h4 .user img { width: 18px; }
 .markdown-container > *:last-child { margin-bottom: 0 !important; }
+.markdown-gallery { vertical-align: top; margin: 0 15px 15px 0; border: 1px solid #E0E0E0; width: 22%; border-radius: var(--radius); }
