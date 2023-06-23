@@ -101,10 +101,9 @@ function Editable(el, opt, callback) {
 	// opt.italic {Boolean}
 	// opt.underline {Boolean}
 	// opt.link {Boolean}
-	// opt.multiline {Boolean}
+	// opt.multiline {Number} 1: enter, 2: shift + enter
 	// opt.callback {Function}
 	// opt.html {String}
-	// opt.commands {Boolean}
 	// opt.backslashremove {Boolean}
 	// opt.param {Object} a custom parameter
 	// opt.parent {Element}
@@ -179,7 +178,9 @@ function Editable(el, opt, callback) {
 
 		if (e.keyCode === 13) {
 
-			if (!opt.multiline || e.shiftKey || e.metaKey) {
+			var ismeta = e.shiftKey || e.metaKey;
+
+			if (!opt.multiline || ((opt.multiline == true || opt.multiline === 1) && ismeta) || (opt.multiline === 2 && !ismeta)) {
 				e.preventDefault();
 				e.stopPropagation();
 				openeditor.key = 13;

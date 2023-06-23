@@ -17,7 +17,7 @@
 
 <ui-component name="box" path="common.form2" config="if:CLASS;width:680;icon:ti ti-comments;title:@(Comments);reload:?/reload;scrollbar:0" class="hidden CLASS" plugin="CLASS">
 	<div>
-		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1;margin:45;$assign:?|viewbox;scrollto:bottom">
+		<ui-component name="viewbox" path="common.form2" config="parent:auto;scrollbarshadow:1;margin:45;$assign:?|viewbox;scrollto:bottom">
 			<ui-bind path="?.messages" config="template:figure" class="messages">
 				<script type="text/html">
 					{{ foreach m in value }}
@@ -73,7 +73,7 @@
 
 		exports.send = function(msg) {
 			SETTER('sounds/play', 'badge');
-			exports.tapi('comments_create ERROR', msg, NOOP);
+			exports.tapi('comments_create ERROR', msg, () => setTimeout(exports.message.edit, 200));
 		};
 
 		exports.on('message', function(msg) {
