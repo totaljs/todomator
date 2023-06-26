@@ -103,11 +103,11 @@ function Editable(el, opt, callback) {
 	if (!opt)
 		opt = {};
 
-	// opt.format {Boolean}
-	// opt.bold {Boolean}
-	// opt.italic {Boolean}
-	// opt.underline {Boolean}
-	// opt.link {Boolean}
+	// opt.format {Function}
+	// opt.bold {Function}
+	// opt.italic {Function}
+	// opt.underline {Function}
+	// opt.link {Function}
 	// opt.multiline {Number} 1: enter, 2: shift + enter
 	// opt.callback {Function}
 	// opt.html {String}
@@ -130,6 +130,100 @@ function Editable(el, opt, callback) {
 		return;
 	}
 
+	if (opt.format) {
+		if (opt.link == null) {
+			opt.link = function() {
+
+				var sel = self.getSelection().trim();
+				if (!sel)
+					return;
+
+				var el = openeditor.element;
+				var url = '#link' + Date.now().toString(36);
+				var mtd = el[0];
+
+				for (var i = 0; i < 5; i++) {
+					if (mtd.tagName === 'A')
+						return;
+					mtd = mtd.parentNode;
+					if (!mtd)
+						break;
+				}
+
+				document.execCommand('CreateLink', false, url);
+
+				var tmp = el.find('a[href="' + url + '"]');
+				if (!tmp.length)
+					return;
+
+				var content = tmp.text();
+				var link = {};
+				link.element = tmp;
+				link.href = '';
+				tmp.aclass('elink');
+
+				openeditor && openeditor.close();
+
+				if (content.indexOf('@') !== -1)
+					link.href = 'mailto:' + content;
+				else if ((/^[0-9\s+-]+$/).test(content))
+					link.href = 'tel:' + content;
+				else if (content.indexOf(' ') === -1 && content.indexOf(',') === -1 && content.indexOf('.') !== -1)
+					link.href = (/http(s):\/\//).test(content) ? content : ('https://' + content);
+
+				link.target = link.href.indexOf('.') !== -1 && link.href.indexOf(location.hostname) === -1 ? '_blank' : '';
+				link.href && tmp.attr('href', link.href);
+				link.target && tmp.attr('target', link.target);
+				link.widget = self;
+			};
+		}
+
+		if (opt.bold == null) {
+			opt.bold = function() {
+				document.execCommand('Bold', false, null);
+			};
+		}
+
+		if (opt.code == null) {
+			opt.code = function() {
+				var url = '#code' + Date.now().toString(36);
+				document.execCommand('CreateLink', false, url);
+				var a = openeditor.element.find('a[href="{0}"]'.format(url));
+				a.replaceWith('<span class="ecode">' + a.html() + '</span>');
+			};
+		}
+
+		if (opt.italic == null) {
+			opt.italic = function() {
+				document.execCommand('Italic', false, null);
+			};
+		}
+
+		if (opt.underline == null) {
+			opt.underline = function() {
+				document.execCommand('Underline', false, null);
+			};
+		}
+
+		if (opt.icon == null) {
+			opt.icon = function() {
+
+				// Total.js icon
+				var tag = openeditor.element[0].nodeName.toLowerCase();
+				var icon = '<i class="ti ti-flag eicon" contenteditable="false"></i>';
+
+				switch (tag) {
+					case 'span':
+						$(openeditor.element).parent().prepend(icon);
+						break;
+					default:
+						document.execCommand('insertHTML', false, icon);
+						break;
+				}
+			};
+		}
+	}
+
 	opt.backup = el.html();
 	opt.html && el.html(opt.html);
 	el.attr('contenteditable', true);
@@ -142,6 +236,8 @@ function Editable(el, opt, callback) {
 	openeditor.insert = function(text) {
 		text && document.execCommand('insertHTML', false, text);
 	};
+
+	opt.editor = openeditor;
 
 	var clickoutside = function(e) {
 		if (!(e.target === openeditor.parent || openeditor.parent.contains(e.target)))
@@ -220,8 +316,7 @@ function Editable(el, opt, callback) {
 
 		if (e.keyCode === 66) {
 			// bold
-			if (opt.format && (opt.bold == null || opt.bold == true))
-				self.format.bold();
+			opt.format && opt.bold && opt.bold();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -229,8 +324,7 @@ function Editable(el, opt, callback) {
 
 		if (e.keyCode === 77) {
 			// code
-			if (opt.format && (opt.code == null || opt.code == true))
-				self.format.code();
+			opt.format && opt.code && opt.code();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -238,8 +332,7 @@ function Editable(el, opt, callback) {
 
 		if (e.keyCode === 76) {
 			// link
-			if (opt.format && (opt.link == null || opt.link == true))
-				self.format.link();
+			opt.format && opt.link && opt.link();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -247,15 +340,14 @@ function Editable(el, opt, callback) {
 
 		if (e.keyCode === 73) {
 			// italic
-			if (opt.format && (opt.italic == null || opt.italic == true))
-				self.format.italic();
+			opt.format && opt.italic && opt.italic();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
 		}
 
 		if (e.keyCode === 80) {
-			self.format.icon();
+			opt.icon && opt.icon();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -263,8 +355,7 @@ function Editable(el, opt, callback) {
 
 		if (e.keyCode === 85) {
 			// underline
-			if (opt.format && (opt.underline == null || opt.underline == true))
-				self.format.underline();
+			opt.format && opt.underline && opt.underline();
 			e.preventDefault();
 			e.stopPropagation();
 			return;
@@ -292,6 +383,45 @@ function Editable(el, opt, callback) {
 
 	if (opt.select)
 		setTimeout(() => document.execCommand('selectAll', false, null), 20);
+
+	openeditor.selected = function() {
+		return W.getSelection().toString();
+	};
+
+	openeditor.replace = function(callback, noselect) {
+
+		var sel = W.getSelection();
+		if (sel.rangeCount) {
+
+			var html = sel.toString();
+			html = callback(html);
+			if (html === sel)
+				return;
+
+			range = sel.getRangeAt(0);
+			range.deleteContents();
+
+			var div = document.createElement('div');
+			var frag = document.createDocumentFragment();
+			var node = null;
+			var last = null;
+
+			div.innerHTML = html;
+
+			while ((node = div.firstChild))
+				last = frag.appendChild(node);
+
+			range.insertNode(frag);
+
+			if (last) {
+				range = range.cloneRange();
+				range.setStartAfter(last);
+				range.collapse(true);
+				noselect && sel.removeAllRanges();
+				sel.addRange(range);
+			}
+		}
+	};
 
 	openeditor.close = function() {
 

@@ -20,6 +20,9 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 			var t = this;
 
+			if (e.tagName === 'A')
+				return;
+
 			e.stopPropagation();
 
 			var el = $(t);
@@ -67,8 +70,82 @@ COMPONENT('markdownbody', function(self, config, cls) {
 			opt.html = Thelpers.encode(md);
 			opt.multiline = true;
 			opt.tabs = true;
-			opt.format = false;
 			opt.placeholder = mplaceholder[0];
+			opt.format = true;
+
+			opt.bold = function() {
+				opt.editor.replace(function(text) {
+
+					if (!text)
+						text = 'text';
+
+					var f = text.charAt(0);
+					return f === '_' || f === '*' ? text.replace(/_|\*/g, '') : ('__' + text + '__');
+				});
+			};
+
+			opt.link = function() {
+				opt.editor.replace(function(text) {
+
+					if (!text)
+						text = 'text';
+
+					var f = text.charAt(0);
+					if (f === '[') {
+						var index = text.indexOf(']');
+						if (index === -1)
+							return text;
+						return text.substring(1, index - 1);
+					}
+
+					return '[' + text + '](url)';
+				});
+			};
+
+			opt.italic = function() {
+				opt.editor.replace(function(text) {
+
+					if (!text)
+						text = 'text';
+
+					var f = text.charAt(0);
+					return f === '*' ? text.replace(/\*/g, '') : ('*' + text + '*');
+				});
+			};
+
+			opt.underline = function() {
+				opt.editor.replace(function(text) {
+
+					if (!text)
+						text = 'text';
+
+					var f = text.charAt(0);
+					return f === '_' ? text.replace(/\_/g, '') : ('_' + text + '_');
+				});
+			};
+
+			opt.code = function() {
+				opt.editor.replace(function(text) {
+
+					if (!text)
+						text = 'code';
+
+					var f = text.charAt(0);
+					return f === '`' ? text.replace(/`/g, '') : ('`' + text + '`');
+				});
+			};
+
+			opt.icon = function() {
+				opt.editor.replace(function(text) {
+
+					if (!text)
+						text = 'warning';
+
+					var f = text.charAt(0);
+					return f === ':' ? text.replace(/\:/g, '') : (':' + text + ':');
+				});
+			};
+
 			self.aclass('editmode');
 
 			Editable(medit, opt, function(response) {
