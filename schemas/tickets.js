@@ -589,8 +589,8 @@ NEWSCHEMA('Tickets', function(schema) {
 			var builder = 'SELECT ';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket_unread a INNER JOIN tbl_ticket b ON b.id=a.ticketid AND b.isremoved=FALSE AND b.date<=timezone(\'utc\'::text, now()) WHERE a.userid={0} AND a.isunread=TRUE) AS unread,';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'review\' AND ownerid={0} AND isremoved=FALSE) AS review,';
-			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'pending\' AND {0}=ANY(userid) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS pending,';
-			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'open\' AND {0}=ANY(userid) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS open,';
+			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'pending\' AND (ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS pending,';
+			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'open\' AND (ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS open,';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE {0}=ANY(userid) AND isremoved=FALSE AND id IN (SELECT x.ticketid FROM tbl_ticket_bookmark x WHERE x.userid={0})) AS bookmarks';
 			DATA.query(builder.format(PG_ESCAPE($.user.id))).first().callback($);
 		}
