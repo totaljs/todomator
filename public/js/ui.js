@@ -1,3 +1,94 @@
+function extendeditable(opt) {
+
+	var caret = function(pos) {
+		setTimeout(pos => opt.editor.caret(pos + ''), 1, pos);
+	};
+
+	opt.bold = function() {
+		opt.editor.replace(function(text) {
+
+			if (!text) {
+				text = '';
+				caret('-2');
+			}
+
+			var f = text.charAt(0);
+			return f === '_' || f === '*' ? text.replace(/_|\*/g, '') : ('__' + text + '__');
+
+		}, true);
+	};
+
+	opt.link = function() {
+		opt.editor.replace(function(text) {
+
+			if (!text) {
+				text = '';
+				caret('-6');
+			}
+
+			var f = text.charAt(0);
+			if (f === '[') {
+				var index = text.indexOf(']');
+				if (index === -1)
+					return text;
+				return text.substring(1, index - 1);
+			}
+
+			return '[' + text + '](url)';
+		});
+	};
+
+	opt.italic = function() {
+		opt.editor.replace(function(text) {
+
+			if (!text) {
+				text = '';
+				caret('-1');
+			}
+
+			var f = text.charAt(0);
+			return f === '*' ? text.replace(/\*/g, '') : ('*' + text + '*');
+		});
+	};
+
+	opt.underline = function() {
+		opt.editor.replace(function(text) {
+
+			if (!text) {
+				text = '';
+				caret('-1');
+			}
+
+			var f = text.charAt(0);
+			return f === '_' ? text.replace(/\_/g, '') : ('_' + text + '_');
+		});
+	};
+
+	opt.code = function() {
+		opt.editor.replace(function(text) {
+
+			if (!text) {
+				text = '';
+				caret('-1');
+			}
+
+			var f = text.charAt(0);
+			return f === '`' ? text.replace(/`/g, '') : ('`' + text + '`');
+		});
+	};
+
+	opt.icon = function() {
+		opt.editor.replace(function(text) {
+
+			if (!text)
+				text = 'warning';
+
+			var f = text.charAt(0);
+			return f === ':' ? text.replace(/\:/g, '') : (':' + text + ':');
+		});
+	};
+}
+
 COMPONENT('markdownbody', function(self, config, cls) {
 
 	var mbody = null;
@@ -72,79 +163,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 			opt.tabs = true;
 			opt.placeholder = mplaceholder[0];
 			opt.format = true;
-
-			opt.bold = function() {
-				opt.editor.replace(function(text) {
-
-					if (!text)
-						text = 'text';
-
-					var f = text.charAt(0);
-					return f === '_' || f === '*' ? text.replace(/_|\*/g, '') : ('__' + text + '__');
-				});
-			};
-
-			opt.link = function() {
-				opt.editor.replace(function(text) {
-
-					if (!text)
-						text = 'text';
-
-					var f = text.charAt(0);
-					if (f === '[') {
-						var index = text.indexOf(']');
-						if (index === -1)
-							return text;
-						return text.substring(1, index - 1);
-					}
-
-					return '[' + text + '](url)';
-				});
-			};
-
-			opt.italic = function() {
-				opt.editor.replace(function(text) {
-
-					if (!text)
-						text = 'text';
-
-					var f = text.charAt(0);
-					return f === '*' ? text.replace(/\*/g, '') : ('*' + text + '*');
-				});
-			};
-
-			opt.underline = function() {
-				opt.editor.replace(function(text) {
-
-					if (!text)
-						text = 'text';
-
-					var f = text.charAt(0);
-					return f === '_' ? text.replace(/\_/g, '') : ('_' + text + '_');
-				});
-			};
-
-			opt.code = function() {
-				opt.editor.replace(function(text) {
-
-					if (!text)
-						text = 'code';
-
-					var f = text.charAt(0);
-					return f === '`' ? text.replace(/`/g, '') : ('`' + text + '`');
-				});
-			};
-
-			opt.icon = function() {
-				opt.editor.replace(function(text) {
-
-					if (!text)
-						text = 'warning';
-
-					var f = text.charAt(0);
-					return f === ':' ? text.replace(/\:/g, '') : (':' + text + ':');
-				});
-			};
+			extendeditable(opt);
 
 			self.aclass('editmode');
 
@@ -241,8 +260,11 @@ COMPONENT('chatmessage', function(self, config, cls) {
 		opt.html = '';
 		opt.multiline = 2;
 		opt.tabs = true;
-		opt.format = false;
+		opt.format = true;
 		opt.placeholder = placeholder[0];
+
+		extendeditable(opt);
+
 		opt.resize = function(h) {
 			var tmp = h + 25;
 

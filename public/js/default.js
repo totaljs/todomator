@@ -237,6 +237,67 @@ function Editable(el, opt, callback) {
 		text && document.execCommand('insertHTML', false, text);
 	};
 
+	openeditor.caret = function(pos) {
+
+		if (pos == null) {
+			var sel = document.getSelection();
+			sel.modify('extend', 'backward', 'paragraphboundary');
+			pos = sel.toString().length;
+			if(sel.anchorNode != undefined)
+				sel.collapseToEnd();
+			return pos;
+		}
+
+		if (typeof(pos) === 'string')
+			pos = openeditor.caret() + (+pos);
+
+		var selection = W.getSelection();
+		var range = opt.editor.createrange(pos);
+		if (range) {
+			range.collapse(false);
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
+	};
+
+	openeditor.createrange = function(count, range, node) {
+
+		var chars = count;
+
+		if (typeof(chars) === 'number')
+			chars = { count: count };
+
+		if (!node)
+			node = openeditor.element[0];
+
+		if (!range) {
+			range = document.createRange();
+			range.selectNode(node);
+			range.setStart(node, 0);
+		}
+
+		if (chars.count === 0) {
+			range.setEnd(node, chars.count);
+		} else if (node && chars.count > 0) {
+			if (node.nodeType === Node.TEXT_NODE) {
+				if (node.textContent.length < chars.count) {
+					chars.count -= node.textContent.length;
+				} else {
+					range.setEnd(node, chars.count);
+					chars.count = 0;
+				}
+			} else {
+				for (var lp = 0; lp < node.childNodes.length; lp++) {
+					range = openeditor.createrange(chars, range, node.childNodes[lp]);
+					if (chars.count === 0)
+						break;
+				}
+			}
+		}
+
+		return range;
+	};
+
 	opt.editor = openeditor;
 
 	var clickoutside = function(e) {
@@ -388,6 +449,40 @@ function Editable(el, opt, callback) {
 		return W.getSelection().toString();
 	};
 
+	openeditor.find = function(text, callback, el) {
+
+		var NODE_TYPE_TEXT = 3;
+		var tree = {};
+
+		if (!el)
+			el = openeditor.element[0];
+
+		var browse = function(element, obj) {
+			var nodes = element.childNodes;
+			if (nodes != null && nodes.length) {
+				obj[element.nodeName] = [];
+				for (var node of nodes) {
+					if (node.nodeType == NODE_TYPE_TEXT) {
+						var p = node.nodeValue.indexOf(text);
+						if (p != -1) {
+							var sel = W.getSelection();
+							var range = sel.getRangeAt(0);
+							range.setStart(node, p);
+							range.setEnd(node, p + text.length);
+							callback && callback(range);
+							return;
+						}
+					} else {
+						obj[element.nodeName].push({});
+						browse(node, obj[element.nodeName][obj[element.nodeName].length - 1]);
+					}
+				}
+			} else if (callback)
+				callback();
+		};
+		browse(el, tree);
+	};
+
 	openeditor.replace = function(callback, noselect) {
 
 		var sel = W.getSelection();
@@ -420,6 +515,8 @@ function Editable(el, opt, callback) {
 				noselect && sel.removeAllRanges();
 				sel.addRange(range);
 			}
+
+			openeditor.checkplaceholder();
 		}
 	};
 
@@ -456,17 +553,19 @@ function Editable(el, opt, callback) {
 	el.on('keydown', keydown);
 	el.on('keyup', keyup);
 
-	if (opt.placeholder) {
-		var placeholder = opt.placeholder;
-		var placeholderprev = false;
-		placeholder && el.on('input', function() {
-			var is = this.innerHTML.length > 0;
+	var placeholder = opt.placeholder;
+	var placeholderprev = false;
+
+	openeditor.checkplaceholder = function() {
+		if (placeholder) {
+			var is = el[0].innerHTML.length > 0;
 			if (placeholderprev !== is) {
 				placeholderprev = is;
 				placeholder.classList.toggle('hidden', is);
 			}
-		});
-	}
+		}
+	};
 
+	opt.placeholder && placeholder && el.on('input', openeditor.checkplaceholder);
 	el.on('paste', paste);
 }
