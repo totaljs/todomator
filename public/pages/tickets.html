@@ -311,6 +311,8 @@
 				}
 
 				response.sort(function(a, b) {
+					if (a.statusid !== b.statusid)
+						return 0;
 					if (!a.warn && b.warn)
 						return 1;
 					if (a.warn && !b.warn)
