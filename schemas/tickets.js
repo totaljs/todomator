@@ -159,7 +159,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:UID, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number',
+		input: '*name:String, statusid:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number',
 		public: true,
 		action: async function($, model) {
 
@@ -176,7 +176,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (model.ispublic && model.userid.length)
 				model.userid = [];
 
-			model.statusid = 'pending';
+			if (!model.statusid)
+				model.statusid = 'pending';
+
 			model.search = model.name.toSearch();
 
 			keys.unshift('id');
