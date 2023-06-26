@@ -65,6 +65,10 @@
 	.CLASS .comments { font-size: 16px; font-weight: normal; margin: 0 0 0 5px; position: relative; display: inline-block; vertical-align: middle; color: rgba(0,0,0,0.4); }
 	.CLASS .logo { float: left; margin: 20px 0 0 8px; }
 	.CLASS .logo img { width: 120px; }
+	.CLASS .flag { padding: 3px 3px; border-radius: var(--radius); font-size: 11px; margin-right: 5px; color: #FFF; vertical-align: middle; text-transform: uppercase; font-weight: bold; }
+	.CLASS .flag-asap { background-color: #E73323; }
+	.CLASS .flag-week { background-color: #62C9CA; }
+	.CLASS .flag-today { background-color: #83C83C; }
 
 	@keyframes ticketscalendarbutton {
 		0% { transform: scale(1); }
@@ -150,7 +154,8 @@
 												<div class="status">{{ m.statusid | status }}</div>
 												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip">{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													{{ if m.assigned }}<i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i>{{ fi }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.ispriority && (m.statusid === 'open' || m.statusid === 'pending' || m.statusid === 'review') }}<span class="badge badge-red badge-small mr5">@(Priority)</span>{{ fi }}{{ if m.statusid === 'note' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													{{ m.warn | warn }}
+													{{ if m.assigned }}<i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i>{{ fi }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.userid && m.userid.length }}
 													<div class="user">
@@ -187,6 +192,20 @@
 	Thelpers.folder = function(val) {
 		var item = DEF.cl.folder.findItem('id', val);
 		return item ? ('<i class="ti ti-bull" style="color:{color}"></i>{name}'.args(item)) : DEF.empty;
+	};
+
+	Thelpers.warn = function(val) {
+		if (!val)
+			return '';
+
+		switch (val) {
+			case 1:
+				return '<span class="flag flag-week">@(This week)</span>';
+			case 2:
+				return '<span class="flag flag-today">@(Today)</span>';
+			case 3:
+				return '<span class="flag flag-asap">@(ASAP)</span>';
+		}
 	};
 
 	Thelpers.uriencode = function(val) {
@@ -270,13 +289,36 @@
 			exports.tapi(QUERIFY('tickets', filter) + ' ERROR', function(response) {
 
 				var dt = +NOW.format('yyyyMMdd');
+				var day = 7 - NOW.getDay();
+				var week = NOW.add(day + ' days').format('yyyyMMdd');
 
 				for (var m of response) {
+
+					if ((m.statusid === 'pending' || m.statusid === 'open') && m.deadline) {
+						var tmp = +m.deadline.format('yyyyMMdd');
+						if (dt === tmp)
+							m.warn = 2; // today
+						else if (tmp < dt)
+							m.warn = 3; // expired
+						else if (dt < week)
+							m.warn = 1; // this week
+					}
+
 					m.postponed = (+m.date.format('yyyyMMdd')) > dt;
 					m.assigned = m.statusid !== 'note' && m.ownerid === user.id && (m.userid.length > 1 || (m.userid.length && !m.userid.includes(user.id)));
 					m.isclosed = m.statusid === 'closed';
 					m.version = model.version; // for reseting of cache
 				}
+
+				response.sort(function(a, b) {
+					if (!a.warn && b.warn)
+						return 1;
+					if (a.warn && !b.warn)
+						return -1;
+					if (a.warn > b.warn)
+						return -1;
+					return 0;
+				});
 
 				if (skip) {
 					if (response.length) {
