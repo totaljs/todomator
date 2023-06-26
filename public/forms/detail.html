@@ -115,9 +115,11 @@
 
 						<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
 
+						{{ if !value.ispublic }}
 						<div style="height:70px">
 							<div class="exec users" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
 						</div>
+						{{ fi }}
 
 						<div class="row">
 							<div class="col-md-6">
@@ -748,6 +750,7 @@
 			opt.items.push({ id: 'drop', name: '@(Upload attachment)', icon: 'ti ti-file' });
 			opt.items.push({ id: 'priority', name: '@(High priority)', icon: 'ti ti-arrow-up', selected: model.ispriority == true });
 			opt.items.push({ id: 'billable', name: '@(Billable)', icon: 'ti ti-invoice', selected: model.isbillable == true });
+			opt.items.push({ id: 'public', name: '@(Open to all)', icon: 'ti ti-users', selected: model.ispublic == true });
 			opt.items.push('-');
 			opt.items.push({ id: 'logs', name: '@(Logs)', icon: 'ti ti-clock' });
 			opt.items.push({ id: 'clone', name: '@(Clone)', icon: 'ti ti-clone' });
@@ -764,6 +767,7 @@
 				switch (selected.id) {
 					case 'priority':
 					case 'billable':
+					case 'public':
 						var data = {};
 						var key = 'is' + selected.id;
 						data[key] = !selected.selected;

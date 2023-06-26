@@ -15,6 +15,7 @@
 	.CLASS .open .assigned b { background-color: rgb(115,182,255,0.28); }
 	.CLASS .priority.open .assigned b { background-color: rgba(232,72,63,0.15); }
 	.CLASS .user i { margin-right: 5px; }
+	.CLASS .public { font-size: 15px; }
 	.CLASS .date { line-height: 21px; width: 100px; float: right; color: #777; margin-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: right; }
 	.CLASS .worked { float: right; color: #777; text-align: right; border-right: 1px solid #E0E0E0; margin-right: 10px; padding-right: 10px; line-height: 21px; min-height: 21px; }
 	.CLASS .worked span { margin-right: 5px; color: #A0A0A0; }
@@ -157,7 +158,9 @@
 													{{ m.warn | warn }}
 													{{ if m.assigned }}<i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i>{{ fi }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
-													{{ if m.userid && m.userid.length }}
+													{{ if m.ispublic }}
+													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
+													{{ else if m.userid && m.userid.length }}
 													<div class="user">
 														{{ m.userid | users(true) }}
 													</div>

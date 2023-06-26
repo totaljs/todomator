@@ -42,7 +42,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		if (query.type === 'review')
 			builder.query('a.ownerid={1}'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
 		else if (!$.user.admin || !query.admin)
-			builder.query('(a.ownerid={1} OR a.userid && {0}::_text)'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
+			builder.query('(a.ispublic=TRUE OR a.ownerid={1} OR a.userid && {0}::_text)'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
 
 		var search = query.q;
 
@@ -99,7 +99,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number',
 		public: true,
 		action: function($) {
-			var builder = DATA.query('SELECT a.id,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,b.isunread,b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
+			var builder = DATA.query('SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,b.isunread,b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
 			var query = $.query;
 			makefilter($, builder);
 			builder.sort('sortindex');
@@ -143,7 +143,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			builder.where('a.id', params.id);
 
 			if (!$.user.sa || $.user.permissions.includes('admin'))
-				builder.query('((a.userid && {0}::_text) OR ownerid={1})'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
+				builder.query('(a.ispublic=TRUE OR (a.userid && {0}::_text) OR ownerid={1})'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
 
 			builder.first();
 			builder.error('@(Ticket not found)');
@@ -159,7 +159,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, worked:Number',
+		input: '*name:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, worked:Number',
 		public: true,
 		action: async function($, model) {
 
@@ -171,6 +171,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			model.ownerid = $.user.id;
 
 			if (!model.userid)
+				model.userid = [];
+
+			if (model.ispublic && model.userid.length)
 				model.userid = [];
 
 			model.statusid = 'pending';
@@ -226,7 +229,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], *folderid:UID, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String',
+		input: 'userid:[String], *folderid:UID, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String',
 		params: '*id:String',
 		public: true,
 		action: async function($, model) {
@@ -249,7 +252,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			var userid = null;
 			var tmp;
 
-			if (model.userid) {
+			if (model.ispublic)
+				model.userid = [];
+			else if (model.userid) {
 				model.changed = 'user';
 				tmp = await DATA.read('tbl_ticket').fields('userid').id(params.id).where('isremoved=FALSE').error(404).promise($);
 				userid = tmp.userid;
@@ -589,8 +594,8 @@ NEWSCHEMA('Tickets', function(schema) {
 			var builder = 'SELECT ';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket_unread a INNER JOIN tbl_ticket b ON b.id=a.ticketid AND b.isremoved=FALSE AND b.date<=timezone(\'utc\'::text, now()) WHERE a.userid={0} AND a.isunread=TRUE) AS unread,';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'review\' AND ownerid={0} AND isremoved=FALSE) AS review,';
-			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'pending\' AND (ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS pending,';
-			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'open\' AND (ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS open,';
+			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'pending\' AND (ispublic=TRUE OR ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS pending,';
+			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'open\' AND (ispublic=TRUE OR ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS open,';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE {0}=ANY(userid) AND isremoved=FALSE AND id IN (SELECT x.ticketid FROM tbl_ticket_bookmark x WHERE x.userid={0})) AS bookmarks';
 			DATA.query(builder.format(PG_ESCAPE($.user.id))).first().callback($);
 		}

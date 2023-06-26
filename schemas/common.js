@@ -16,7 +16,7 @@ NEWSCHEMA('Common', function(schema) {
 			builder.sort('name');
 
 			if (!$.user.sa)
-				builder.query('id IN (SELECT folderid FROM tbl_ticket WHERE isremoved=FALSE AND userid && {0}::_text GROUP BY folderid)'.format(PG_ESCAPE('{' + $.user.id + '}')));
+				builder.query('id IN (SELECT folderid FROM tbl_ticket WHERE isremoved=FALSE AND (ispublic=TRUE OR ownerid={0} OR userid && {0}::_text) GROUP BY folderid)'.format(PG_ESCAPE('{' + $.user.id + '}')));
 
 			builder.set('folder');
 			var response = await db.promise($);

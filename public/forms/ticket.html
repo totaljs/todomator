@@ -1,21 +1,32 @@
-<ui-component name="miniform" path="common.form" config="if:~PATH~;width:380;title:@(Create ticket);autofocus:1;submit:?/submit;icon:ti ti-check-square;enter:true" plugin="~PATH~" class="hidden">
+<ui-component name="miniform" path="common.form" config="if:CLASS;width:440;title:@(Create ticket);autofocus:1;submit:?/submit;icon:ti ti-check-square;enter:true" plugin="CLASS" class="hidden invisible">
 	<div class="padding npb">
 
 		<div class="m">
 			<ui-component name="input" path="?.name" config="type:string;required:1;maxlength:250;placeholder:@(Enter a ticket name)">@(Name)</ui-component>
 		</div>
 
-		<div class="m">
-			<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(Empty);placeholder:@(Choose a folder)">@(Folder)</ui-component>
+		<div class="grid-2">
+			<div class="m">
+				<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(Empty);placeholder:@(Choose a folder)">@(Folder)</ui-component>
+			</div>
+			<div class="m">
+				<ui-component name="input" path="?.statusid" config="dirsource:#status" default="'pending'">@(Status)</ui-component>
+			</div>
 		</div>
 
 		<div class="m">
-			<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users);icon:ti ti-users">@(Assign to)</ui-component>
+			<ui-bind path="?.ispublic" config="disabled" class="block m">
+				<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)">@(Assign to)</ui-component>
+			</ui-bind>
+			<ui-component name="input" path="?.ispublic" config="type:checkbox">@(Open to all)</ui-component>
 		</div>
+
+		<hr />
 
 		<div class="grid-2">
 			<div class="m">
-				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW">@(Date)</ui-component>
+				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW" class="m">@(Date)</ui-component>
+				<ui-component name="input" path="?.isdeadline" config="type:checkbox" default="true">@(Use as deadline)</ui-component>
 			</div>
 			<div class="m">
 				<ui-bind path="?.logwork" config="disabled">
@@ -25,7 +36,7 @@
 		</div>
 	</div>
 
-	<hr />
+	<hr class="nmt" />
 
 	<div class="padding npt">
 		<ui-component name="input" path="?.ispriority" config="type:checkbox"><b class="red">@(High priority)</b></ui-component>
@@ -58,6 +69,9 @@
 				minutes = minutes.replace(/[^0-9,.]/g, '').parseFloat();
 
 			model.worked = model.logwork ? 0 : minutes;
+
+			if (model.isdeadline)
+				model.deadline = model.date;
 
 			exports.tapi('tickets_create ERROR', model, function(response) {
 
