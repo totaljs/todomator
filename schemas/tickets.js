@@ -1,4 +1,4 @@
-const Returning = 'id,ownerid,userid,parentid,reference,folderid,statusid,source,name,estimate,worked,ispriority,isbillable,tags,deadline,attachments,dtcreated,dtupdated,dtparent';
+const Returning = 'id,ownerid,userid,parentid,reference,folderid,statusid,source,name,estimate,worked,ispriority,isbillable,ispublic,tags,deadline,attachments,dtcreated,dtupdated,dtparent';
 
 NEWSCHEMA('Tickets', function(schema) {
 
@@ -207,7 +207,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				await DATA.insert('tbl_ticket_time', logwork).promise($);
 			}
 
-			var filter = client => response.ownerid === client.user.id || response.userid.includes(client.user.id);
+			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
 
 			if (response.userid.length) {
 				var users = await DATA.find('tbl_user').fields('id,name').in('id', response.userid).promise($);
@@ -265,7 +265,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			var response = await DATA.modify('tbl_ticket', model).error(404).id(params.id).where('isremoved=FALSE').returning(Returning).first().promise($);
 
-			if (model.userid) {
+			if (model.ispublic == null && model.userid) {
 				var newbie = [];
 				for (let m of model.userid) {
 					if (!userid.includes(m))
@@ -288,12 +288,12 @@ NEWSCHEMA('Tickets', function(schema) {
 					await FUNC.notify(response.id, m, 'metadata', $.user.name, keys.join(','), null, m !== $.user.id);
 			}
 
-			if (response.userid) {
+			if (response.userid && response.userid.length) {
 				DATA.remove('tbl_ticket_unread').where('ticketid', params.id).notin('userid', response.userid);
 				DATA.remove('tbl_notification').where('ticketid', params.id).notin('userid', response.userid);
 			}
 
-			var filter = client => response.ownerid === client.user.id || response.userid.includes(client.user.id);
+			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown }, filter);
 
 			response.type = 'udpate';
@@ -355,7 +355,10 @@ NEWSCHEMA('Tickets', function(schema) {
 				item.userid = [];
 
 			var response = await DATA.insert('tbl_ticket', item).returning(Returning).promise($);
-			var filter = client => response.ownerid === client.user.id || response.userid.includes(client.user.id);
+			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
+
+			if (response.ispublic)
+				response.userid = MAIN.users;
 
 			for (var m of response.userid) {
 				if (m !== $.user.id)
@@ -452,13 +455,19 @@ NEWSCHEMA('Tickets', function(schema) {
 			await DATA.modify('tbl_ticket_time', { '+minutes': diff, start: null }).id(model.id).promise($);
 			await DATA.modify('tbl_ticket', { '+worked': diff }).id(item.ticketid).promise($);
 
-			var ticket = await DATA.read('tbl_ticket').fields('userid,worked').id(item.ticketid).promise($);
+			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(item.ticketid).promise($);
 			$.callback({ id: item.ticketid, worked: ticket.worked });
+
+			if (ticket.ispublic)
+				ticket.userid = MAIN.users;
 
 			for (var m of ticket.userid) {
 				if (m !== $.user.id)
 					FUNC.notify(item.ticketid, m, 'logwork', $.user.name, diff + '');
 			}
+
+			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
+			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
 
 		}
 	});
@@ -481,13 +490,19 @@ NEWSCHEMA('Tickets', function(schema) {
 			await DATA.modify('tbl_ticket', { '+worked': model.minutes }).id(model.ticketid).error('@(Ticket not found)').promise($);
 			await DATA.insert('tbl_ticket_time', model).promise($);
 
-			var ticket = await DATA.read('tbl_ticket').fields('userid,worked').id(model.ticketid).promise($);
+			var ticket = await DATA.read('tbl_ticket').fields('id,userid,worked,ispublic,ownerid').id(model.ticketid).promise($);
 			$.success(ticket.worked);
+
+			if (ticket.ispublic)
+				ticket.userid = MAIN.users;
 
 			for (var m of ticket.userid) {
 				if (m !== $.user.id)
 					FUNC.notify(model.ticketid, m, 'logwork', $.user.name, model.minutes + '');
 			}
+
+			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
+			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
 
 		}
 	});
@@ -506,8 +521,11 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			var response = await DATA.modify('tbl_ticket_time', model).id(params.id).error('@(Log not found)').returning('ticketid').first().promise($);
 			await DATA.query('UPDATE tbl_ticket a SET worked=(SELECT SUM(x.minutes) FROM tbl_ticket_time x WHERE x.ticketid=a.id) WHERE a.id=' + PG_ESCAPE(response.ticketid));
-			var ticket = await DATA.read('tbl_ticket').fields('worked').id(response.ticketid).promise($);
+			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(response.ticketid).promise($);
 			$.success(ticket.worked);
+
+			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
+			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
 		}
 	});
 
@@ -518,8 +536,10 @@ NEWSCHEMA('Tickets', function(schema) {
 			var params = $.params;
 			var response = await DATA.remove('tbl_ticket_time').id(params.id).error('@(Log not found)').returning('ticketid').first().promise($);
 			await DATA.query('UPDATE tbl_ticket a SET worked=(SELECT SUM(x.minutes) FROM tbl_ticket_time x WHERE x.ticketid=a.id) WHERE a.id=' + PG_ESCAPE(response.ticketid));
-			var ticket = await DATA.read('tbl_ticket').fields('worked').id(response.ticketid).promise($);
+			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(response.ticketid).promise($);
 			$.success(ticket.worked);
+			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
+			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
 		}
 	});
 
@@ -614,7 +634,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				return;
 			}
 
-			var ticket = await DATA.read('tbl_ticket').fields('userid,ownerid').id(params.id).error('@(Ticket not found)').promise($);
+			var ticket = await DATA.read('tbl_ticket').fields('ispublic,userid,ownerid').id(params.id).error('@(Ticket not found)').promise($);
 
 			if (model.type === 'add') {
 				await DATA.modify('tbl_ticket', { parentid: params.id, dtparent: NOW }).id(model.ticketid).promise($);
@@ -622,7 +642,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				await DATA.modify('tbl_ticket', { parentid: null, dtparent: null }).id(model.ticketid).where('parentid', params.id).promise($);
 			}
 
-			var filter = client => ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
+			var filter = client => tikcet.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id }, filter);
 			$.success();
 
@@ -680,6 +700,9 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			await DATA.insert('tbl_ticket_comment', model).promise($);
 			updatecommentscount(model.ticketid);
+
+			if (item.ispublic)
+				item.userid = MAIN.users;
 
 			for (var m of item.userid)
 				FUNC.notify(model.ticketid, m, 'comment', $.user.name, model.markdown.max(50), model.id, m !== $.user.id);

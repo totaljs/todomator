@@ -1,5 +1,16 @@
 NEWSCHEMA('Users', function(schema) {
 
+	// Temporary object for users
+	MAIN.users = [];
+
+	(async function() {
+		var tmp = await DATA.find('tbl_user').fields('id').where('isremoved=FALSE').promise();
+		for (let m of tmp) {
+			if (m.id !== 'bot')
+				MAIN.users.push(m.id);
+		}
+	})();
+
 	schema.action('list', {
 		name: 'List of users',
 		permissions: 'users',
@@ -18,6 +29,7 @@ NEWSCHEMA('Users', function(schema) {
 			model.password = model.password ? model.password.sha256(CONF.auth_secret) : null;
 			model.search = model.name.toSearch().replace(/\s/g, '');
 			DATA.insert('tbl_user', model).callback($.done(model.id));
+			MAIN.users.push(model.id);
 		}
 	});
 
@@ -56,6 +68,9 @@ NEWSCHEMA('Users', function(schema) {
 			if (params.id === 'bot')
 				$.invalid("@(You can't remove HelpDesk bot)");
 			else {
+				var index = MAIN.users.indexOf(params.id);
+				if (index !== -1)
+					MAIN.users.splice(index, 1);
 				DATA.modify('tbl_user', { isremoved: true, dtupdated: NOW }).id(params.id).where('isremoved=FALSE').error(404).callback($.done(params.id));
 				MAIN.session.refresh(params.id);
 			}
@@ -134,6 +149,5 @@ NEWSCHEMA('Users', function(schema) {
 			DATA.modify('tbl_user', { password: model.password.sha256(CONF.auth_secret), dtupdated: NOW }).id($.user.id).error(404).callback($);
 		}
 	});
-
 
 });
