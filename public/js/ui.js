@@ -5,25 +5,36 @@ function extendeditable(opt) {
 	};
 
 	opt.bold = function() {
+
+		var replace = '';
+
 		opt.editor.replace(function(text) {
 
 			if (!text) {
-				text = '';
-				caret('-2');
+				text = Date.now().toString(36);
+				replace = text;
 			}
 
 			var f = text.charAt(0);
 			return f === '_' || f === '*' ? text.replace(/_|\*/g, '') : ('__' + text + '__');
 
 		}, true);
+
+		if (replace) {
+			opt.editor.find(replace);
+			opt.editor.replace(() => '');
+		}
 	};
 
 	opt.link = function() {
+
+		var replace = '';
+
 		opt.editor.replace(function(text) {
 
 			if (!text) {
-				text = '';
-				caret('-6');
+				text = Date.now().toString(36);
+				replace = text;
 			}
 
 			var f = text.charAt(0);
@@ -36,45 +47,74 @@ function extendeditable(opt) {
 
 			return '[' + text + '](url)';
 		});
+
+		if (replace) {
+			opt.editor.find(replace);
+			opt.editor.replace(() => '');
+		}
+
 	};
 
 	opt.italic = function() {
+		var replace = '';
+
 		opt.editor.replace(function(text) {
 
 			if (!text) {
-				text = '';
-				caret('-1');
+				text = Date.now().toString(36);
+				replace = text;
 			}
-
 			var f = text.charAt(0);
 			return f === '*' ? text.replace(/\*/g, '') : ('*' + text + '*');
 		});
+
+		if (replace) {
+			opt.editor.find(replace);
+			opt.editor.replace(() => '');
+		}
+
 	};
 
 	opt.underline = function() {
+		var replace = '';
+
 		opt.editor.replace(function(text) {
 
 			if (!text) {
-				text = '';
-				caret('-1');
+				text = Date.now().toString(36);
+				replace = text;
 			}
 
 			var f = text.charAt(0);
 			return f === '_' ? text.replace(/\_/g, '') : ('_' + text + '_');
 		});
+
+		if (replace) {
+			opt.editor.find(replace);
+			opt.editor.replace(() => '');
+		}
+
 	};
 
 	opt.code = function() {
+		var replace = '';
+
 		opt.editor.replace(function(text) {
 
 			if (!text) {
-				text = '';
-				caret('-1');
+				text = Date.now().toString(36);
+				replace = text;
 			}
 
 			var f = text.charAt(0);
 			return f === '`' ? text.replace(/`/g, '') : ('`' + text + '`');
 		});
+
+		if (replace) {
+			opt.editor.find(replace);
+			opt.editor.replace(() => '');
+		}
+
 	};
 
 	opt.icon = function() {

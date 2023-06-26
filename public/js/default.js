@@ -490,6 +490,7 @@ function Editable(el, opt, callback) {
 
 			var html = sel.toString();
 			html = callback(html);
+
 			if (html === sel)
 				return;
 
