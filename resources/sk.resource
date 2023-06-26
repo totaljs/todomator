@@ -217,3 +217,5 @@ T10bsjtg     : Dvojitým kliknutím môžete editovať text
 T136ejw      : Dátum:
 Tmwvrbq      : Tento týždeň
 T179b5       : ASAP
+Tpwirqq      : Otvorené pre všetkých
+Tbtjryl      : Použiť ako termín vyriešenia
