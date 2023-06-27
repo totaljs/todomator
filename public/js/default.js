@@ -1,7 +1,7 @@
 Thelpers.markdown2 = function(val) {
 
 	var opt = {};
-	var allowed = ['.', ',', ' ', ':'];
+	var allowed = ['.', ',', ' ', ':', '(', ')'];
 	var users = /[a-zA-Z]+/;
 	var tasks = /[a-zA-Z0-9]+/;
 

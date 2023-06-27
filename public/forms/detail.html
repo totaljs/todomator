@@ -817,7 +817,7 @@
 			SET('common.title', title);
 			var model = exports.model;
 
-			if (location.hash === model.id)
+			if (location.hash.substring(1) === model.id)
 				location.hash = '';
 
 			exports.model.id = '';
