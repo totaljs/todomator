@@ -201,7 +201,7 @@ T1sksnqp     : Heslo znova
 Tyop623      : Heslá sa nezhodujú
 T1q4xqtw     : Komentáre
 Topqbe6      : Pre tento rozsah dátumov nemáte žiadny nepriradený lístok.
-T1ya5sla     : Zmeniž dátum
+T1ya5sla     : Zmeniť dátum
 T1x9grwi     : Zmeniť stav
 T1jchikc     : Priradiť používateľovi
 T1xac911     : Priradené tikety
