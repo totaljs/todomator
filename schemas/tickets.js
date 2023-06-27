@@ -215,9 +215,10 @@ NEWSCHEMA('Tickets', function(schema) {
 				var users = await DATA.find('tbl_user').fields('id,name').in('id', response.userid).promise($);
 				for (let m of response.userid) {
 					let user = users.findItem('id', m);
-					if (user) {
+					if (user && user.id !== $.user.id) {
 						await FUNC.notify(response.id, m, 'user', $.user.name, user.name);
-						await FUNC.unread(response.id, m, 'user', user.name, m !== $.user.id);
+						if (m !== $.user.id)
+							await FUNC.unread(response.id, m, 'user', user.name);
 					}
 				}
 			}
@@ -277,13 +278,12 @@ NEWSCHEMA('Tickets', function(schema) {
 				}
 				if (newbie.length) {
 					var users = await DATA.find('tbl_user').fields('id,name').in('id', newbie).promise($);
-					for (let m of response.userid) {
-						for (let n of newbie) {
-							let user = users.findItem('id', n);
-							if (user) {
-								await FUNC.notify(response.id, m, 'user', $.user.name, user.name);
-								await FUNC.unread(response.id, m, 'user', user.name, m !== $.user.id);
-							}
+					for (let n of newbie) {
+						let user = users.findItem('id', n);
+						if (user) {
+							await FUNC.notify(response.id, $.user.id, 'user', $.user.name, user.name);
+							if (user.id !== $.user.id)
+								await FUNC.unread(response.id, user.id, 'user', user.name);
 						}
 					}
 				}
@@ -296,8 +296,10 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			} else if (response.ownerid === $.user.id) {
 				await FUNC.notify(response.id, $.user.id, 'metadata', $.user.name, keys.join(','));
-				for (let m of response.userid)
-					await FUNC.unread(response.id, m, 'metadata', keys.join(','), m !== $.user.id);
+				for (let m of response.userid) {
+					if (m !== $.user.id)
+						await FUNC.unread(response.id, m, 'metadata', keys.join(','));
+				}
 			}
 
 			if (response.userid && response.userid.length)
@@ -371,10 +373,8 @@ NEWSCHEMA('Tickets', function(schema) {
 				response.userid = MAIN.users;
 
 			for (var m of response.userid) {
-				if (m !== $.user.id) {
-					await FUNC.notify(response.id, m, 'user', $.user.name);
+				if (m !== $.user.id)
 					await FUNC.unread(response.id, m, 'user');
-				}
 			}
 
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: item.id }, filter);

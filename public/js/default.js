@@ -3,8 +3,9 @@ Thelpers.markdown2 = function(val) {
 	var opt = {};
 
 	opt.html = function(line) {
-		return line.replace(/(^|\s|:|.|,)?@[a-z0-9]+(.|,|\s|:|$)/gi, function(text) {
+		return line.replace(/(^|\s|:|.|,)@[a-z0-9]+(.|,|\s|:|$)/gi, function(text) {
 
+			var raw = text;
 			var last = text.substring(text.length - 1);
 
 			if (last !== '.' && last !== ',' && last !== ' ')
@@ -26,8 +27,14 @@ Thelpers.markdown2 = function(val) {
 					return first + '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>' + last;
 			}
 
-			return text;
-		}).replace(/(^|\s)?#[a-z0-9]{10,14}(.|,|\s|:|$)/gi, function(text) {
+			return raw;
+
+		}).replace(/(^|\s)#[a-z0-9]{10,14}(.|,|\s|:|$)/gi, function(text) {
+
+			console.log('2', text);
+
+			if ((counter++) > 20)
+				return text;
 
 			var last = text.substring(text.length - 1);
 

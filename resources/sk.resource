@@ -1,6 +1,7 @@
 Txffrt8      : Zatvorené
 T1fih608     : Prebieha
 Tg8p2lz      : Čaká
+T1g64y       : Poznámka
 T1uivwxa     : Odložené
 T14fdt2w     : Kontrola
 T18ly6bo     : Znova otvoriť
