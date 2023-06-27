@@ -443,9 +443,6 @@
 
 		exports.owner = function(el) {
 
-			if (UNAUTHORIZED('admin'))
-				return;
-
 			var model = exports.model;
 			var opt = {};
 			var sel = EMPTYARRAY;
