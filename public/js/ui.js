@@ -1,9 +1,5 @@
 function extendeditable(opt) {
 
-	var caret = function(pos) {
-		setTimeout(pos => opt.editor.caret(pos + ''), 1, pos);
-	};
-
 	opt.bold = function() {
 
 		var replace = '';
@@ -149,13 +145,12 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 		self.event('click', 'li', function(e) {
 
-			var t = this;
-
-			if (e.tagName === 'A')
+			if (e.target.tagName === 'A')
 				return;
 
 			e.stopPropagation();
 
+			var t = this;
 			var el = $(t);
 			var line = ATTRD(el, 'line');
 
