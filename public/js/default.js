@@ -1,5 +1,7 @@
 Thelpers.markdown2 = function(val) {
+
 	var opt = {};
+
 	opt.html = function(line) {
 		return line.replace(/(^|\s|:|.|,)?@[a-z0-9]+(.|,|\s|:|$)/gi, function(text) {
 
@@ -23,9 +25,55 @@ Thelpers.markdown2 = function(val) {
 				if (m.search.indexOf(text.trim().substring(1).toLowerCase()) !== -1) {
 					return first + '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>' + last;
 			}
+
 			return text;
+		}).replace(/(^|\s)?#[a-z0-9]{10,14}(.|,|\s|:|$)/gi, function(text) {
+
+			var last = text.substring(text.length - 1);
+
+			if (last !== '.' && last !== ',' && last !== ' ')
+				last = '';
+
+			if (last)
+				text = text.substring(0, text.length - 1);
+
+			var first = text.substring(0, 1);
+
+			if (first !== '#')
+				text = text.substring(1);
+
+			if (first === '#')
+				first = '';
+
+			return first + '<span class="markdown-link" data-id="{0}"></span>'.format(text.substring(1)) + last;
 		});
 	};
+
+	setTimeout(function() {
+
+		var links = $('.markdown-link');
+		var arr = [];
+
+		for (var link of links)
+			arr.push(ATTRD(link));
+
+		if (arr.length) {
+			TAPI(QUERIFY('tickets_find', { id: arr.join(',') }), function(response) {
+				for (var link of links) {
+					var id = ATTRD(link);
+					var item = response.findItem('id', id);
+					var el = $(link);
+					if (item) {
+						item.icon = item.statusid === 'closed' ? 'ti-check-square' : 'ti ti-square';
+						el.replaceWith('<a href="#{id}" class="markdown-task"><i class="ti {{ icon }}"></i>{name}</a>'.args(item));
+					} else
+						el.replaceWith('#' + id);
+				}
+			});
+		}
+
+	}, 10);
+
 	return val.markdown(opt);
 };
 

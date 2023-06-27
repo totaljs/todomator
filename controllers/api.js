@@ -7,6 +7,7 @@ exports.install = function() {
 
 	// Tickets
 	ROUTE('+API    /api/       -tickets                   *Tickets    --> list');
+	ROUTE('+API    /api/       -tickets_find              *Tickets    --> find');
 	ROUTE('+API    /api/       -tickets_calendar          *Tickets    --> calendar');
 	ROUTE('+API    /api/       -tickets_detail/{id}       *Tickets    --> read');
 	ROUTE('+API    /api/       -tickets_users             *Tickets    --> users');

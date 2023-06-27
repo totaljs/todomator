@@ -818,7 +818,11 @@
 
 		exports.hide = function() {
 			SET('common.title', title);
-			location.hash = '';
+			var model = exports.model;
+
+			if (location.hash === model.id)
+				location.hash = '';
+
 			exports.model.id = '';
 			changed && caller && caller.exec('refresh');
 		};

@@ -672,6 +672,15 @@ NEWSCHEMA('Tickets', function(schema) {
 		}
 	});
 
+	schema.action('find', {
+		name: 'Find tickets according identifiers',
+		query: '*id:String',
+		action: function($) {
+			var fields = 'id,name,folderid,statusid,userid,worked,ownerid,dtcreated';
+			DATA.find('tbl_ticket').fields(fields).in('id', $.query.id.split(',')).where('isremoved=FALSE').sort('dtcreated', true).callback($);
+		}
+	});
+
 	schema.action('comments', {
 		name: 'List of comments',
 		params: '*id:String',
