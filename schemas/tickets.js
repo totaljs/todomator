@@ -215,7 +215,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				var users = await DATA.find('tbl_user').fields('id,name').in('id', response.userid).promise($);
 				for (let m of response.userid) {
 					let user = users.findItem('id', m);
-					if (user && user.id !== $.user.id) {
+	:				if (user && user.id !== $.user.id) {
 						await FUNC.notify(response.id, m, 'user', $.user.name, user.name);
 						if (m !== $.user.id)
 							await FUNC.unread(response.id, m, 'user', user.name);
@@ -664,7 +664,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				await DATA.modify('tbl_ticket', { parentid: null, dtparent: null }).id(model.ticketid).where('parentid', params.id).promise($);
 			}
 
-			var filter = client => tikcet.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
+			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id }, filter);
 			$.success();
 
