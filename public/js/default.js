@@ -1,59 +1,77 @@
 Thelpers.markdown2 = function(val) {
 
 	var opt = {};
+	var allowed = ['.', ',', ' ', ':'];
+	var users = /[a-zA-Z]+/;
+	var tasks = /[a-zA-Z0-9]+/;
 
 	opt.html = function(line) {
-		return line.replace(/(^|\s|:|.|,)@[a-z0-9]+(.|,|\s|:|$)/gi, function(text) {
 
-			var raw = text;
-			var last = text.substring(text.length - 1);
+		var index = 0;
 
-			if (last !== '.' && last !== ',' && last !== ' ')
-				last = '';
+		while (true) {
 
-			if (last)
-				text = text.substring(0, text.length - 1);
+			index = line.indexOf('@', index);
+			if (index === -1)
+				break;
 
-			var first = text.substring(0, 1);
-
-			if (first !== '@')
-				text = text.substring(1);
-
-			if (first === '@')
-				first = '';
-
-			for (var m of DEF.cl.user)
-				if (m.search.indexOf(text.trim().substring(1).toLowerCase()) !== -1) {
-					return first + '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>' + last;
+			var first = line.substring(index - 1, index);
+			if (first && !allowed.includes(first)) {
+				index++;
+				continue;
 			}
 
-			return raw;
+			// check other characters
+			for (var i = index + 1; i < (index + 30); i++) {
+				var c = line.charAt(i);
+				if (!c || !users.test(c))
+					break;
+			}
 
-		}).replace(/(^|\s)#[a-z0-9]{10,14}(.|,|\s|:|$)/gi, function(text) {
+			var name = line.substring(index, i);
+			var pos = index;
 
-			console.log('2', text);
+			for (var m of DEF.cl.user) {
+				if (m.search.indexOf(name.trim().substring(1).toSearch()) !== -1) {
+					var tmp = '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>';
+					line = line.substring(0, pos) + tmp + line.substring(name.length + pos);
+					index += tmp.length;
+					break;
+				}
+			}
+		}
 
-			if ((counter++) > 20)
-				return text;
+		while (true) {
 
-			var last = text.substring(text.length - 1);
+			index = line.indexOf('#', index);
+			if (index === -1)
+				break;
 
-			if (last !== '.' && last !== ',' && last !== ' ')
-				last = '';
+			var first = line.substring(index - 1, index);
+			if (first && !allowed.includes(first)) {
+				index++;
+				continue;
+			}
 
-			if (last)
-				text = text.substring(0, text.length - 1);
+			// check other characters
+			for (var i = index + 1; i < (index + 30); i++) {
+				var c = line.charAt(i);
+				if (!c || !tasks.test(c))
+					break;
+			}
 
-			var first = text.substring(0, 1);
+			var name = line.substring(index, i);
+			var pos = index;
 
-			if (first !== '#')
-				text = text.substring(1);
+			if (name.length > 10 && name.length < 14) {
+				var tmp = '<span class="markdown-link" data-id="{0}"></span>'.format(name.substring(1));
+				line = line.substring(0, pos) + tmp + line.substring(name.length + pos);
+			}
 
-			if (first === '#')
-				first = '';
+			index += tmp.length;
+		}
 
-			return first + '<span class="markdown-link" data-id="{0}"></span>'.format(text.substring(1)) + last;
-		});
+		return line;
 	};
 
 	setTimeout(function() {
