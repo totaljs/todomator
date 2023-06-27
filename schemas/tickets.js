@@ -295,15 +295,13 @@ NEWSCHEMA('Tickets', function(schema) {
 					await FUNC.unread(response.id, response.ownerid, 'status', model.statusid);
 
 			} else if (response.ownerid === $.user.id) {
-				await FUNC.notify(response.id, m, 'metadata', $.user.name, keys.join(','));
+				await FUNC.notify(response.id, $.user.id, 'metadata', $.user.name, keys.join(','));
 				for (let m of response.userid)
 					await FUNC.unread(response.id, m, 'metadata', keys.join(','), m !== $.user.id);
 			}
 
-			if (response.userid && response.userid.length) {
+			if (response.userid && response.userid.length)
 				DATA.remove('tbl_ticket_unread').where('ticketid', params.id).notin('userid', response.userid);
-				DATA.remove('tbl_notification').where('ticketid', params.id).notin('userid', response.userid);
-			}
 
 			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown }, filter);
