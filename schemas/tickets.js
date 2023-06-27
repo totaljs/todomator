@@ -215,8 +215,10 @@ NEWSCHEMA('Tickets', function(schema) {
 				var users = await DATA.find('tbl_user').fields('id,name').in('id', response.userid).promise($);
 				for (let m of response.userid) {
 					let user = users.findItem('id', m);
-					if (user)
-						await FUNC.notify(response.id, m, 'user', $.user.name, user.name, null, m !== $.user.id);
+					if (user) {
+						await FUNC.notify(response.id, m, 'user', $.user.name, user.name);
+						await FUNC.unread(response.id, m, 'user', user.name, m !== $.user.id);
+					}
 				}
 			}
 
@@ -278,16 +280,24 @@ NEWSCHEMA('Tickets', function(schema) {
 					for (let m of response.userid) {
 						for (let n of newbie) {
 							let user = users.findItem('id', n);
-							if (user)
-								await FUNC.notify(response.id, m, 'user', $.user.name, user.name, null, m !== $.user.id);
+							if (user) {
+								await FUNC.notify(response.id, m, 'user', $.user.name, user.name);
+								await FUNC.unread(response.id, m, 'user', user.name, m !== $.user.id);
+							}
 						}
 					}
 				}
 			} else if (model.statusid) {
-				await FUNC.notify(response.id, response.ownerid, 'status', $.user.name, model.statusid, null, response.ownerid && response.ownerid !== $.user.id);
+
+				await FUNC.notify(response.id, response.ownerid, 'status', $.user.name, model.statusid);
+
+				if (response.ownerid && response.ownerid !== $.user.id)
+					await FUNC.unread(response.id, response.ownerid, 'status', model.statusid);
+
 			} else if (response.ownerid === $.user.id) {
+				await FUNC.notify(response.id, m, 'metadata', $.user.name, keys.join(','));
 				for (let m of response.userid)
-					await FUNC.notify(response.id, m, 'metadata', $.user.name, keys.join(','), null, m !== $.user.id);
+					await FUNC.unread(response.id, m, 'metadata', keys.join(','), m !== $.user.id);
 			}
 
 			if (response.userid && response.userid.length) {
@@ -363,8 +373,10 @@ NEWSCHEMA('Tickets', function(schema) {
 				response.userid = MAIN.users;
 
 			for (var m of response.userid) {
-				if (m !== $.user.id)
+				if (m !== $.user.id) {
 					await FUNC.notify(response.id, m, 'user', $.user.name);
+					await FUNC.unread(response.id, m, 'user');
+				}
 			}
 
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: item.id }, filter);
@@ -551,13 +563,23 @@ NEWSCHEMA('Tickets', function(schema) {
 		action: async function($) {
 
 			var params = $.params;
-			var items = await DATA.find('tbl_notification').fields('typeid,createdby,value,isunread,dtcreated').where('ticketid', params.id).where('userid', $.user.id).sort('dtcreated', true).promise($);
+			var items = await DATA.find('tbl_notification').fields('id,typeid,createdby,value,dtcreated').where('ticketid', params.id).sort('dtcreated', true).promise($);
+			var pk = params.id + $.user.id;
+			var unread = await DATA.read('tbl_ticket_unread').id(pk).fields('notificationid').promise($);
 
-			for (var m of items) {
-				if (m.isunread) {
-					DATA.modify('tbl_notification', { isunread: false, dtread: NOW }).where('userid', $.user.id).where('isunread=TRUE');
-					break;
+			if (items.length && unread && unread.notificationid !== items[0].id) {
+
+				var noid = unread.notificationid;
+
+				for (var m of items) {
+					if (noid && m.id === noid)
+						break;
+					else
+						m.isunread = true;
 				}
+
+				if (unread.notificationid !== items[0].id)
+					await DATA.modify('tbl_ticket_unread', { notificationid: items[0].id }).id(pk).promise();
 			}
 
 			$.callback(items);
@@ -715,8 +737,10 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (item.ispublic)
 				item.userid = MAIN.users;
 
+			await FUNC.notify(model.ticketid, m, 'comment', $.user.name, model.markdown.max(50), model.id);
+
 			for (var m of item.userid)
-				FUNC.notify(model.ticketid, m, 'comment', $.user.name, model.markdown.max(50), model.id, m !== $.user.id);
+				await FUNC.unread(model.ticketid, m, 'comment', null, m !== $.user.id);
 
 			item.type = 'comment';
 			EMIT('ticket', item);
