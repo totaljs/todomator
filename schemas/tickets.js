@@ -473,10 +473,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (ticket.ispublic)
 				ticket.userid = MAIN.users;
 
-			for (var m of ticket.userid) {
-				if (m !== $.user.id)
-					FUNC.notify(item.ticketid, m, 'logwork', $.user.name, diff + '');
-			}
+			FUNC.notify(item.ticketid, $.user.id, 'logwork', $.user.name, diff + '');
 
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
@@ -508,10 +505,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (ticket.ispublic)
 				ticket.userid = MAIN.users;
 
-			for (var m of ticket.userid) {
-				if (m !== $.user.id)
-					FUNC.notify(model.ticketid, m, 'logwork', $.user.name, model.minutes + '');
-			}
+			FUNC.notify(model.ticketid, $.user.id, 'logwork', $.user.name, model.minutes + '', model.id);
 
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
@@ -536,6 +530,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(response.ticketid).promise($);
 			$.success(ticket.worked);
 
+			DATA.modify('tbl_ticket_time', { value: model.minutes + '' }).where('ticketid', response.ticketid).where('reference', params.id).where('typeid', 'logwork');
+			FUNC.notify(model.ticketid, $.user.id, 'logwork', $.user.name, model.minutes + '', model.id);
+
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
 		}
@@ -549,7 +546,10 @@ NEWSCHEMA('Tickets', function(schema) {
 			var response = await DATA.remove('tbl_ticket_time').id(params.id).error('@(Log not found)').returning('ticketid').first().promise($);
 			await DATA.query('UPDATE tbl_ticket a SET worked=(SELECT SUM(x.minutes) FROM tbl_ticket_time x WHERE x.ticketid=a.id) WHERE a.id=' + PG_ESCAPE(response.ticketid));
 			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(response.ticketid).promise($);
+
 			$.success(ticket.worked);
+			DATA.remove('tbl_ticket_time').where('ticketid', response.ticketid).where('reference', params.id).where('typeid', 'logwork');
+
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
 		}
