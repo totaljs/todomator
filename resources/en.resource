@@ -10,7 +10,7 @@ T1090ddm     : Timer not found
 T12jid4p     : Log not found
 Ttb1oyn      : The ticket can't be assigned to itself
 T1w75t5n     : Drag &amp; Drop files here
-Tmekd0p      : SU,MO,TU,WE,TH,FR,SA
+Tkg5z0p      : Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday
 T12tbn1      : Clear
 T1maqqy3     : January,February,March,April,May,Juny,July,August,September,October,November,December
 T2w          : h
@@ -38,6 +38,7 @@ T13xsfh      : Empty
 Tztgq1i      : Choose a folder
 T1fvl7       : Name
 Tyw5spa      : Folder
+T15incjd     : Today:
 T19hvy       : Date
 T14mox7c     : SUBMIT
 Tx9d2fu      : Cancel
@@ -217,4 +218,3 @@ Topqbe6      : You don't have any unassigned ticket for this date range.
 T1ya5sla     : Change date
 T1x9grwi     : Change status
 T1jchikc     : Assign user
-T1xac911     : Assigned tickets

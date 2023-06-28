@@ -182,7 +182,7 @@ T179dkv4     : Zadajte správu
 T1ljb8av     : Zastaviť časovač
 T71haa6      : Nezaradené úlohy
 Td59b9p      : Úloha je priradená inej úlohe
-Tmekd0p      : NE,PO,UT,ST,ŠT,PI,SO
+Tkg5z0p      : Nedeľa,Pondelok,Utorok,Streda,Štvrok,Piatok,Sobota
 T1maqqy3     : Január,Február,Marec,Apríl,Máj,Jún,Júl,August,September,Október,November,December
 T12tbn1      : Vyčistiť
 T19ewry0     : Jazyk
@@ -201,10 +201,9 @@ T1sksnqp     : Heslo znova
 Tyop623      : Heslá sa nezhodujú
 T1q4xqtw     : Komentáre
 Topqbe6      : Pre tento rozsah dátumov nemáte žiadny nepriradený lístok.
-T1ya5sla     : Zmeniť dátum
+T1ya5sla     : Zmeniž dátum
 T1x9grwi     : Zmeniť stav
 T1jchikc     : Priradiť používateľovi
-T1xac911     : Priradené tikety
 T5znwof      : Začať pracovať
 Tqrzza8      : Prístupový token pre Todomator API.
 T8hthgd      : Todomator
@@ -220,3 +219,4 @@ Tmwvrbq      : Tento týždeň
 T179b5       : ASAP
 Tpwirqq      : Otvorené pre všetkých
 Tbtjryl      : Použiť ako termín vyriešenia
+T15incjd     : Dnes:

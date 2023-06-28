@@ -23,6 +23,8 @@
 
 		<hr />
 
+		<ui-bind path="NOW" config="html span:value.format('[date]') + ' / ' + value.format('dddd')" class="block fs11 gray m"><i class="ti ti-calendar mr5"></i>@(Today:)<span class="ml5 b"></span></ui-bind>
+
 		<div class="grid-2">
 			<div class="m">
 				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW" class="m">@(Date)</ui-component>

@@ -8,9 +8,10 @@
 		<div class="m">
 			<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(Empty);placeholder:@(Choose a folder)">@(Folder)</ui-component>
 		</div>
+		<ui-bind path="NOW" config="html span:value.format('[date]') + ' / ' + value.format('dddd')" class="block fs11 gray m"><i class="ti ti-calendar mr5"></i>@(Today:)<span class="ml5 b"></span></ui-bind>
 
-		<div class="row">
-			<div class="col-sm-6 m">
+		<div class="grid-2">
+			<div class="m">
 				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW">@(Date)</ui-component>
 			</div>
 		</div>
