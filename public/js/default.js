@@ -8,8 +8,14 @@ Thelpers.markdown2 = function(val) {
 	opt.html = function(line) {
 
 		var index = 0;
+		var counter = 0;
+		var tmp;
 
 		while (true) {
+
+			// Infinity loop prevention
+			if (counter++ > 1000)
+				break;
 
 			index = line.indexOf('@', index);
 			if (index === -1)
@@ -33,17 +39,26 @@ Thelpers.markdown2 = function(val) {
 
 			for (var m of DEF.cl.user) {
 				if (m.search.indexOf(name.trim().substring(1).toSearch()) !== -1) {
-					var tmp = '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>';
+					tmp = '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>';
 					line = line.substring(0, pos) + tmp + line.substring(name.length + pos);
 					index += tmp.length;
 					break;
 				}
 			}
+
+			if (pos === index)
+				index++;
 		}
 
+		counter = 0;
 		while (true) {
 
+			// Infinity loop prevention
+			if (counter++ > 1000)
+				break;
+
 			index = line.indexOf('#', index);
+
 			if (index === -1)
 				break;
 
@@ -64,11 +79,11 @@ Thelpers.markdown2 = function(val) {
 			var pos = index;
 
 			if (name.length > 10 && name.length < 14) {
-				var tmp = '<span class="markdown-link" data-id="{0}"></span>'.format(name.substring(1));
+				tmp = '<span class="markdown-link" data-id="{0}"></span>'.format(name.substring(1));
 				line = line.substring(0, pos) + tmp + line.substring(name.length + pos);
-			}
-
-			index += tmp.length;
+				index += tmp.length;
+			} else
+				index++;
 		}
 
 		return line;
