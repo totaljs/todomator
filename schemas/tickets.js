@@ -251,8 +251,11 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (model.attachments)
 				model.attachments = JSON.stringify(model.attachments);
 
-			if (model.statusid)
+			if (model.statusid) {
 				model.dtstatus = NOW;
+				if (model.statusid === 'closed')
+					model.ispriority = false;
+			}
 
 			var userid = null;
 			var tmp;

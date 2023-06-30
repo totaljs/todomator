@@ -313,8 +313,12 @@
 					m.version = model.version; // for reseting of cache
 				}
 
+				var status = { closed: 1, note: 1 };
+
 				// Expiration
 				response.sort(function(a, b) {
+					if (status[a.statusid] || status[b.statusid])
+						return 0;
 					if (a.statusid !== b.statusid)
 						return 0;
 					if (!a.warn && b.warn)
@@ -328,6 +332,9 @@
 
 				// Assigned
 				response.sort(function(a, b) {
+
+					if (status[a.statusid] || status[b.statusid])
+						return 0;
 
 					if ((a.statusid !== b.statusid) || (a.isclosed || b.isclosed) || (a.assigned && b.assigned))
 						return 0;
