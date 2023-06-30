@@ -548,7 +548,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(response.ticketid).promise($);
 
 			$.success(ticket.worked);
-			DATA.remove('tbl_ticket_time').where('ticketid', response.ticketid).where('reference', params.id).where('typeid', 'logwork');
+			DATA.remove('tbl_notification').where('ticketid', response.ticketid).where('reference', params.id).where('typeid', 'logwork');
 
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
