@@ -279,13 +279,17 @@ CREATE VIEW view_ticket_time AS
 		a.id,
 		a.userid,
 		a.ticketid,
+		b.folderid,
 		a.name,
 		a.dtcreated,
 		a.minutes,
-		b.name AS user_name
-	FROM
-		tbl_ticket_time a
-	LEFT JOIN tbl_user b ON b.id = a.userid;
+		a.date,
+		b."name" as ticket_name,
+		c.name AS user_name,
+		b.isbillable
+	FROM tbl_ticket_time a
+		JOIN tbl_ticket b ON b.id = a.ticketid AND b.isremoved = false
+		LEFT JOIN tbl_user c ON c.id = a.userid;
 
 -- DATA
 
