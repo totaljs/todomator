@@ -533,7 +533,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(response.ticketid).promise($);
 			$.success(ticket.worked);
 
-			DATA.modify('tbl_ticket_time', { value: model.minutes + '' }).where('ticketid', response.ticketid).where('reference', params.id).where('typeid', 'logwork');
+			DATA.modify('tbl_notification', { value: model.minutes + '' }).where('ticketid', response.ticketid).where('reference', params.id).where('typeid', 'logwork');
 			FUNC.notify(model.ticketid, $.user.id, 'logwork', $.user.name, model.minutes + '', model.id);
 
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
