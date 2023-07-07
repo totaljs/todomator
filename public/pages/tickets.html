@@ -293,7 +293,7 @@
 
 				var dt = +NOW.format('yyyyMMdd');
 				var day = 7 - NOW.getDay();
-				var week = NOW.add(day + ' days').format('yyyyMMdd');
+				var week = +NOW.add(day + ' days').format('yyyyMMdd');
 
 				for (var m of response) {
 
@@ -303,7 +303,7 @@
 							m.warn = 2; // today
 						else if (tmp < dt)
 							m.warn = 3; // expired
-						else if (dt < week)
+						else if (tmp < week)
 							m.warn = 1; // this week
 					}
 
