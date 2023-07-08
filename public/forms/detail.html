@@ -29,6 +29,7 @@
 	.CLASS .badge i { margin-right: 0; }
 	.CLASS .addtag { cursor: pointer; }
 	.CLASS .addtag:hover { opacity: 0.8; }
+	.CLASS .toolbar { height: 30px; }
 	.CLASS button.selected { background-color: var(--color); color: #FFF; }
 	.CLASS button.selected2 { background-color: #EC8632; color: #FFF; }
 	.CLASS button.selected3 { background-color: #E73323 !important; }
@@ -775,7 +776,7 @@
 						});
 						break;
 					default:
-						exports[selected.id]();
+						exports[selected.id] && exports[selected.id]();
 						break;
 				}
 			};

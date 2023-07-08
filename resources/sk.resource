@@ -220,3 +220,14 @@ T179b5       : ASAP
 Tpwirqq      : Otvorené pre všetkých
 Tbtjryl      : Použiť ako termín vyriešenia
 T15incjd     : Dnes:
+T1riu5ci     : Pripomienka
+T1f7yulj     : Pripomeňte lístok
+Ty7ll4z      : Zadajte konkrétny dátum a nastavte si pripomienku. Systém Vám pripomenie úlohu.
+T1qse3o6     : Vyberte si dátum
+T1j0x4xk     : Zrušiť pripomienku
+T14f82ed     : Pripomeň
+Tg3oxp3      : Pripomenuté
+T1ii7q       : Čítať
+T1iy3dwl     : Zajtra
+T1gb84pt     : Budúci týždeň
+Tl1752m      : Stiahnúť CSV

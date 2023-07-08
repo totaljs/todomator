@@ -145,3 +145,11 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown-task i { margin-right: 5px; }
 
 .ui-info { z-index: 50; }
+
+.blink { animation: blink 1s infinite forwards; }
+
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 0.5;}
+	100% { opacity: 1; }
+}
