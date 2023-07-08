@@ -143,3 +143,5 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown-gallery { vertical-align: top; margin: 0 15px 15px 0; border: 1px solid #E0E0E0; width: 22%; border-radius: var(--radius); }
 .markdown-task { background-color: #4285F4; color: #FFF; padding: 1px 4px; border-radius: var(--radius); }
 .markdown-task i { margin-right: 5px; }
+
+.ui-info { z-index: 50; }
