@@ -277,8 +277,8 @@
 				var container = el.closest('.markdown');
 				var offset = el.offset();
 				var opt = {};
-				opt.x = offset.left;
-				opt.y = offset.top;
+				opt.x = offset.left + 8;
+				opt.y = offset.top + 8;
 				opt.html = container.find('.markdown-footnotebody[data-id="{0}"]'.format(ATTRD(el))).html();
 				SETTER('info/show', opt);
 			} else
