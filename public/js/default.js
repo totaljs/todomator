@@ -104,7 +104,8 @@ Thelpers.markdown2 = function(val) {
 					var item = response.findItem('id', id);
 					var el = $(link);
 					if (item) {
-						item.icon = item.statusid === 'closed' ? 'ti-check-square' : 'ti ti-square';
+						item.icon = item.statusid === 'note' ? 'ti ti-book-open' : item.statusid === 'review' ? 'ti ti-clean' : item.statusid === 'postponed' ? 'ti ti-history' : item.statusid === 'closed' ? 'ti-check-square' : 'ti ti-square';
+						console.log(item.icon, item.statusid);
 						el.replaceWith('<a href="#{id}" class="markdown-task"><i class="ti {{ icon }}"></i>{name}</a>'.args(item));
 					} else
 						el.replaceWith('#' + id);
