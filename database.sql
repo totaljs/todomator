@@ -158,7 +158,7 @@ CREATE TABLE "public"."tbl_ticket_time" (
 	"userid" text,
 	"minutes" int4 DEFAULT 0,
 	"name" text,
-	"date" date,
+	"date" timestamp,
 	"start" timestamp,
 	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
 	CONSTRAINT "tbl_ticket_time_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE SET NULL ON UPDATE CASCADE,
