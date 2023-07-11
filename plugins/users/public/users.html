@@ -26,6 +26,7 @@
 							<span class="exec" data-exec="?/edit" data-prevent="true"><i class="ti ti-pencil-alt"></i></span>
 							<span class="exec" data-exec="?/remove" data-prevent="true"><i class="ti ti-remove red"></i></span>
 						</div>
+						{{ if m.dtlogged }}<div class="pull-right gray fs11" style="margin-top:4px"><i class="ti ti-door-alt mr5"></i>{{ m.dtlogged | format('[ts]') }}</div>{{ fi }}
 						<div class="name">
 							{{ if m.photo }}
 								<img src="{{ m.photo }}" class="photo img-responsive" title="{{ m.name }}" loading="lazy"/>
