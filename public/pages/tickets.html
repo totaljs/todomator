@@ -502,7 +502,7 @@
 			date.setMinutes(0);
 
 			SET('formcreateticket @default', { folderid: folderid, userid: [user.id], isbillable: folder ? folder.isbillable : true, date: date });
-			SET('common.form', 'formcreateticket');
+			SET('common.form2', 'formcreateticket');
 		};
 
 		exports.detail = function(id, callback) {

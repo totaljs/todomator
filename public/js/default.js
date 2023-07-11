@@ -39,7 +39,7 @@ Thelpers.markdown2 = function(val) {
 
 			for (var m of DEF.cl.user) {
 				if (m.search.indexOf(name.trim().substring(1).toSearch()) !== -1) {
-					tmp = '<span class="user">' + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>';
+					tmp = '<span class="user" data-id="{0}">'.format(m.id) + (m.photo ? '<img src="{0}" loading="lazy" />'.format(m.photo) : '') + m.name + '</span>';
 					line = line.substring(0, pos) + tmp + line.substring(name.length + pos);
 					index += tmp.length;
 					break;
@@ -105,7 +105,6 @@ Thelpers.markdown2 = function(val) {
 					var el = $(link);
 					if (item) {
 						item.icon = item.statusid === 'note' ? 'ti ti-book-open' : item.statusid === 'review' ? 'ti ti-clean' : item.statusid === 'postponed' ? 'ti ti-history' : item.statusid === 'closed' ? 'ti-check-square' : 'ti ti-square';
-						console.log(item.icon, item.statusid);
 						el.replaceWith('<a href="#{id}" class="markdown-task"><i class="ti {{ icon }}"></i>{name}</a>'.args(item));
 					} else
 						el.replaceWith('#' + id);

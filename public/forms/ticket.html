@@ -1,4 +1,4 @@
-<ui-component name="miniform" path="common.form" config="if:CLASS;width:440;title:@(Create ticket);autofocus:1;submit:?/submit;icon:ti ti-check-square;enter:true" plugin="CLASS" class="hidden invisible">
+<ui-component name="miniform" path="common.form2" config="if:CLASS;width:440;title:@(Create ticket);autofocus:1;submit:?/submit;icon:ti ti-check-square;enter:true;zindex:30" plugin="CLASS" class="hidden invisible">
 	<div class="padding npb">
 
 		<div class="m">
@@ -59,8 +59,9 @@
 	PLUGIN(function(exports) {
 
 		exports.submit = function(hide) {
-			var model = CLONE(exports.form);
 
+			var data = exports.model;
+			var model = CLONE(exports.form);
 			var minutes = model.worked;
 
 			if (minutes.indexOf('h') !== -1)
@@ -80,8 +81,11 @@
 				hide();
 
 				var refresh = function() {
-					exports.caller.exec('refresh');
-					exports.caller.exec('preview', response.value);
+					PLUGINS.tickets.exec('refresh');
+					if (data.callback)
+						data.callback(response.value);
+					else
+						PLUGINS.tickets.exec('preview', response.value);
 				};
 
 				if (model.logwork) {
