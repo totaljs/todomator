@@ -153,3 +153,5 @@ header .toolbar button { height: 26px; font-size: 12px; }
 	50% { opacity: 0.5;}
 	100% { opacity: 1; }
 }
+
+.ui-edit-window { z-index: 150; }

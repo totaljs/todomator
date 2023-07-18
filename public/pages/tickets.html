@@ -589,6 +589,16 @@
 		});
 
 		ON('message', function(msg) {
+
+			switch (msg.TYPE) {
+				case 'setter':
+					SETTER(msg.name, msg.value);
+					break;
+				case 'reload':
+					location.reload(true);
+					break;
+			}
+
 			if (msg.TYPE === 'refresh') {
 
 				if (msg.markdown) {

@@ -159,7 +159,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number',
+		input: '*name:String, statusid:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[Object]',
 		public: true,
 		action: async function($, model) {
 
@@ -194,7 +194,10 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (!model.tags)
 				model.tags = [];
 
-			model.attachments = '[]';
+			if (model.attachments)
+				model.attachments = JSON.stringify(model.attachments);
+			else
+				model.attachments = '[]';
 
 			var response = await DATA.insert('tbl_ticket', model).returning(Returning).promise($);
 
