@@ -86,6 +86,32 @@ Thelpers.markdown2 = function(val) {
 				index++;
 		}
 
+		// Email
+		line = line.replace(/(^|\s)+(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g, function(m) {
+			var len = m.length;
+			var l = m.charAt(len - 1);
+			var f = m.charAt(0);
+			if (l === '.' || l === ',')
+				m = m.substring(0, len - 1);
+			else
+				l = '';
+			m = m.trim();
+			return (f.charCodeAt(0) < 40 ? f : '') + '<a href="mailto:{0}">{0}</a>'.format(m) + l;
+		});
+
+		// Phone numbers
+		line = line.replace(/(^|\s)+\+[\d]{8,14}/g, function(m) {
+			var len = m.length;
+			var l = m.charAt(len - 1);
+			var f = m.charAt(0);
+			if (l === '.' || l === ',')
+				m = m.substring(0, len - 1);
+			else
+				l = '';
+			m = m.trim();
+			return (f.charCodeAt(0) < 40 ? f : '') + '<a href="tel:{0}">{0}</a>'.format(m) + l;
+		});
+
 		return line;
 	};
 
