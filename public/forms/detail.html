@@ -90,7 +90,7 @@
 	</nav>
 	<div>
 		<ui-component name="extend" config="name:detail"></ui-component>
-		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1" class="invisible">
+		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1;scrollto:top" class="invisible">
 			<ui-bind path="?" config="show:value.ispriority && (value.statusid==='open'||value.statusid==='review'||value.statusid==='pending')" class="hidden block" style="border-top:4px solid #E8483F;height:4px"></ui-bind>
 			<div class="padding bg-smoke">
 				<ui-bind path="?" config="track:id;template" class="meta">
@@ -212,10 +212,10 @@
 	PLUGIN(function(exports) {
 
 		var changed = false;
-		var caller;
 		var cache = {};
-		var ID;
 		var title = '';
+		var caller;
+		var ID;
 
 		exports.reload = function(com) {
 			var model = exports.model;
