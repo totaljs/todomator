@@ -159,11 +159,36 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, folderid:UID, userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[Object]',
+		input: '*name:String, statusid:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[Object]',
 		public: true,
 		action: async function($, model) {
 
 			var keys = Object.keys(model);
+
+			if (model.folder) {
+				var folder = await DATA.read('tbl_folder').fields('id,isbillable').search('name', model.folder).error('@(Folder not found)').promise($);
+				model.folderid = folder.id;
+				if (model.isbillable == null && folder.isbillable)
+					model.isbillable = true;
+			}
+
+			if (model.users) {
+				var userid = [];
+				for (var m of model.users) {
+					var user = await DATA.read('tbl_user').fields('id').or(b => b.search('name', m).search('email', m)).promise($);
+					if (user) {
+						userid.push(user.id);
+					} else {
+						$.error.replace('@', m);
+						$.invalid('@(User "@" not found)');
+						break;
+					}
+				}
+				model.userid = userid;
+			}
+
+			model.users = undefined;
+			model.folder = undefined;
 
 			NOW = new Date();
 
