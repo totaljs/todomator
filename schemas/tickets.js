@@ -159,7 +159,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[Object]',
+		input: '*name:String, statusid:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64]',
 		public: true,
 		action: async function($, model) {
 
@@ -219,9 +219,26 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (!model.tags)
 				model.tags = [];
 
-			if (model.attachments)
-				model.attachments = JSON.stringify(model.attachments);
-			else
+			if (model.attachments && model.attachments.length) {
+				var attachments = [];
+				var arr = model.attachments;
+				var fs = FILESTORAGE('attachments');
+
+				for (var m of arr) {
+					try {
+						var file = await fs.save(UID(), m.name, m.data.base64ToBuffer());
+						file.url = '/download/' + file.id.sign(CONF.salt) + '.' + file.ext;
+						file.dtcreated = NOW;
+						attachments.push(file);
+					} catch (e) {
+						// unhandled error
+						console.log(e);
+					}
+				}
+
+				model.attachments = JSON.stringify(attachments);
+
+			} else
 				model.attachments = '[]';
 
 			var response = await DATA.insert('tbl_ticket', model).returning(Returning).promise($);

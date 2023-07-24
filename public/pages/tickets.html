@@ -19,7 +19,8 @@
 	.CLASS .worked { float: right; color: #777; text-align: right; border-right: 1px solid #E0E0E0; margin-right: 10px; padding-right: 10px; line-height: 21px; min-height: 21px; }
 	.CLASS .worked span { margin-right: 5px; color: #A0A0A0; }
 	.CLASS .sender { width: 120px; float: right; border-right: 1px solid #E0E0E0; margin-right: 10px; padding-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #777; line-height: 21px; }
-	.CLASS .unread > section { background-color: rgba(246,206,228,0.1); }
+	.CLASS .unread { background-color: rgba(246,206,228,0.1); }
+	.CLASS .foreign { background-color: rgba(255,254,97,0.1); }
 	.CLASS .name { line-height: 21px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding-left: 10px; }
 	.CLASS .name b { padding: 2px 0; }
 	.CLASS .name .ti-paperclip { color: #999; }
@@ -149,7 +150,7 @@
 							<script type="text/html">
 								{{ foreach m in value }}
 									{{ if m.id }}
-										<figure data-id="{{ m.id }}" class="ticket {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority{{ fi }}{{ if m.isunread }} unread{{ fi }}">
+										<figure data-id="{{ m.id }}" class="ticket {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority{{ fi }}{{ if m.isunread }} unread{{ fi }}{{ if m.foreign}} foreign{{ fi }}">
 											<section class="exec exec3{{ if m.statusid === 'open' }} open{{ fi }}" data-exec="?/preview" data-exec3="?/contextmenu">
 												<div class="date">{{ if !m.postponed && (m.statusid === 'closed' || !m.deadline) }}{{ m.date | time3 }}{{ else if m.deadline && !m.postponed }}<b class="red">{{ m.deadline | deadline }}<i class="ti ti-start ml5" title="@(Deadline)"></i></b>{{ else }}<b class="green">{{ m.date | format('[date]') }}<i class="ti ti-start green ml5"></i></b>{{ fi }}</div>
 												<div class="worked">{{ if m.estimate }}<span>{{ m.estimate | logwork }} /</span>{{ fi }}{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</div>
@@ -277,6 +278,8 @@
 					return '';
 				}).trim().replace(/\s{2,}/g, ' ');
 
+				search = search.trim().replace(/\s{2,}/g, ' ');
+
 			}
 
 			filter.q = search;
@@ -307,6 +310,7 @@
 							m.warn = 1; // this week
 					}
 
+					m.foreign = m.ownerid !== user.id && (m.userid.length ? m.userid.includes(user.id) != true : true);
 					m.postponed = (+m.date.format('yyyyMMdd')) > dt;
 					m.assigned = m.statusid !== 'note' && m.ownerid === user.id && (m.userid.length > 1 || (m.userid.length && !m.userid.includes(user.id)));
 					m.isclosed = m.statusid === 'closed';
