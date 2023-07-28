@@ -11,6 +11,9 @@
 	.CLASS .control:hover { background-color: #FFF; }
 	.CLASS .options { float: right; }
 	.CLASS .title { margin-top: 0; }
+	.CLASS .note { border-radius:var(--radius); margin-top: 0; }
+	.CLASS .note > div { font-size: 14px; }
+	.CLASS .note p { margin-bottom: 0; }
 	.CLASS .options button { cursor: pointer; border: 1px solid #E0E0E0; border-left: 0; width: 30px; height: 26px; line-height: 24px; text-align: center; background-color: #F0F0F0; }
 	.CLASS .options button:hover { background-color: #FFF; }
 	.CLASS .options button:disabled { background-color: #F0F0F0 !important; cursor: not-allowed; }
@@ -36,7 +39,7 @@
 	.CLASS button.bookmark i { margin: 0; }
 	.CLASS button.comments i { margin: 0; }
 	.CLASS button.comments ui-bind { position: absolute; background-color: #777; color: #FFF; font-size: 10px; width: 18px; height: 18px; text-align: center; line-height: 18px; z-index: 10; pointer-events: none; border-radius: 100px; margin: -10px 0 0 10px; }
-	.CLASS button.notifications i { margin: 0; }
+	.CLASS button.nm i { margin: 0; }
 	.CLASS button.timer { background-color: #68B25B; color: #FFF; }
 	.CLASS button.timer i { margin: 0; }
 	.CLASS h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
@@ -82,7 +85,8 @@
 					<button class="exec exec2 timer" data-exec="?/timer" data-exec2="?/timer2" title="@(Toggle timer)"><i class="ti ti-play"></i></button>
 					<button class="exec comments" data-exec="?/comments" title="@(Toggle comments)"><ui-bind path="?.comments" config="text;show"></ui-bind><i class="ti ti-comment"></i></button>
 					<button class="exec bookmark" data-exec="?/bookmark" title="@(Toggle bookmark)"><i class="ti ti-bookmark"></i></button>
-					<button class="exec notifications" data-exec="?/notifications" title="@(Toggle notifications)"><i class="ti ti-bell"></i></button>
+					<button class="exec nm notifications" data-exec="?/notifications" title="@(Toggle notifications)"><i class="ti ti-bell"></i></button>
+					<button class="exec nm" data-exec="?/note" title="@(Note)"><i class="ti ti-lightbulb-on"></i></button>
 					<button class="exec" data-exec="?/options"><i class="ti ti-sliders-h"></i>@(Options)</button>
 				</ui-bind>
 			</ui-bind>
@@ -95,6 +99,15 @@
 			<div class="padding bg-smoke">
 				<ui-bind path="?" config="track:id;template" class="meta">
 					<script type="text/html">
+
+						{{ if value.note }}
+							<div class="markdown">
+								<section class="note">
+									<div class="b"><i class="ti ti-lightbulb-on mr5"></i>@(Note)</div>
+									{{ value.note | markdown2({ wrap: false }) }}
+								</section>
+							</div>
+						{{ fi }}
 
 						{{ if value.statusid === 'pending' }}
 							<div class="toolbar m">
@@ -195,6 +208,7 @@
 						{{ end }}
 					</script>
 				</ui-bind>
+
 			</div>
 			<div class="padding">
 				<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
@@ -440,6 +454,31 @@
 			};
 
 			EXEC('-directory/show', opt);
+		};
+
+		exports.note = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.align = 'right';
+			opt.offsetX = 25;
+			opt.offsetY = 36;
+			opt.icon = 'ti ti-lightbulb-on';
+			opt.minwidth = 400;
+			opt.placeholder = '@(Enter a note)';
+			opt.element = el;
+			opt.value = model.note;
+			opt.monospace = true;
+			opt.callback = function(val) {
+
+				if (opt.value === val)
+					return;
+
+				exports.tapi('tickets_update/{id} ERROR'.args(model), { note: val }, function() {
+					model.note = val;
+					exports.upd('id');
+				});
+			};
+			SETTER('floatinginput/show', opt);
 		};
 
 		exports.owner = function(el) {

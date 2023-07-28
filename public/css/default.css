@@ -155,3 +155,4 @@ header .toolbar button { height: 26px; font-size: 12px; }
 }
 
 .ui-edit-window { z-index: 150; }
+.markdown { font-family: Arial; }

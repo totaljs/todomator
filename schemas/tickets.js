@@ -159,7 +159,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64]',
+		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64]',
 		public: true,
 		action: async function($, model) {
 
@@ -279,7 +279,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], *folderid:UID, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String',
+		input: 'userid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String',
 		params: '*id:String',
 		public: true,
 		action: async function($, model) {

@@ -94,6 +94,7 @@ CREATE TABLE "public"."tbl_ticket" (
 	"html" text,
 	"markdown" text,
 	"attachments" json,
+	"note" text,
 	"tags" _text,
 	"comments" int2 DEFAULT 0,
 	"worked" int4 DEFAULT 0,
@@ -269,6 +270,7 @@ CREATE VIEW view_ticket AS
 		a.dtcreated,
 		a.reference,
 		a.source
+		a.note
 	FROM tbl_ticket a
 		LEFT JOIN tbl_folder b ON b.id = a.folderid
 		LEFT JOIN cl_status d ON d.id = a.statusid
@@ -298,7 +300,7 @@ INSERT INTO "public"."cl_notification" ("id", "name", "icon", "color") VALUES
 	('comment', 'Comment', 'ti ti-comment', '#5599F8'),
 	('content', 'Changed content', 'ti ti-layout', '#7327F5'),
 	('logwork', 'Logged work', 'ti ti-stopwatch', '#3B80F7'),
-	('metadata', 'Updated metadata', 'ti ti-invoice', '#83C83C'),
+	('metadata', 'Changed metadata', 'ti ti-invoice', '#83C83C'),
 	('status', 'Changed status', 'ti ti-traffic-light', '#62C9CA'),
 	('user', 'Assigned user', 'ti ti-check-circle', '#83C83C');
 
