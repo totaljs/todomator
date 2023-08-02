@@ -231,3 +231,4 @@ T1ii7q       : Čítať
 T1iy3dwl     : Zajtra
 T1gb84pt     : Budúci týždeň
 Tl1752m      : Stiahnúť CSV
+T1mbqgeb     : Upraviť obsah

@@ -6,6 +6,7 @@ Tgvplw5      : Note
 Txffrt8      : Closed
 T1txzylf     : Folder not found
 T1s452ip     : Ticket not found
+T17j1kv8     : User "@" not found
 T1090ddm     : Timer not found
 T12jid4p     : Log not found
 Ttb1oyn      : The ticket can't be assigned to itself
@@ -27,6 +28,8 @@ T1c7py9      : Today
 T1q2czyt     : Sign-in
 T1w7l82b     : E-mail address
 Tl71ry3      : Password
+T31koxg      : Extensions
+T1riu5ci     : Reminder
 T19msfxb     : Reports
 T1cu3mw      : Users
 T1nnq8n      : Workload
@@ -55,8 +58,10 @@ T18ly6bo     : Re-open
 T151wx17     : Source
 Ts22apo      : Date from
 Th2qwan      : Add a related ticket
+T1mbqgeb     : Edit content
 T10bsjtg     : Double-click to edit markdown
 T1410sqe     : Are you sure you want to remove related ticket?
+T1idgiih     : Enter a note
 Ty3r036      : Choose a tag
 Tc0qoxc      : Choose or create new
 T1dl87o2     : Enter the estimated time in minutes.
@@ -72,6 +77,7 @@ Tlrg99y      : Remove link
 Tlre7w5      : Remove icon
 Tw136t7      : Remove object
 T1j47wkj     : Are you sure you want to remove selected object?
+T1g64y       : Note
 T5znwof      : Start work
 Tyg7l5r      : Choose users
 T19ynf42     : High priority
@@ -153,6 +159,7 @@ T1vu7o1y     : Summary
 Tc3tlif      : Log how many minutes did you spend on this ticket.
 T8kph03      : Modify time
 T1jvfx       : Time
+T15gzooq     : ?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\]
 T8hthgd      : Todomator
 Tniqzic      : Search in tickets
 T1gtii       : Open
@@ -173,13 +180,23 @@ Tk9gd4i      : Unread changes
 T1gty3cy     : Refresh tickets
 Tqu98zv      : You have unread changes ({0}) in the tickets
 T1ljb8av     : Stop timer
+Tlcufsa      : Create as a related ticket
+T1f7yulj     : Remind ticket
+Ty7ll4z      : Enter a specific date to set a reminder for yourself. By setting a reminder, you ensure that you will not forget about this ticket.
+T1qse3o6     : Choose a date
+T1j0x4xk     : Cancel reminder
+T14f82ed     : Remind
+Tg3oxp3      : Reminded to
+T1ii7q       : Read
+T1iy3dwl     : Tomorrow
+T1gb84pt     : Next week
 T14eixwp     : Choose a period
 T13h80kh     : Period
-Tni3fg       : Copy to clipboard
+Tl1752m      : Download CSV
 T1soq        : Tag
-T1c81t0      : Total
-Tv3o7om      : Your report has been copied to your clipboard successfully
 Tcx95w3      : Today report
+T14fa3x0     : Report
+T4gucvc      : Ticket report
 T136ejw      : Date:
 T11si7c0     : User name
 T1lp90       : Week

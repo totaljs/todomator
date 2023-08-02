@@ -348,6 +348,7 @@ function Editable(el, opt, callback) {
 	openeditor.element = el;
 	openeditor.dom = el[0];
 	openeditor.multiline = opt.multiline;
+
 	openeditor.parent = opt.parent ? opt.parent[0] : openeditor.dom;
 	openeditor.insert = function(text) {
 		text && document.execCommand('insertHTML', false, text);

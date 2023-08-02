@@ -56,7 +56,7 @@
 	.CLASS .relatedtickets .name { padding: 1px 4px; border-radius: var(--radius); }
 	.CLASS .relatedtickets .remicon { margin-top: 3px; }
 	.CLASS .relatedtickets .remicon i { transform: scale(1); }
-	.CLASS .addticketbtn { background-color: #e0e0e0; padding: 0 10px; border: 0; border-radius: var(--radius); color: #000; line-height: 23px; height: 28px; font-size: 12px; text-decoration: none; transition: all .3s; outline: 0; vertical-align: middle; margin-bottom: 10px; }
+	.CLASS .addticketbtn { background-color: #e0e0e0; padding: 0 10px; border: 0; border-radius: var(--radius); color: #000; line-height: 23px; height: 28px; font-size: 12px; text-decoration: none; transition: all .3s; outline: 0; vertical-align: middle; margin-bottom: 15px; }
 	.CLASS .addticketbtn:hover { opacity: .7; }
 	.CLASS .addticketbtn i { width: 12px; text-align: center; margin-right: 5px; }
 	.CLASS .relatedtickets .ticket.child a { background-color: rgba(255,199,92,0.2); }
@@ -199,7 +199,9 @@
 				</ui-bind>
 
 				<hr />
-				<button class="addticketbtn exec" data-exec="?/addticket"><i class="t ti ti-search-plus"></i>@(Add a related ticket)</button>
+				<div class="center">
+					<button class="addticketbtn exec" data-exec="?/addticket"><i class="t ti ti-search-plus"></i>@(Add a related ticket)</button>
+				</div>
 
 				<ui-bind path="?.links" config="template" class="relatedtickets">
 					<script type="text/html">
@@ -212,7 +214,9 @@
 			</div>
 			<div class="padding">
 				<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
-				<ui-component name="markdownbody" path="?.markdown" config="save:?/savemarkdown;placeholder:@(Double-click to edit markdown)" class="hidden invisible npt nmb"></ui-component>
+				<div class="pull-right help exec" data-exec="?/edit" style="margin-right:10px"><i class="ti ti-pencil-alt"></i>@(Edit content)</div>
+				<div class="clearfix"></div>
+				<ui-component name="markdownbody" path="?.markdown" config="save:?/savemarkdown;placeholder:@(Double-click to edit markdown);$assign:?|markdownbody" class="hidden invisible npt nmb"></ui-component>
 			</div>
 		</ui-component>
 	</div>
@@ -270,7 +274,7 @@
 			var opt = {};
 
 			opt.element = el;
-			opt.align = 'left';
+			opt.align = 'center';
 			opt.offsetY = 40;
 			opt.minwidth = 770;
 			opt.height = 250;
@@ -409,6 +413,10 @@
 					NUL('common.form');
 
 			});
+		};
+
+		exports.edit = function() {
+			exports.markdownbody.edit();
 		};
 
 		exports.status = function(el) {

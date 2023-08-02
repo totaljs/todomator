@@ -130,6 +130,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 	var mbody = null;
 	var medit = null;
 	var mplaceholder = null;
+	var isediting = false;
 
 	self.make = function() {
 
@@ -184,38 +185,52 @@ COMPONENT('markdownbody', function(self, config, cls) {
 		});
 
 		mbody.on('dblclick', function(e) {
-
 			e.stopPropagation();
 			e.preventDefault();
+			self.edit();
+		});
+	};
 
-			mbody.aclass('hidden');
-			medit.empty().rclass('hidden');
+	self.edit = function() {
+		setTimeout(self.editforce, 200);
+	};
 
-			var opt = {};
-			var md = (self.get() || '').trim();
-			opt.html = Thelpers.encode(md);
-			opt.multiline = true;
-			opt.tabs = true;
-			opt.placeholder = mplaceholder[0];
-			opt.format = true;
-			extendeditable(opt);
+	self.editforce = function() {
 
-			self.aclass('editmode');
+		if (isediting)
+			return;
 
-			Editable(medit, opt, function(response) {
+		mbody.aclass('hidden');
+		medit.empty().rclass('hidden');
 
-				self.rclass('editmode');
+		var opt = {};
+		var md = (self.get() || '').trim();
+		opt.html = Thelpers.encode(md);
+		opt.multiline = true;
+		opt.tabs = true;
+		opt.placeholder = mplaceholder[0];
+		opt.format = true;
+		extendeditable(opt);
 
-				var text = response.text.trim();
-				if (text && md !== text) {
-					body = text.trim();
-					self.set(body, 'content');
-					config.save && self.EXEC(config.save, body);
-				} else {
-					medit.aclass('hidden').empty();
-					mbody.rclass('hidden');
-				}
-			});
+		self.element.focus();
+		self.aclass('editmode');
+
+		isediting = true;
+
+		Editable(medit, opt, function(response) {
+
+			self.rclass('editmode');
+			setTimeout(() => isediting = false, 500);
+
+			var text = response.text.trim();
+			if (text && md !== text) {
+				body = text.trim();
+				self.set(body, 'content');
+				config.save && self.EXEC(config.save, body);
+			} else {
+				medit.aclass('hidden').empty();
+				mbody.rclass('hidden');
+			}
 		});
 	};
 
