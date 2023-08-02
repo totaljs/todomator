@@ -127,6 +127,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 
 .photo { border: 1px solid rgba(0,0,0,0.1); }
 .ui-directory .photo { border: 1px solid rgba(0,0,0,0.1); width: 22px; height: 22px; margin: 5px 0 0; border-radius: 100px; float: right; }
+.ui-directory-area { z-index: 110; }
 
 .ui-datepicker-container { z-index: 102; }
 
