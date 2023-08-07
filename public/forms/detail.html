@@ -1058,10 +1058,9 @@
 
 	$(document).on('click', '.commented', function(e) {
 		var el = $(this);
-		if (!el.closest('.markdown-tasks').length) {
-			clearTimeout2('quickpreview');
+		if (!el.closest('.markdown-tasks').length)
 			PLUGINS.formdetail.showinlinecomment(el.attrd('line'));
-		}
+		clearTimeout2('quickpreview');
 	});
 
 	$(document).on('mouseenter mouseleave', '.quickpreview,.markdown-gallery,.commented', function(e) {
