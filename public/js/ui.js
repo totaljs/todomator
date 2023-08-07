@@ -273,6 +273,12 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 			for (var m of md[0].children) {
 				m.mdhash = HASH(m.innerHTML).toString(36);
+
+				if (m.tagName === 'UL') {
+					for (var sub of m.children)
+						sub.mdhash = HASH(sub.innerHTML).toString(36);
+				}
+
 				arr2.push(m);
 			}
 
@@ -308,7 +314,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 								continue;
 							}
 
-							if (lia.innerHTML !== lib.innerHTML) {
+							if (lia.mdhash !== lib.mdhash) {
 								NODEINSERT(lia, lib, true);
 								remove.push(lib);
 							 } else
