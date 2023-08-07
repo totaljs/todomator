@@ -9,7 +9,7 @@ CONF.allow_custom_titles = true;
 CONF.version = '2';
 
 // Componentator
-COMPONENTATOR('ui', 'exec,columns,menu,icons,extend,input,loading,floatingbox,autofill,rawinput,edit,errorhandler,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,selection,validate,selected,searchinput,box,tangular-color,tangular-filesize,intranetcss,notify,ready,tabmenu,iframepreview,preview,datepicker,paper,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,sounds,markdown,clipboardimage,shortcuts,faviconunread,filesaver,info,inlinedatepicker', true);
+COMPONENTATOR('ui', 'exec,menu,columns,icons,input,extend,loading,floatingbox,autofill,rawinput,edit,errorhandler,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,selection,validate,selected,searchinput,box,tangular-color,tangular-filesize,intranetcss,notify,ready,tabmenu,iframepreview,preview,datepicker,paper,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,sounds,markdown,clipboardimage,shortcuts,faviconunread,filesaver,info,inlinedatepicker', true);
 
 // UI components
 ON('ready', function() {

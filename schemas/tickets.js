@@ -143,12 +143,15 @@ NEWSCHEMA('Tickets', function(schema) {
 			builder.where('a.id', params.id);
 
 			if (!$.user.sa || $.user.permissions.includes('admin'))
-				builder.query('(a.ispublic=TRUE OR (a.userid && {0}::_text) OR ownerid={1})'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
+				builder.query('(a.ispublic=TRUE OR (a.userid && {\'{0}\'}::_text) OR ownerid=\'{0}\')'.format($.user.id));
 
 			builder.first();
 			builder.error('@(Ticket not found)');
 
 			var response = await builder.promise($);
+
+			response.linecomments = response.comments ? await DATA.query('SELECT line, COUNT(1)::int2 AS count FROM tbl_ticket_comment WHERE ticketid={0} AND line IS NOT NULL GROUP BY line'.format(PG_ESCAPE(params.id))).promise($) : [];
+
 			$.callback(response);
 
 			if (response.isunread)
@@ -753,9 +756,19 @@ NEWSCHEMA('Tickets', function(schema) {
 		name: 'List of comments',
 		params: '*id:String',
 		public: true,
+		query: 'line:Number',
 		action: function($) {
 			var params = $.params;
-			DATA.find('tbl_ticket_comment').fields('id,userid,username,userphoto,markdown,dtcreated').where('ticketid', params.id).sort('dtcreated').callback($);
+			var query = $.query;
+			var builder = DATA.find('tbl_ticket_comment');
+			builder.fields('id,userid,username,userphoto,markdown,dtcreated');
+			builder.where('ticketid', params.id);
+			builder.sort('dtcreated');
+
+			if (query.line != null)
+				builder.where('line', query.line);
+
+			builder.callback($);
 		}
 	});
 
@@ -765,7 +778,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('comments_create', {
 		name: 'Create comment',
-		input: '*ticketid:String,*markdown:String',
+		input: '*ticketid:String,line:Number,*markdown:String',
 		public: true,
 		action: async function($, model) {
 

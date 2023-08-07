@@ -134,6 +134,7 @@ CREATE TABLE "public"."tbl_ticket_comment" (
 	"userid" text,
 	"username" text,
 	"userphoto" text,
+	"line" int4,
 	"markdown" text,
 	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
 	"dtupdated" timestamp,

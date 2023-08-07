@@ -1,4 +1,5 @@
 <style>
+
 	.CLASS .ui-box-icon { color: #68B25B; margin-right: 10px; }
 	.CLASS .ui-box-label { font-weight: normal; color: #A0A0A0; font-size: 13px; user-select: text; }
 	.CLASS .meta i { transform: scale(1); }
@@ -65,6 +66,8 @@
 	.CLASS .mbody .markdown { font-size: 15px; }
 	.CLASS .mbody .markdown pre { margin-top: 0; }
 	.CLASS .mbody .markdown-tasks > li { cursor: pointer; }
+
+	.inlinecomment .photo { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; }
 
 	.related-container ul li { padding: 5px 40px 5px 10px; font-size: 12px; }
 	.related-container ul li .status { display: inline-block; width: 100px; height: 14px; border-right: 1px solid #e0e0e0; padding-right: 15px; margin-right: 15px; }
@@ -216,7 +219,9 @@
 				<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
 				<div class="pull-right help exec" data-exec="?/edit" style="margin-right:10px"><i class="ti ti-pencil-alt"></i>@(Edit content)</div>
 				<div class="clearfix"></div>
-				<ui-component name="markdownbody" path="?.markdown" config="save:?/savemarkdown;placeholder:@(Double-click to edit markdown);$assign:?|markdownbody" class="hidden invisible npt nmb"></ui-component>
+				<div class="ticketmarkdownbody">
+					<ui-component name="markdownbody" path="?.markdown" config="save:?/savemarkdown;$setter:?/inlinecomments;placeholder:@(Double-click to edit markdown);$assign:?|markdownbody" class="hidden invisible npt nmb"></ui-component>
+				</div>
 			</div>
 		</ui-component>
 	</div>
@@ -969,6 +974,18 @@
 			SET('common.form2', 'formnotifications');
 		};
 
+		exports.showinlinecomment = function(line) {
+			var model = exports.model;
+			exports.tapi('comments/{0}?line={1} ERROR'.format(model.id, line), function(response) {
+				var last = response.last();
+				var opt = {};
+				opt.element = exports.element.find('.markdown-line[data-line="{0}"]'.format(line));
+				opt.offsetY = 5;
+				opt.html = '<div class="quickpreview-window markdown-small inlinecomment" style="max-width:500px"><div>{2}<b>{1}</b></div>{0}</div>'.format(Thelpers.markdown2(last.markdown), Thelpers.encode(last.username), last.userphoto ? '<img src="{0}" alt="" class="photo" />'.format(last.userphoto) : '');
+				SETTER('quickpreview/show', opt);
+			});
+		};
+
 		// Real-time binding
 		exports.on('message', function(msg) {
 
@@ -989,6 +1006,28 @@
 			}
 
 		});
+
+		var prerendercomments = function() {
+			var model = exports.model;
+
+			if (!model.linecomments.length)
+				return;
+
+			var comments = {};
+			for (var m of model.linecomments)
+				comments[m.line + ''] = m.count;
+
+			var lines = exports.element.find('.markdown-line');
+			for (var line of lines) {
+				if (comments[line.getAttribute('data-line')])
+					line.classList.add('commented');
+			}
+
+		};
+
+		exports.inlinecomments = function() {
+			setTimeout2(exports.id + 'comments', prerendercomments, 100);
+		};
 
 		WATCH('parttimers.items', function() {
 			if (common.form === 'formdetail')
@@ -1017,7 +1056,15 @@
 
 	});
 
-	$(document).on('mouseenter mouseleave', '.quickpreview,.markdown-gallery', function(e) {
+	$(document).on('click', '.commented', function(e) {
+		var el = $(this);
+		if (!el.closest('.markdown-tasks').length) {
+			clearTimeout2('quickpreview');
+			PLUGINS.formdetail.showinlinecomment(el.attrd('line'));
+		}
+	});
+
+	$(document).on('mouseenter mouseleave', '.quickpreview,.markdown-gallery,.commented', function(e) {
 
 		if (e.type === 'mouseleave') {
 			clearTimeout2('quickpreview');
@@ -1026,6 +1073,13 @@
 
 		var t = this;
 		var el = $(t);
+
+		if (t.classList.contains('commented')) {
+			var line = t.getAttribute('data-line');
+			setTimeout2('quickpreview', line => PLUGINS.formdetail.showinlinecomment(line), 1000, null, line);
+			return;
+		}
+
 		var url = el.attr('href') || el.attr('src');
 
 		if (!((/\.(jpg|png|gif|jpeg|webp)$/gi).test(url)))
@@ -1038,6 +1092,72 @@
 		opt.html = '<div class="quickpreview-window"><img src="{0}" style="max-width:700px;max-height:500px" /></div>'.format(url);
 
 		setTimeout2('quickpreview', opt => SETTER('quickpreview/show', opt), 1000, null, opt);
+	});
+
+	// Create related ticket quickly
+	$(document).on('contextmenu', '.markdown-line', function(e) {
+
+		var el = $(this);
+		var is = el.closest('.ticketmarkdownbody').length > 0;
+		if (!is)
+			return;
+
+		var opt = {};
+		var tag = el[0].tagName;
+
+		opt.element = el;
+		opt.target = $(e.target);
+		opt.x = e.pageX;
+		opt.y = e.pageY;
+		opt.items = [];
+		opt.tag = tag;
+
+		if (el.attrd('line') && tag !== 'HR' && tag !== 'BR' && tag !== 'BLOCKQUOTE' && tag !== 'SECTION')
+			opt.items.push({ id: 'comment', name: '@(Comment)', icon: 'ti ti-comment' });
+
+		EMIT('detail_contextmenu', opt);
+
+		if (!opt.items.length)
+			return;
+
+		opt.hide = function() {
+			el.rclass('highlight');
+		};
+
+		opt.callback = function(selected) {
+			opt.element = el;
+			selected.callback && selected.callback(opt);
+			switch (selected.id) {
+				case 'comment':
+
+					var optinput = {};
+					optinput.element = el;
+					optinput.placeholder = '@(Enter a comment)';
+					optinput.callback = function(val) {
+						var line = +el.attrd('line');
+						val = '> :ti ti-long-arrow-right: ' + el.text().replace(/\s{2,}/g, ' ').trim().replace(/\n/g, '<br>') + '\n' + val;
+						SETTER('sounds/play', 'badge');
+						TAPI('comments_create ERROR', { ticketid: formdetail.id, markdown: val, line: line }, function() {
+							var detail = PLUGINS.formdetail;
+							var model = detail.model;
+							detail.inc('comments', 1);
+							el.aclass('commented');
+							var linecomment = model.linecomments.findItem('line', line);
+							if (linecomment)
+								linecomment.count++;
+							else
+								PUSH('formdetail.linecomments', { line: line, count: 1 });
+						});
+					};
+					EXEC('-floatinginput/show', optinput);
+					break;
+			}
+		};
+
+		opt.element = null;
+		EXEC('-menu/show', opt);
+		el.aclass('highlight');
+		e.preventDefault();
 	});
 
 </script>

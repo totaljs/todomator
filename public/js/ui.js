@@ -149,7 +149,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 			if (e.target.tagName === 'A')
 				return;
 
-			e.stopPropagation();
+			// e.stopPropagation();
 
 			var t = this;
 			var el = $(t);

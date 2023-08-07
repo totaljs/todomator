@@ -145,6 +145,9 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown-task { background-color: #4285F4; color: #FFF; padding: 1px 4px; border-radius: var(--radius); }
 .markdown-task i { margin-right: 5px; }
 
+.markdown .commented { background-color: #F1FAFE; }
+.markdown .highlight { background-color: #FFFED1; }
+
 .ui-info { z-index: 50; }
 
 .blink { animation: blink 1s infinite forwards; }

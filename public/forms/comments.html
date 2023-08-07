@@ -24,7 +24,7 @@
 					<figure{{ if m.me }} class="owner"{{ fi }}>
 						<div class="msg">
 							<span class="date">{{ m.dtcreated | time2 }}</span>
-							<div class="user">{{ if m.userphoto }}<img src="{{ m.userphoto }}" class="photo" />{{ fi }}{{ m.username }}</div>
+							<div class="user">{{ if m.userphoto }}<img src="{{ m.userphoto }}" alt="" class="photo" />{{ fi }}{{ m.username }}</div>
 							<div class="content">{{ m.markdown | markdown2 }}</div>
 						</div>
 						<div class="clearfix"></div>
