@@ -117,13 +117,17 @@ Thelpers.markdown2 = function(val, opt) {
 		return line;
 	};
 
+	var element = opt.element || $(document);
+
 	setTimeout(function() {
 
-		var links = $('.markdown-link');
+		var links = element.find('.markdown-link');
 		var arr = [];
 
-		for (var link of links)
-			arr.push(ATTRD(link));
+		for (var link of links) {
+			if (!link.classList.contains('markdown-task'))
+				arr.push(ATTRD(link));
+		}
 
 		if (arr.length) {
 			TAPI(QUERIFY('tickets_find', { id: arr.join(',') }), function(response) {
@@ -132,8 +136,8 @@ Thelpers.markdown2 = function(val, opt) {
 					var item = response.findItem('id', id);
 					var el = $(link);
 					if (item) {
-						item.icon = item.statusid === 'note' ? 'ti ti-book-open' : item.statusid === 'review' ? 'ti ti-clean' : item.statusid === 'postponed' ? 'ti ti-history' : item.statusid === 'closed' ? 'ti-check-square' : 'ti ti-square';
-						el.replaceWith('<a href="#{id}" class="markdown-task"><i class="ti {{ icon }}"></i>{name}</a>'.args(item));
+						// item.icon = item.statusid === 'note' ? 'ti ti-book-open' : item.statusid === 'review' ? 'ti ti-clean' : item.statusid === 'postponed' ? 'ti ti-history' : item.statusid === 'closed' ? 'ti-check-square' : 'ti ti-square';
+						el.replaceWith('<a href="#{id}" class="markdown-task markdown-link">{name}</a>'.args(item));
 					} else
 						el.replaceWith('#' + id);
 				}

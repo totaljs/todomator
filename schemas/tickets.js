@@ -703,7 +703,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			var params = $.params;
 
-			if (params.id === model.ticketid) {
+			if (params.id === model.ticketid && model.type === 'add') {
 				$.invalid("@(The ticket can't be assigned to itself)");
 				return;
 			}
@@ -713,7 +713,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (model.type === 'add') {
 				await DATA.modify('tbl_ticket', { parentid: params.id, dtparent: NOW }).id(model.ticketid).promise($);
 			} else {
-				await DATA.modify('tbl_ticket', { parentid: null, dtparent: null }).id(model.ticketid).where('parentid', params.id).promise($);
+				await DATA.modify('tbl_ticket', { parentid: null, dtparent: null }).id(model.ticketid).promise($);
 			}
 
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);

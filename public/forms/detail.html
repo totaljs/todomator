@@ -262,10 +262,13 @@
 		};
 
 		exports.remlink = function(el) {
+
 			var model = exports.model;
 			var id = ATTRD(el);
+			var link = model.links.findItem('id', id);
+
 			SETTER('approve/show', '@(Are you sure you want to remove related ticket?)', '"ti ti-trash" @(Remove)', function() {
-				exports.tapi('tickets_link/' + model.id + ' ERROR', { ticketid: id, type: 'rem' }, exports.refresh_links);
+				exports.tapi('tickets_link/' + model.id + ' ERROR', { ticketid: link.type === 'child' ? model.id : id, type: 'rem' }, exports.refresh_links);
 			});
 		};
 
@@ -1095,6 +1098,8 @@
 
 	// Create related ticket quickly
 	$(document).on('contextmenu', '.markdown-line', function(e) {
+
+		clearTimeout2('quickpreview');
 
 		var el = $(this);
 		var is = el.closest('.ticketmarkdownbody').length > 0;

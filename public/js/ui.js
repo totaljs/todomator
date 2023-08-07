@@ -136,7 +136,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 		self.aclass(cls);
 		self.rclass('hidden invisible');
-		self.append('<div class="hidden mplaceholder">{0}</div><div class="medit hidden"></div><div class="mbody" data-prevent="true"></div>'.format(config.placeholder));
+		self.append('<div class="hidden mplaceholder">{0}</div><div class="medit hidden"></div><div class="mbody" data-prevent="true"><div class="markdown markdown-container"></div></div>'.format(config.placeholder));
 
 		mbody = self.find('.mbody');
 		medit = self.find('.medit');
@@ -253,14 +253,107 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 		val = val ? val.trim() : '';
 		self.rclass('editmode');
+
 		medit.aclass('hidden');
 		mplaceholder.tclass('hidden', !!val);
-		mbody.rclass('hidden').html(val ? Thelpers.markdown2(val) : '');
+
+		var container = mbody.find('> .markdown');
+
+		var md = val ? $(Thelpers.markdown2(val, { element: self.element })) : null;
+		var arr1 = [];
+		var arr2 = [];
+
+		var tmp = container[0];
+		var remove = [];
+
+		for (var m of tmp.children)
+			arr1.push(m);
+
+		if (md) {
+
+			for (var m of md[0].children) {
+				m.mdhash = HASH(m.innerHTML).toString(36);
+				arr2.push(m);
+			}
+
+			for (var i = 0; i < arr1.length; i++)
+				arr1[i].$unused = true;
+
+			var tmpa = Array.from(arr2);
+			var tmpb = Array.from(arr1);
+
+			for (var i = 0; i < tmpa.length; i++) {
+
+				var a = tmpa[i];
+				var b = tmpb[i];
+
+				if (b) {
+
+					if (a.tagName === b.tagName && a.tagName === 'UL') {
+						// check items
+
+						for (var m of b.children)
+							m.$unused = true;
+
+						var subtmpa = Array.from(a.children);
+						var subtmpb = Array.from(b.children);
+
+						for (var j = 0; j < subtmpa.length; j++) {
+
+							var lia = subtmpa[j];
+							var lib = subtmpb[j];
+
+							if (!lib) {
+								b.appendChild(lia);
+								continue;
+							}
+
+							if (lia.innerHTML !== lib.innerHTML) {
+								NODEINSERT(lia, lib, true);
+								remove.push(lib);
+							 } else
+								lib.$unused = false;
+						}
+
+						for (var m of b.children) {
+							if (m.$unused && !remove.includes(m))
+								remove.push(m);
+						}
+
+						arr1[i].$unused = false;
+						arr2[i].$unused = false;
+
+					} else if (a.mdhash !== b.mdhash) {
+						a.$unused = false;
+						NODEINSERT(a, b, true);
+						remove.push(b);
+					} else
+						arr1[i].$unused = false;
+				} else
+					container[0].appendChild(a);
+
+			}
+
+			for (var m of arr1) {
+				if (m.$unused && !remove.includes(m))
+					remove.push(m);
+			}
+
+			for (var m of remove)
+				m.parentNode.removeChild(m);
+
+
+		} else {
+			container.empty().append(md);
+		}
+
+		mbody.rclass('hidden');
 		self.resize();
 		setTimeout(self.resize, 1000);
 	};
 
 });
+
 
 COMPONENT('chatmessage', function(self, config, cls) {
 
@@ -329,6 +422,10 @@ COMPONENT('chatmessage', function(self, config, cls) {
 
 		input.aclass('editmode');
 		editable = true;
+
+		clearTimeout2('quickpreview');
+		SETTER('!quickpreview/hide');
+
 		Editable(input, opt, function(response) {
 			input.rclass('editmode');
 			text = response.text.trim();
@@ -366,6 +463,9 @@ COMPONENT('quickpreview', function(self, config, cls) {
 	self.readonly();
 
 	self.make = function() {
+
+		self.aclass('hidden invisible');
+
 		self.append('<div class="{0}-content"></div><div class="{0}-container"></div>'.format(cls));
 		content = self.find(cls2 + '-content');
 		container = self.find(cls2 + '-container');
