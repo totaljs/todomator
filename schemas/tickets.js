@@ -138,12 +138,13 @@ NEWSCHEMA('Tickets', function(schema) {
 		action: async function($) {
 
 			var params = $.params;
-			var builder = DATA.query('SELECT a.*, b.isunread, b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
+			var userid = PG_ESCAPE($.user.id);
+			var builder = DATA.query('SELECT a.*, b.isunread, b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||{0})'.format(userid));
 
 			builder.where('a.id', params.id);
 
 			if (!$.user.sa || $.user.permissions.includes('admin'))
-				builder.query('(a.ispublic=TRUE OR (a.userid && {\'{0}\'}::_text) OR ownerid=\'{0}\')'.format($.user.id));
+				builder.query('(a.ispublic=TRUE OR (a.userid && {1}::_text) OR ownerid={0})'.format(userid, PG_ESCAPE('{' + $.user.id + '}')));
 
 			builder.first();
 			builder.error('@(Ticket not found)');
