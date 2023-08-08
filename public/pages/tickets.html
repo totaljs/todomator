@@ -280,6 +280,9 @@
 
 				search = search.trim().replace(/\s{2,}/g, ' ');
 
+				if (search.indexOf('@') !== -1)
+					filter.admin = 1;
+
 			}
 
 			filter.q = search;
