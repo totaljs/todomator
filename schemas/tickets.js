@@ -258,7 +258,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				await DATA.insert('tbl_ticket_time', logwork).promise($);
 			}
 
-			var filter = response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
+			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
 
 			if (response.userid.length) {
 				var users = await DATA.find('tbl_user').fields('id,name').in('id', response.userid).promise($);
