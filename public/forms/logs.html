@@ -28,11 +28,11 @@
 			<ui-component name="searchinput" path="?.search" config="placeholder:@(Search in logs)"></ui-component>
 		</div>
 
-		<ui-component name="search" path="?.search" config="selector:figure">
+		<ui-component name="search" path="?.search" config="selector:.search">
 			<ui-bind path="?.items" config="template" class="block listing2">
 				<script type="text/html">
 					{{ foreach m in value }}
-						<figure data-search="{{ m.user_name }} {{ m.name }}" data-id="{{ m.id }}">
+						<figure class="search" data-search="{{ m.user_name }} {{ m.name }}" data-id="{{ m.id }}">
 							<section>
 								<div class="pull-right ml10"><span class="exec" data-exec="?/options"><i class="ti ti-cog"></i></span></div>
 								<div class="pull-right">{{ m.dtcreated | format('[date]') }}</div>
@@ -43,9 +43,19 @@
 					{{ end }}
 				</script>
 			</ui-bind>
+			<hr />
+			<ui-bind path="?.users" config="template" class="block listing2">
+				<script type="text/html">
+					{{ foreach m in value }}
+						<div class="keyvalue search" data-search="{{ m.user_name }} {{ m.name }}" data-id="{{ m.id }}">
+							<span>{{ m.name }}</span>
+							<div>{{ m.minutes | logwork }}</div>
+						</div>
+					{{ end }}
+				</script>
+			</ui-bind>
 		</ui-component>
 	</div>
-
 	<nav>
 		<button name="cancel" style="width:100%">@(Close)</button>
 	</nav>
@@ -76,7 +86,26 @@
 
 		exports.refresh = function() {
 			var model = exports.model;
-			exports.tapi('tickets_logs/' + model.id, 'items');
+			exports.tapi('tickets_logs/' + model.id, function(response) {
+
+				exports.set('items', response);
+
+				var users = {};
+
+				for (var m of response) {
+					if (users[m.userid])
+						users[m.userid].minutes += m.minutes;
+					else
+						users[m.userid] = { name: m.user_name, minutes: m.minutes };
+				}
+
+				var arr = [];
+				for (var m in users)
+					arr.push(users[m]);
+
+				arr.quicksort('name');
+				exports.set('users', arr);
+			});
 		};
 
 		exports.options = function(el) {

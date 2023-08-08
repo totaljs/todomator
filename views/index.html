@@ -85,7 +85,7 @@
 		NAV.clientside('.jR');
 
 		(function() {
-			ADD('websocket', { url: '/api/' });
+			ADD('websocket', { url: '/api/?id=' + common.clientid });
 		})();
 
 		Thelpers.logwork = function(val, billing) {

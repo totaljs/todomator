@@ -144,7 +144,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 		self.resize();
 
-		self.event('click', 'li', function(e) {
+		self.event('click', '.markdown-task', function(e) {
 
 			if (e.target.tagName === 'A')
 				return;
@@ -297,6 +297,8 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 					if (a.tagName === b.tagName && a.tagName === 'UL') {
 						// check items
+
+						$(b).rclass().aclass($(a).attr('class'));
 
 						for (var m of b.children)
 							m.$unused = true;

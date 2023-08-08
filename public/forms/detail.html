@@ -962,7 +962,7 @@
 
 		exports.savemarkdown = function(val) {
 			var model = exports.model;
-			setTimeout2('savemarkdown', () => exports.tapi('tickets_update/{0} ERROR'.format(model.id), { markdown: val }, NOOP), 500);
+			setTimeout2('savemarkdown', () => exports.tapi('tickets_update/{0}?clientid={1} ERROR'.format(model.id, common.clientid), { markdown: val }, NOOP), 500);
 		};
 
 		exports.notifications = function() {
@@ -988,27 +988,6 @@
 				SETTER('quickpreview/show', opt);
 			});
 		};
-
-		// Real-time binding
-		exports.on('message', function(msg) {
-
-			if (common.form === exports.name && msg.TYPE === 'data' && msg.id === ID && msg.clientid !== common.clientid) {
-				var model = exports.model;
-				var arr = [];
-				for (var i = 0; i < msg.data.length; i++) {
-					var change = msg.data[i];
-					var item = model.data.findItem('id', change.id);
-					if (item) {
-						if (change.config)
-							item.config = change.config;
-						arr.push(item);
-					} else
-						arr.push(change);
-				}
-				exports.set('data', arr);
-			}
-
-		});
 
 		var prerendercomments = function() {
 			var model = exports.model;

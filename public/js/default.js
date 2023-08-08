@@ -137,7 +137,7 @@ Thelpers.markdown2 = function(val, opt) {
 					var el = $(link);
 					if (item) {
 						// item.icon = item.statusid === 'note' ? 'ti ti-book-open' : item.statusid === 'review' ? 'ti ti-clean' : item.statusid === 'postponed' ? 'ti ti-history' : item.statusid === 'closed' ? 'ti-check-square' : 'ti ti-square';
-						el.replaceWith('<a href="#{id}" class="markdown-task markdown-link">{name}</a>'.args(item));
+						el.replaceWith('<a href="#{id}" class="markdown-inlinetask markdown-link">{name}</a>'.args(item));
 					} else
 						el.replaceWith('#' + id);
 				}

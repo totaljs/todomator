@@ -142,8 +142,9 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown h4 .user img { width: 18px; }
 .markdown-container > *:last-child { margin-bottom: 0 !important; }
 .markdown-gallery { vertical-align: top; margin: 0 15px 15px 0; border: 1px solid #E0E0E0; width: 22%; border-radius: var(--radius); }
-.markdown-task { background-color: #4285F4; color: #FFF; padding: 1px 4px; border-radius: var(--radius); }
-.markdown-task i { margin-right: 5px; }
+.markdown-inlinetask { background-color: #4285F4; color: #FFF; padding: 1px 4px; border-radius: var(--radius); }
+.markdown-inlinetask i { margin-right: 5px; }
+.markdown-task { cursor: pointer; }
 
 .markdown .commented { background-color: #F1FAFE; }
 .markdown .highlight { background-color: #FFFED1; }

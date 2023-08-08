@@ -258,7 +258,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				await DATA.insert('tbl_ticket_time', logwork).promise($);
 			}
 
-			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
+			var filter = response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
 
 			if (response.userid.length) {
 				var users = await DATA.find('tbl_user').fields('id,name').in('id', response.userid).promise($);
@@ -272,7 +272,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				}
 			}
 
-			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: model.id }, filter);
+			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: model.id  }, filter);
 
 			response.type = 'create';
 			EMIT('ticket', response);
@@ -357,7 +357,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (response.userid && response.userid.length)
 				DATA.remove('tbl_ticket_unread').where('ticketid', params.id).notin('userid', response.userid);
 
-			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
+			var filter = client => client.query.id !== $.query.clientid && (response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id));
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown }, filter);
 
 			response.type = 'udpate';
@@ -444,7 +444,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		public: true,
 		action: function($) {
 			var params = $.params;
-			DATA.find('view_ticket_time').fields('id,user_name,name,dtcreated,minutes').where('ticketid', params.id).sort('dtcreated', true).callback($);
+			DATA.find('view_ticket_time').fields('id,userid,user_name,name,dtcreated,minutes').where('ticketid', params.id).sort('dtcreated', true).callback($);
 		}
 	});
 
