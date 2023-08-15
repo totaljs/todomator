@@ -161,3 +161,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 
 .ui-edit-window { z-index: 150; }
 .markdown { font-family: Arial; }
+.ui-timepicker { z-index: 150; }
+.ui-notify-container { z-index: 150; }
+.ui-approve { z-index: 150; }
+.ui-approve-body { max-width: 340px; }

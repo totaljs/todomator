@@ -34,9 +34,7 @@
 		exports.submit = function(hide) {
 			var form = exports.form;
 			var model = CLONE(form);
-
 			model.minutes = FUNC.parseminutes(model.minutes);
-
 			exports.tapi((model.id ? 'logwork_update/{0}' : 'logwork_create').format(model.id) + ' ERROR', model, function(response) {
 				form.callback && form.callback(response.value);
 				hide();

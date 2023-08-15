@@ -200,7 +200,7 @@ T19m2dv      : Vlastník
 T1sksnqp     : Heslo znova
 Tyop623      : Heslá sa nezhodujú
 T1q4xqtw     : Komentáre
-Topqbe6      : Pre tento rozsah dátumov nemáte žiadny nepriradený lístok.
+Topqbe6      : Pre tento rozsah dátumov nemáte žiadny nepriradený tiket.
 T1ya5sla     : Zmeniž dátum
 T1x9grwi     : Zmeniť stav
 T1jchikc     : Priradiť používateľovi
@@ -221,7 +221,7 @@ Tpwirqq      : Otvorené pre všetkých
 Tbtjryl      : Použiť ako termín vyriešenia
 T15incjd     : Dnes:
 T1riu5ci     : Pripomienka
-T1f7yulj     : Pripomeňte lístok
+T1f7yulj     : Pripomienka
 Ty7ll4z      : Zadajte konkrétny dátum a nastavte si pripomienku. Systém Vám pripomenie úlohu.
 T1qse3o6     : Vyberte si dátum
 T1j0x4xk     : Zrušiť pripomienku
@@ -232,3 +232,18 @@ T1iy3dwl     : Zajtra
 T1gb84pt     : Budúci týždeň
 Tl1752m      : Stiahnúť CSV
 T1mbqgeb     : Upraviť obsah
+T17j1kv8     : Používateľ "@" sa nenašiel
+T31koxg      : Rozšírenia
+T1idgiih     : Napíšte poznámky
+T176ok6w     : Napíšte komentár
+Tgore5s      : Pridať ako súvisiaci tiket
+Tlcufsa      : Vytvoriť ako súvisiaci tiket
+T1l2rmp1     : Kopírovať odkaz
+T14t27rb     : Odkaz bol skopírovaní do clipboardu.
+T1a1d0c7     : Vytvoriť pripomienku pre priradených používateľov
+Tfname0      : Po odoslaní formulára už nemôžete zmeniť nastavenie pripomienky. Chcete pokračovať?
+T1qpwhc7     : Pokračovať
+T1jmakkv     : Vytvorené
+T1dosx0c     : 30 minút
+T14fa3x0     : Réport
+T4gucvc      : Ticket réport

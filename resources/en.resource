@@ -77,6 +77,7 @@ Tlrg99y      : Remove link
 Tlre7w5      : Remove icon
 Tw136t7      : Remove object
 T1j47wkj     : Are you sure you want to remove selected object?
+T176ok6w     : Enter a comment
 T1g64y       : Note
 T5znwof      : Start work
 Tyg7l5r      : Choose users
@@ -86,6 +87,7 @@ T12tjh4      : Close
 T154b66q     : Status
 T19m2dv      : Owner
 Tfd0xow      : Attachments
+T178xmwv     : Comment
 T9ec6m0      : Deadline
 T13osqiw     : Estimate
 T16y1ci8     : Worked
@@ -132,7 +134,6 @@ T179lwex     : Content
 T1ml78da     : Time estimation
 T1gtpq6c     : Priority
 T1px50ix     : Modified
-T178xmwv     : Comment
 T1tzdr72     : Assigned
 T1kpnv       : User
 T8ev4i3      : Logged time
@@ -159,7 +160,6 @@ T1vu7o1y     : Summary
 Tc3tlif      : Log how many minutes did you spend on this ticket.
 T8kph03      : Modify time
 T1jvfx       : Time
-T15gzooq     : ?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\]
 T8hthgd      : Todomator
 Tniqzic      : Search in tickets
 T1gtii       : Open
@@ -180,14 +180,22 @@ Tk9gd4i      : Unread changes
 T1gty3cy     : Refresh tickets
 Tqu98zv      : You have unread changes ({0}) in the tickets
 T1ljb8av     : Stop timer
+Tgore5s      : Add as related ticket
 Tlcufsa      : Create as a related ticket
+T1l2rmp1     : Copy link
+T14t27rb     : The link has been copied to the clipboard.
 T1f7yulj     : Remind ticket
 Ty7ll4z      : Enter a specific date to set a reminder for yourself. By setting a reminder, you ensure that you will not forget about this ticket.
+T1a1d0c7     : Create a reminder for all assigned users
 T1qse3o6     : Choose a date
 T1j0x4xk     : Cancel reminder
+Tfname0      : You can't change a reminder for assigned users after submitting the form. Do you want to continue?
+T1qpwhc7     : Continue
 T14f82ed     : Remind
+T1jmakkv     : Created by
 Tg3oxp3      : Reminded to
 T1ii7q       : Read
+T1dosx0c     : 30 minutes
 T1iy3dwl     : Tomorrow
 T1gb84pt     : Next week
 T14eixwp     : Choose a period
