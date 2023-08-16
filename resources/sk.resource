@@ -246,4 +246,7 @@ T1qpwhc7     : Pokračovať
 T1jmakkv     : Vytvorené
 T1dosx0c     : 30 minút
 T14fa3x0     : Réport
-T4gucvc      : Ticket réport
+T4gucvc      : Réport tiketu
+Tqahqde      : Vložiť bohatý obsah
+T1nt1wo7     : <b>Vložiť nižšie</b> bohatý obsah z emailu, Word dokumentu alebo webovej stránky.
+T1637al      : Naozaj chcete vyčistiť obsah?

@@ -12,7 +12,6 @@ T12jid4p     : Log not found
 Ttb1oyn      : The ticket can't be assigned to itself
 T1w75t5n     : Drag &amp; Drop files here
 Tkg5z0p      : Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday
-T12tbn1      : Clear
 T1maqqy3     : January,February,March,April,May,Juny,July,August,September,October,November,December
 T2w          : h
 T11tfp8h     : # days,# day,# days, # days
@@ -25,6 +24,7 @@ T1mqtx3t     : # months ago,# month ago,# months ago,# months ago
 To0b6h       : # years ago,# year ago,# years ago,# years ago
 T14w27d4     : Search
 T1c7py9      : Today
+T12tbn1      : Clear
 T1q2czyt     : Sign-in
 T1w7l82b     : E-mail address
 Tl71ry3      : Password
@@ -184,6 +184,9 @@ Tgore5s      : Add as related ticket
 Tlcufsa      : Create as a related ticket
 T1l2rmp1     : Copy link
 T14t27rb     : The link has been copied to the clipboard.
+Tqahqde      : Paste rich content
+T1nt1wo7     : <b>Paste below</b> rich content from your email message, Word document or website.
+T1637al      : Are you sure you want to clear content?
 T1f7yulj     : Remind ticket
 Ty7ll4z      : Enter a specific date to set a reminder for yourself. By setting a reminder, you ensure that you will not forget about this ticket.
 T1a1d0c7     : Create a reminder for all assigned users
