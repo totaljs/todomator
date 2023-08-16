@@ -352,6 +352,7 @@ function Editable(el, opt, callback) {
 	openeditor.element = el;
 	openeditor.dom = el[0];
 	openeditor.multiline = opt.multiline;
+	openeditor.closeoutside = true;
 
 	openeditor.parent = opt.parent ? opt.parent[0] : openeditor.dom;
 	openeditor.insert = function(text) {
@@ -422,6 +423,10 @@ function Editable(el, opt, callback) {
 	opt.editor = openeditor;
 
 	var clickoutside = function(e) {
+
+		if (!openeditor.closeoutside)
+			return;
+
 		if (!(e.target === openeditor.parent || openeditor.parent.contains(e.target)))
 			openeditor.close();
 	};
@@ -690,4 +695,5 @@ function Editable(el, opt, callback) {
 
 	opt.placeholder && placeholder && el.on('input', openeditor.checkplaceholder);
 	el.on('paste', paste);
+	W.OpenEditor = openeditor;
 }
