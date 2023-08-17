@@ -149,7 +149,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 			if (e.target.tagName === 'A')
 				return;
 
-			// e.stopPropagation();
+			e.stopPropagation();
 
 			var t = this;
 			var el = $(t);
@@ -210,6 +210,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 		opt.tabs = true;
 		opt.placeholder = mplaceholder[0];
 		opt.format = true;
+
 		extendeditable(opt);
 
 		self.element.focus();
