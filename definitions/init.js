@@ -1,10 +1,5 @@
 require('querybuilderpg').init('default', CONF.database, CONF.pooling || 1, ERROR('DB'));
 
-MAIN.db = MEMORIZE('db');
-
-if (!MAIN.db.config)
-	MAIN.db.config = { name: 'Todomator', minlogtime: 10 };
-
 CONF.allow_custom_titles = true;
 CONF.version = '1';
 
