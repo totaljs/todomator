@@ -3,9 +3,18 @@ NEWSCHEMA('Settings', function(schema) {
 	schema.action('read', {
 		name: 'Read settings',
 		action: async function($) {
+
 			if (UNAUTHORIZED($, 'settings'))
 				return;
-			$.callback(MAIN.db.config);
+
+			var response = await DATA.find('cl_config').fields('id,value').in('id', 'name,token,minlogtime'.split(',')).promise($);
+			var obj = {};
+
+			for (var m of response)
+				obj[m.id] = m.value;
+
+			obj.minlogtime = obj.minlogtime ? +obj.minlogtime : 0;
+			$.callback(obj);
 		}
 	});
 
@@ -21,11 +30,9 @@ NEWSCHEMA('Settings', function(schema) {
 				model.minlogtime = 1;
 
 			for (var key in model)
-				MAIN.db.config[key] = model[key];
+				await DATA.modify('cl_config', { value: model[key] }).id(key).promise($);
 
-			MAIN.db.save();
 			FUNC.reconfigure();
-
 			$.success();
 		}
 	});

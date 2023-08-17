@@ -1,5 +1,13 @@
 BEGIN;
 
+CREATE TABLE "public"."cl_config" (
+	"id" text NOT NULL,
+	"value" text,
+	"type" text,
+	"dtupdated" timestamp DEFAULT timezone('utc'::text, now()),
+	PRIMARY KEY ("id")
+);
+
 CREATE TABLE "public"."cl_status" (
 	"id" text NOT NULL,
 	"name" text,
@@ -326,5 +334,22 @@ CREATE INDEX "tbl_ticket_time_idxticket" ON "public"."tbl_ticket_time" USING BTR
 CREATE INDEX "tbl_ticket_unread_idxuserid" ON "public"."tbl_ticket_unread" USING BTREE ("userid", "isunread");
 CREATE INDEX "tbl_ticket_comment_idxticket" ON "public"."tbl_ticket_comment" USING BTREE ("ticketid");
 CREATE INDEX "tbl_notification_idxticket" ON "public"."tbl_notification" USING BTREE ("ticketid", "userid");
+
+
+-- =============================================
+-- DATA
+-- =============================================
+
+INSERT INTO "public"."cl_config" ("id", "value", "type") VALUES
+	('allow_tms', 'false', 'boolean'),
+	('cdn', '//cdn.componentator.com', 'string'),
+	('name', 'Todomator', 'string'),
+	('token', '', 'string'),
+	('language', '', 'string'),
+	('minlogtime', '10', 'number'),
+	('auth_cookie_expire', '1 month', 'string'),
+	('auth_secret', SUBSTRING(MD5(RANDOM()::text), 0, 16), 'string'),
+	('auth_cookie', SUBSTRING(MD5(RANDOM()::text), 0, 5), 'string'),
+	('salt', SUBSTRING(MD5(RANDOM()::text), 0, 13), 'string');
 
 COMMIT;

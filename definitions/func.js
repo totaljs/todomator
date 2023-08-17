@@ -1,10 +1,6 @@
-FUNC.reconfigure = function(callback) {
-	var arr = [];
-	for (var key in MAIN.db.config) {
-		var val = MAIN.db.config[key];
-		arr.push({ id: key, type: typeof(val), value: val });
-	}
-	LOADCONFIG(arr);
+FUNC.reconfigure = async function(callback) {
+	var config = await DATA.find('cl_config').fields('id,value,type').promise();
+	LOADCONFIG(config);
 	EMIT('configure');
 	callback && callback();
 };

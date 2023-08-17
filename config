@@ -1,14 +1,4 @@
-cdn                             : https://cdn.componentator.com
-allow_custom_titles             : true
-
 // database                        : postgresql://user:pass@localhost:5432/todomator
 database    (env)               : DATABASE
 pooling                         : 1
-
-salt                (generate)  : 10
-auth_secret         (generate)  : 15
-auth_cookie         (generate)  : 5
-auth_cookie_expire              : 1 month
 default_uid                     : f
-
-// language                        : en

@@ -65,6 +65,11 @@ ON('ready', function() {
 	DATA.query('UPDATE tbl_user SET isonline=FALSE WHERE isonline=TRUE');
 });
 
+ON('configure', function() {
+	opt.secret = CONF.auth_secret;
+	opt.cookie = CONF.auth_cookie;
+});
+
 ON('service', function(counter) {
 
 	if (counter % 1440 === 0)

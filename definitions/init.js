@@ -19,6 +19,11 @@ ON('ready', function() {
 
 });
 
+ON('service', function(counter) {
+	if (counter % 20 === 0)
+		FUNC.reconfigure();
+});
+
 async function init() {
 
 	var tables = await DATA.query("SELECT FROM pg_tables WHERE schemaname='public' AND tablename='tbl_ticket' LIMIT 1").promise();
