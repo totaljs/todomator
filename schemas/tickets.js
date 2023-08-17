@@ -508,13 +508,12 @@ NEWSCHEMA('Tickets', function(schema) {
 			var item = await DATA.read('tbl_ticket_time').fields('ticketid,start').id(model.id).where('userid', $.user.id).where('start IS NOT NULL').error('@(Timer not found)').promise($);
 			var diff = Math.ceil((Date.now() - item.start) / 1000 / 60);
 			var limit = 60 * 8; // Max. 8 hours
-			var config = MAIN.db.config;
 
 			if (diff > limit)
 				diff = limit;
 
-			if (diff < config.minlogtime)
-				diff = config.minlogtime;
+			if (diff < CONF.minlogtime)
+				diff = CONF.minlogtime;
 
 			await DATA.modify('tbl_ticket_time', { '+minutes': diff, start: null }).id(model.id).promise($);
 			await DATA.modify('tbl_ticket', { '+worked': diff }).id(item.ticketid).promise($);
@@ -539,14 +538,12 @@ NEWSCHEMA('Tickets', function(schema) {
 		public: true,
 		action: async function($, model) {
 
-			var config = MAIN.db.config;
-
 			model.id = UID();
 			model.userid = $.user.id;
 			model.dtcreated = NOW;
 
-			if (model.minutes < config.minlogtime)
-				model.minutes = config.minlogtime;
+			if (model.minutes < CONF.minlogtime)
+				model.minutes = CONF.minlogtime;
 
 			await DATA.modify('tbl_ticket', { '+worked': model.minutes }).id(model.ticketid).error('@(Ticket not found)').promise($);
 			await DATA.insert('tbl_ticket_time', model).promise($);
@@ -572,10 +569,9 @@ NEWSCHEMA('Tickets', function(schema) {
 		action: async function($, model) {
 
 			var params = $.params;
-			var config = MAIN.db.config;
 
-			if (model.minutes < config.minlogtime)
-				model.minutes = config.minlogtime;
+			if (model.minutes < CONF.minlogtime)
+				model.minutes = CONF.minlogtime;
 
 			var response = await DATA.modify('tbl_ticket_time', model).id(params.id).error('@(Log not found)').returning('ticketid').first().promise($);
 			await DATA.query('UPDATE tbl_ticket a SET worked=(SELECT SUM(x.minutes) FROM tbl_ticket_time x WHERE x.ticketid=a.id) WHERE a.id=' + PG_ESCAPE(response.ticketid));

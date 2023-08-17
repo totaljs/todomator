@@ -14,7 +14,7 @@ opt.onauthorize = function($) {
 	var token = $.headers['x-token'];
 	if (token) {
 
-		if (token === MAIN.db.config.token) {
+		if (token === CONF.token) {
 			$.success(BOT);
 		} else
 			$.invalid();
