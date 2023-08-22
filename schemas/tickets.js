@@ -400,6 +400,8 @@ NEWSCHEMA('Tickets', function(schema) {
 			item.date = model.date || NOW;
 			item.dtcreated = NOW;
 			item.dtupdated = null;
+			item.worked = 0;
+			item.comments = 0;
 
 			if (model.name)
 				item.name = model.name;
