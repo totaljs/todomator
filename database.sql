@@ -127,6 +127,22 @@ CREATE TABLE "public"."tbl_ticket" (
 	PRIMARY KEY ("id")
 );
 
+CREATE TABLE "public"."tbl_notification" (
+	"id" text NOT NULL,
+	"ticketid" text,
+	"userid" text,
+	"typeid" text,
+	"createdby" text,
+	"value" text,
+	"reference" text,
+	"isprocessed" bool DEFAULT false,
+	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
+	CONSTRAINT "tbl_notification_typeid_fkey" FOREIGN KEY ("typeid") REFERENCES "public"."cl_notification"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT "tbl_notification_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT "tbl_notification_ticketid_fkey" FOREIGN KEY ("ticketid") REFERENCES "public"."tbl_ticket"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY ("id")
+);
+
 CREATE TABLE "public"."tbl_ticket_bookmark" (
 	"id" text NOT NULL,
 	"ticketid" text,
@@ -227,22 +243,6 @@ CREATE TABLE "public"."tbl_session" (
 	PRIMARY KEY ("id")
 );
 
-CREATE TABLE "public"."tbl_notification" (
-	"id" text NOT NULL,
-	"ticketid" text,
-	"userid" text,
-	"typeid" text,
-	"createdby" text,
-	"value" text,
-	"reference" text,
-	"isprocessed" bool DEFAULT false,
-	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
-	CONSTRAINT "tbl_notification_typeid_fkey" FOREIGN KEY ("typeid") REFERENCES "public"."cl_notification"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT "tbl_notification_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT "tbl_notification_ticketid_fkey" FOREIGN KEY ("ticketid") REFERENCES "public"."tbl_ticket"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY ("id")
-);
-
 CREATE VIEW view_ticket AS
 	SELECT
 		a.id,
@@ -278,7 +278,7 @@ CREATE VIEW view_ticket AS
 		a.dtparent,
 		a.dtcreated,
 		a.reference,
-		a.source
+		a.source,
 		a.note
 	FROM tbl_ticket a
 		LEFT JOIN tbl_folder b ON b.id = a.folderid
