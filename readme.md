@@ -1,5 +1,7 @@
 # Todomator
 
+![Todomator app](https://todomator.com/img/app.png)
+
 Todomator is a task manager app for small teams up to 30 members (recommended).
 
 - [Website](https://www.totaljs.com/todomator/)
@@ -43,3 +45,12 @@ docker compose up
 login : info@totaljs.com
 password : admin
 ```
+
+## Premium plugins
+
+Premium plugins are part of the [Total.js Enterprise service](https://www.totaljs.com/enterprise/). Todomator plugins add new functionality to the app.
+
+- extensions (paste rich content, quick open ticket, etc.)
+- reminder
+- reports
+- workload
