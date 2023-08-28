@@ -1,9 +1,9 @@
-FROM node:18-alpine
+FROM node:19-alpine
 MAINTAINER totalplatform "info@totaljs.com"
 
-VOLUME /www
-WORKDIR /www
-RUN mkdir -p /www/bundles
+VOLUME /www/
+WORKDIR /www/
+RUN mkdir -p /www/bundles/
 
 COPY index.js .
 COPY config .
