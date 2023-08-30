@@ -1,5 +1,7 @@
 # Todomator
 
+[![Made in EU](https://cdn.componentator.com/eu-small.png)](https://european-union.europa.eu/)
+
 ![Todomator app](https://todomator.com/img/app.png)
 
 Todomator is a task manager app for small teams up to 30 members (recommended).
