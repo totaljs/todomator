@@ -39,8 +39,8 @@
 			<ui-bind path="common.type" config="show:value === 'login'" class="hidden">
 				<ui-plugin path="formlogin" class="padding npt">
 					<ui-component name="autofill">
-						<ui-component name="input" path="?.email" config="required:1;type:email" default="'@'" class="m email">@(E-mail address)</ui-component>
-						<ui-component name="input" path="?.password" config="required:1;type:password" default="''" class="m">@(Password)</ui-component>
+						<ui-component name="input" path="?.email" config="required:1;type:email;autofill:1" default="'@'" class="m email">@(E-mail address)</ui-component>
+						<ui-component name="input" path="?.password" config="required:1;type:password;autofill:1" default="''" class="m">@(Password)</ui-component>
 						<ui-component name="validate" path="?" style="margin-top:20px">
 							<button name="submit" class="exec" data-exec="?/submit" disabled><i class="ti ti-key"></i>@(Sign-in)</button>
 						</ui-component>
