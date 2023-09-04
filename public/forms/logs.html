@@ -35,7 +35,7 @@
 						<figure class="search" data-search="{{ m.user_name }} {{ m.name }}" data-id="{{ m.id }}">
 							<section>
 								<div class="pull-right ml10"><span class="exec" data-exec="?/options"><i class="ti ti-cog"></i></span></div>
-								<div class="pull-right">{{ m.dtcreated | format('[date]') }}</div>
+								<div class="pull-right">{{ m.date | format('[date]') }}</div>
 								<div class="pull-right mr10 b">{{ m.minutes | logwork }}</div>
 								<div><b>{{ m.user_name }}</b> <span class="fs12 gray">{{ m.name }}</span></div>
 							</section>
@@ -141,7 +141,7 @@
 				exports.refresh();
 			};
 
-			SET('formtime @default', data);
+			SET('formtime @reset', data);
 			SET('common.form3', 'formtime');
 
 		};

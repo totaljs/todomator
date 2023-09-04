@@ -446,7 +446,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		public: true,
 		action: function($) {
 			var params = $.params;
-			DATA.find('view_ticket_time').fields('id,userid,user_name,name,dtcreated,minutes').where('ticketid', params.id).sort('dtcreated', true).callback($);
+			DATA.find('view_ticket_time').fields('id,userid,user_name,name,date,minutes').where('ticketid', params.id).sort('date', true).callback($);
 		}
 	});
 
