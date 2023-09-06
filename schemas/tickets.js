@@ -474,7 +474,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('logwork_start', {
 		name: 'Start logwork timer',
-		input: '*ticketid:String',
+		input: '*ticketid,name',
 		action: async function($, model) {
 
 			var ticket = await DATA.read('tbl_ticket').fields('statusid').id(model.ticketid).where('isremoved=FALSE').error(404).promise($);
@@ -498,7 +498,7 @@ NEWSCHEMA('Tickets', function(schema) {
 	schema.action('logwork_open', {
 		name: 'Open timers',
 		action: function($) {
-			DATA.query('SELECT a.id, a.ticketid, b.name, a.start FROM tbl_ticket_time a LEFT JOIN tbl_ticket b ON b.id=a.ticketid WHERE a.userid=\'{0}\' AND start IS NOT NULL ORDER BY a.start'.format($.user.id)).callback($);
+			DATA.query('SELECT a.id, a.ticketid, b.name, a.start, a.name AS note FROM tbl_ticket_time a LEFT JOIN tbl_ticket b ON b.id=a.ticketid WHERE a.userid=\'{0}\' AND start IS NOT NULL ORDER BY a.start'.format($.user.id)).callback($);
 		}
 	});
 

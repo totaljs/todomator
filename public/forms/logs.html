@@ -3,7 +3,7 @@
 	.CLASS h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
 </style>
 
-<ui-component name="box" path="common.form2" config="if:~PATH~;width:600;title:@(Logs);autofocus:1;closeesc:1;closeoutside:1;submit:?/submit;close:?/hide;reload:?/reload;icon:ti ti-history;zindex:30" plugin="~PATH~" class="hidden ~PATH~">
+<ui-component name="box" path="common.form2" config="if:~PATH~;width:700;title:@(Logs);autofocus:1;closeesc:1;closeoutside:1;submit:?/submit;close:?/hide;reload:?/reload;icon:ti ti-history;zindex:30" plugin="~PATH~" class="hidden ~PATH~">
 
 	<div class="padding">
 
@@ -37,7 +37,7 @@
 								<div class="pull-right ml10"><span class="exec" data-exec="?/options"><i class="ti ti-cog"></i></span></div>
 								<div class="pull-right">{{ m.date | format('[date]') }}</div>
 								<div class="pull-right mr10 b">{{ m.minutes | logwork }}</div>
-								<div><b>{{ m.user_name }}</b> <span class="fs12 gray">{{ m.name }}</span></div>
+								<div class="hellip"><b>{{ m.user_name }}</b> <span class="fs12 gray">{{ m.name }}</span></div>
 							</section>
 						</figure>
 					{{ end }}

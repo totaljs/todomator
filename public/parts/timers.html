@@ -30,9 +30,9 @@
 			});
 		};
 
-		exports.start = function(el) {
+		exports.start = function(el, name) {
 			var id = ATTRD(el);
-			exports.tapi('logwork_start ERROR @showloading', { ticketid: id }, function() {
+			exports.tapi('logwork_start ERROR @showloading', { ticketid: id, name: name }, function() {
 
 				if (common.form === 'formdetail' && formdetail.id === id && formdetail.statusid === 'pending') {
 					formdetail.statusid = 'open';
@@ -44,7 +44,7 @@
 			});
 		};
 
-		exports.stop = function(el) {
+		exports.stop = function(el, callback) {
 			var id = ATTRD(el);
 			exports.tapi('logwork_stop ERROR @showloading', { id: id }, function(response) {
 				SETTER('sounds/play', 'success');
@@ -54,18 +54,26 @@
 					UPD('formdetail.id');
 				}
 
-				exports.refresh();
+				if (typeof(callback) === 'function')
+					callback();
+				else
+					exports.refresh();
 			});
 		};
 
-		exports.toggle = function(el) {
+		exports.toggle = function(el, name) {
 			var model = exports.model;
 			var id = ATTRD(el);
 			var timer = model.items.findItem('ticketid', id);
-			if (timer)
-				exports.stop(timer.id);
-			else
-				exports.start(id);
+			if (timer) {
+				exports.stop(timer.id, function() {
+					if (timer.note == name)
+						exports.refresh();
+					else
+						exports.start(id, name);
+				});
+			} else
+				exports.start(id, name);
 		};
 
 		exports.refresh();
