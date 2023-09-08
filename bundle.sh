@@ -1,4 +1,4 @@
-mkdir -p .bundle
+	mkdir -p .bundle
 
 cd .bundle
 cp -a ../controllers/ controllers
