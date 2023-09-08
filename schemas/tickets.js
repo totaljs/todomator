@@ -5,7 +5,13 @@ NEWSCHEMA('Tickets', function(schema) {
 	function makefilter($, builder) {
 		const query = $.query;
 
-		query.date && builder.where('date', query.date);
+		if (query.date) {
+			query.date.setHours(0);
+			query.date.setMinutes(0);
+			query.date.setSeconds(0);
+			builder.where('date', query.date);
+		}
+
 		query.folderid && builder.where('folderid', query.folderid);
 
 		switch (query.type) {
@@ -117,7 +123,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		query: 'type:String, folderid:UID, date:Date, admin:Number',
 		public: true,
 		action: function($) {
-			var date = $.query.date || NOW;
+			var date = $.query.date || new Date();
 			$.query.date = null;
 			$.query.date2 = 1;
 			var builder = DATA.query('SELECT COUNT(1)::int4 AS count, a.date FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\') {where} GROUP BY date'.format($.user.id));
@@ -126,6 +132,12 @@ NEWSCHEMA('Tickets', function(schema) {
 			date.setDate(1);
 			var a = date.add('-1 month');
 			var b = date.add('2 month');
+			a.setHours(0);
+			a.setMinutes(0);
+			a.setSeconds(0);
+			b.setHours(0);
+			b.setMinutes(0);
+			b.setSeconds(0);
 			builder.between('a.date', a, b);
 			builder.callback($);
 		}
