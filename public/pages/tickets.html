@@ -27,7 +27,7 @@
 	.CLASS .name b { padding: 2px 0; }
 	.CLASS .name .ti-paperclip { color: #999; }
 	.CLASS .arrows { float: left; }
-	/* .CLASS .priority { color: #E8483F; } */
+	.CLASS .arrows .ti-minus { color: #777; }
 	.CLASS .priority.open .assigned b { background-color: rgba(232,72,63,0.15); }
 	.CLASS .open.priority b { color: #E8483F !important; }
 	.CLASS .open b { color: var(--color); }
@@ -71,10 +71,11 @@
 	.CLASS .comments { font-size: 16px; font-weight: normal; margin: 0 0 0 5px; position: relative; display: inline-block; vertical-align: middle; color: rgba(0,0,0,0.4); }
 	.CLASS .logo { float: left; margin: 20px 0 0 8px; }
 	.CLASS .logo img { width: 120px; }
-	.CLASS .flag { padding: 3px 3px; border-radius: var(--radius); line-height: 12px; font-size: 11px; margin: 1px 5px 0 0; color: #FFF; vertical-align: middle; text-transform: uppercase; font-weight: bold; float: left; }
+	.CLASS .flag { padding: 3px; border-radius: var(--radius); line-height: 12px; font-size: 11px; margin: 1px 5px 0 0; color: #FFF; vertical-align: middle; text-transform: uppercase; font-weight: bold; float: left; }
 	.CLASS .flag-asap { background-color: #E73323; }
 	.CLASS .flag-week { background-color: #CCCB41; }
 	.CLASS .flag-today { background-color: #EC8632; }
+	.CLASS .flag-priority { background-color: #EA706B; }
 
 	@keyframes ticketscalendarbutton {
 		0% { transform: scale(1); }
@@ -160,7 +161,7 @@
 												<div class="status">{{ m.statusid | status }}</div>
 												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip">{{ if m.folder_icon }}<i class="{{ m.folder_icon }}"></i>{{ fi }}{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.ispublic }}
 													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
