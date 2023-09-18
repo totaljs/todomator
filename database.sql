@@ -298,7 +298,8 @@ CREATE VIEW view_ticket_time AS
 		a.date,
 		b."name" as ticket_name,
 		c.name AS user_name,
-		b.isbillable
+		b.isbillable,
+		a.start
 	FROM tbl_ticket_time a
 		JOIN tbl_ticket b ON b.id = a.ticketid AND b.isremoved = false
 		LEFT JOIN tbl_user c ON c.id = a.userid;
