@@ -146,7 +146,7 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 		self.event('click', '.markdown-task', function(e) {
 
-			if (e.target.tagName === 'A')
+			if (e.target.tagName === 'A' || e.target.tagName === 'CODE')
 				return;
 
 			e.stopPropagation();

@@ -145,6 +145,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .markdown-inlinetask { background-color: #4285F4; color: #FFF; padding: 1px 4px; border-radius: var(--radius); }
 .markdown-inlinetask i { margin-right: 5px; }
 .markdown-task { cursor: pointer; }
+.markdown code { cursor: crosshair; }
 
 .markdown .commented { background-color: #F1FAFE; }
 .markdown .highlight { background-color: #FFFED1; }
