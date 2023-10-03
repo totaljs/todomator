@@ -77,10 +77,21 @@
 	.CLASS .flag-today { background-color: #EC8632; }
 	.CLASS .flag-priority { background-color: #EA706B; }
 
+	.CLASS .mobilemenu { display: none; z-index: 25; align-items: center; justify-content: center; width: 100%; height: 40px; position: absolute; left: 0; bottom: 0; background-color: #fff; border-top: 1px solid #e0e0e0; }
+	.CLASS .mobilemenu i { font-size: 20px; }
+	.CLASS main { position: relative; z-index: 1; }
+
 	@keyframes ticketscalendarbutton {
 		0% { transform: scale(1); }
 		50% { transform: scale(1.15); }
 		100% { transform: scale(1); }
+	}
+
+	@media(max-width: 768px)  {
+		.CLASS .mobilemenu { display: flex; }
+		.CLASS .status { width: 30px; }
+		.CLASS .folder, .CLASS .worked, .CLASS .date { display: none; }
+		.CLASS .tickets { padding: 0 !important; }
 	}
 
 </style>
@@ -91,7 +102,7 @@
 		<span class="mainmenu exec" data-exec="?/menu"><i class="ti ti-menu"></i></span>
 		<a href="https://www.todomator.com" target="_blank" class="logo"><img src="/img/logo.svg" alt="@(Todomator)" /></a>
 
-		<div class="searchbox">
+		<div class="searchbox hidden-xs">
 			<ui-bind path="?.date" config=".selected" child=".calendar" class="block">
 				<span class="exec calendar" data-exec="?/calendar"><i class="ti ti-calendar"></i></span>
 				<ui-component name="searchinput" path="?.search" config="placeholder:@(Search in tickets)"></ui-component>
@@ -105,7 +116,7 @@
 
 	<ui-component name="navlayout" path="?.menu" config="parent:auto;width:200;margin:58" class="invisible">
 
-		<section>
+		<section style="background-color:#fff">
 			<ui-component name="aselected" config="selector:.item">
 				<div class="nav">
 					<nav>
@@ -119,7 +130,7 @@
 				<div class="searchfolders">
 					<ui-component name="searchinput" path="%searchfolders" config="placeholder:@(Search in folders)"></ui-component>
 				</div>
-				<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;margin:218;scrollbarshadow:1" class="invisible">
+				<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;margin:218;marginxs:258;scrollbarshadow:0" class="invisible">
 					<ui-component name="search" path="%searchfolders" config="selector:.item;datasource:#folder" class="nav folders">
 						<ui-bind path="#folder" config="template:.item;changes" child="nav">
 							<nav class="npb">
@@ -141,7 +152,7 @@
 		</section>
 
 		<main style="border-left:1px solid #E0E0E0">
-			<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;scrollbarshadow:1;$assign:?|viewbox">
+			<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;marginxs:40;scrollbarshadow:1;$assign:?|viewbox">
 				<ui-component name="empty" path="?.data.items" config="parent:auto;icon:ti ti-check-circle green">
 
 					<script type="text/html">
@@ -161,12 +172,12 @@
 												<div class="status">{{ m.statusid | status }}</div>
 												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip">{{ if m.folder_icon }}<i class="{{ m.folder_icon }}"></i>{{ fi }}{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													<!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.ispublic }}
 													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
 													{{ else if m.userid && m.userid.length }}
-													<div class="user">
+													<div class="user hidden-xs">
 														{{ m.userid | users(true) }}
 													</div>
 													{{ fi }}
@@ -191,6 +202,10 @@
 		</main>
 
 	</ui-component>
+
+	<div class="mobilemenu exec" data-exec="?/mobilemenu">
+		<i class="ti ti-navicon"></i>
+	</div>
 </ui-plugin>
 
 <ui-import config="url:/parts/timers.html;path:parttimers"></ui-import>
@@ -440,6 +455,7 @@
 					}
 			}
 
+			exports.set('menu', false);
 			SET('common.title', title);
 
 			exports.set('type', id);
@@ -595,6 +611,10 @@
 		exports.contextmenu = function(el) {
 			var id = ATTRD(el);
 			// console.log(id);
+		};
+
+		exports.mobilemenu = function(el) {
+			exports.toggle('menu');
 		};
 
 		ON('service', function() {

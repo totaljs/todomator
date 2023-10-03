@@ -265,7 +265,7 @@
 
 		Thelpers.status = function(id) {
 			var status = DEF.cl.status.findItem('id', id);
-			return status ? '<i class="{icon} mr5" style="color:{color}"></i>{name}'.arg(status) : DEF.empty;
+			return status ? '<i class="{icon} mr5" style="color:{color}"></i><span class="hidden-xs">{name}</span>'.arg(status) : DEF.empty;
 		};
 
 		ON('service', function(counter) {

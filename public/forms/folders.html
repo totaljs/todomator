@@ -8,6 +8,10 @@
 	.CLASS .buttons span { line-height: 21px; margin:0px 2px 2px 2px ; border-radius: var(--radius); border: 0; margin: 0 5px; }
 	.CLASS figure .name .customer { margin-right: 15px; }
 	.CLASS figure .name .badges { display: inline-block; border-left: 1px solid #e0e0e0; padding-left: 15px; }
+
+	@media(max-width:768px) {
+		.CLASS .name { margin-right: 46px; }
+	}
 </style>
 
 <ui-component name="box" path="common.form" config="if:~PATH~;width:920;icon:ti ti-folders;title:@(Folders);reload:?/reload;" class="hidden ~PATH~" plugin="~PATH~">
