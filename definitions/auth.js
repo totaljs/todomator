@@ -11,12 +11,12 @@ opt.ddos = 10;
 
 opt.onauthorize = function($) {
 
-	var token = $.headers['x-token'];
+	var token = $.headers['x-token'] || $.query.token;
 	if (token) {
 
-		if (token === CONF.token) {
+		if (token === CONF.token)
 			$.success(BOT);
-		} else
+		else
 			$.invalid();
 
 		return true;
