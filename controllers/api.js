@@ -11,8 +11,8 @@ exports.install = function() {
 	ROUTE('+API    /api/       -tickets_calendar          *Tickets    --> calendar');
 	ROUTE('+API    /api/       -tickets_detail/{id}       *Tickets    --> read');
 	ROUTE('+API    /api/       -tickets_users             *Tickets    --> users');
-	ROUTE('+API    /api/       +tickets_create            *Tickets    --> create');
-	ROUTE('+API    /api/       #tickets_update/{id}       *Tickets    --> update');
+	ROUTE('+API    /api/       +tickets_create            *Tickets    --> create', 1024 * 10);
+	ROUTE('+API    /api/       #tickets_update/{id}       *Tickets    --> update', 1024 * 10);
 	ROUTE('+API    /api/       +tickets_clone/{id}        *Tickets    --> clone');
 	ROUTE('+API    /api/       -tickets_remove/{id}       *Tickets    --> remove');
 	ROUTE('+API    /api/       -tickets_logs/{id}         *Tickets    --> logs');
