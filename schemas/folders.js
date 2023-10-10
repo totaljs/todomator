@@ -24,7 +24,7 @@ NEWSCHEMA('Folders', function(schema) {
 	});
 
 	schema.action('read', {
-		name: 'Read a project',
+		name: 'Read a folder',
 		params: '*id:UID',
 		public: true,
 		permissions: 'admin',
@@ -35,7 +35,7 @@ NEWSCHEMA('Folders', function(schema) {
 	});
 
 	schema.action('create', {
-		name: 'Create project',
+		name: 'Create folder',
 		permissions: 'admin',
 		action: function($, model) {
 			model.id = UID();
@@ -45,7 +45,7 @@ NEWSCHEMA('Folders', function(schema) {
 	});
 
 	schema.action('update', {
-		name: 'Update project',
+		name: 'Update folder',
 		params: '*id:UID',
 		permissions: 'admin',
 		action: function($, model) {
@@ -56,7 +56,7 @@ NEWSCHEMA('Folders', function(schema) {
 	});
 
 	schema.action('remove', {
-		name: 'Remove project',
+		name: 'Remove folder',
 		params: '*id:UID',
 		permissions: 'admin',
 		action: function($) {
