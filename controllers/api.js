@@ -63,9 +63,31 @@ exports.install = function() {
 };
 
 function socket() {
+
 	var self = this;
+	var clients = {};
+
 	MAIN.ws = self;
+
 	self.autodestroy(() => MAIN.ws = null);
+
+	self.on('open', function(client) {
+		var msg = { TYPE: 'sync', data: clients };
+		client.send(msg);
+	});
+
+	self.on('close', function(client) {
+		self.send({ TYPE: 'close', data: clients[client.query.id] });
+		delete clients[client.query.id];
+	});
+
+	self.on('message', function(client, msg) {
+		if (msg.TYPE === 'ticket') {
+			client.ticketid = msg.id;
+			clients[client.query.id] = { clientid: client.query.id, userid: client.user.id, ticketid: msg.id };
+			self.send({ TYPE: 'ticket', data: clients[client.query.id] });
+		}
+	});
 }
 
 async function upload() {

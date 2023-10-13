@@ -181,8 +181,14 @@
 
 		$(W).on('hashchange', function() {
 			var id = location.hash.substring(1);
-			if (id && id.length > 9)
+			if (id && id.length > 9) {
 				EXEC(true, 'tickets/preview', id);
+			} else {
+				SETTER('websocket/send', { TYPE: 'ticket', id: '' });
+				if (common.form === 'formdetail')
+					NUL('common.form');
+			}
+
 		});
 
 		ON('@flag soundbadge', function() {
@@ -285,6 +291,40 @@
 				SETTER('info/show', opt);
 			} else
 				SETTER('!info/hide', true);
+		});
+
+		ON('message', function(msg) {
+			switch (msg.TYPE) {
+				case 'setter':
+					SETTER(msg.name, msg.value);
+					return;
+				case 'reload':
+					location.reload(true);
+					return;
+				case 'sync':
+					common.clients = msg.data;
+					UPD('common.clients');
+					break;
+				case 'close':
+					delete common.clients[msg.data.clientid];
+					UPD('common.clients');
+					break;
+				case 'ticket':
+					common.clients[msg.data.clientid] = msg.data;
+					UPD('common.clients');
+					break;
+			}
+
+			if (msg.TYPE === 'refresh') {
+
+				if (msg.markdown) {
+					if (common.form === 'formdetail' && msg.id === W.formdetail.id)
+						SET('formdetail.markdown', msg.markdown);
+					return;
+				}
+
+				EXEC('pagetickets/refresh');
+			}
 		});
 
 		// Component: Tangular-Time

@@ -21,12 +21,15 @@
 	.CLASS .options button:disabled i { color: #B0B0B0; }
 	.CLASS .options button:first-child { border-top-left-radius: var(--radius); border-bottom-left-radius: var(--radius); border-left: 1px solid #E0E0E0; }
 	.CLASS .options button:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
-	.CLASS .users { padding: 10px; background-color: #F0F0F0; border-radius: var(--radius); line-height: 0; }
-	.CLASS .users:hover { background-color: #F3F3F3; }
+	.CLASS .users-bg { padding: 10px; background-color: #F0F0F0; border-radius: var(--radius); line-height: 0; }
+	.CLASS .users-bg:hover { background-color: #F3F3F3; }
 	.CLASS .users > div { position: relative; display: inline-block; font-size: 12px; padding-top: 2px; margin-left: 10px; color: #A0A0A0; vertical-align: middle; }
 	.CLASS .users > span { width: 32px; height: 32px; line-height: 32px; font-weight: bold; vertical-align: middle; }
 	.CLASS .users > img { width: 32px; height: 32px; vertical-align: middle; }
 	.CLASS .users i { font-size: 18px; padding-top: 2px; }
+	.CLASS .readers { position: absolute; top: 15px; left: -50px }
+	.CLASS .readers .users > img, .CLASS .readers .users > div { display: block; margin-bottom: 10px; }
+	.CLASS .readers .photo { border-color: #68B25B; border-width: 2px; }
 	.CLASS .tags i { cursor: pointer; }
 	.CLASS .tabmenu li { padding: 0 10px; }
 	.CLASS .badge { margin: 0 5px 5px 0; font-size: 12px; padding: 5px 8px; }
@@ -43,7 +46,7 @@
 	.CLASS button.nm i { margin: 0; }
 	.CLASS button.timer { background-color: #68B25B; color: #FFF; }
 	.CLASS button.timer i { margin: 0; }
-	.CLASS h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
+	.CLASS .meta > h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
 	.CLASS .a-bk { color: #000; }
 	.CLASS .ui-iframepreview { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #E0E0E0; padding-left: 10px; padding-right: 10px; }
 
@@ -96,10 +99,18 @@
 		</ui-bind>
 	</nav>
 	<div>
+		<ui-bind path="?.readers" config="template" class="readers hidden-md">
+			<script type="text/html">
+				<div class="users">
+					{{ value | users(true) }}
+				</div>
+			</script>
+		</ui-bind>
 		<ui-component name="extend" config="name:detail"></ui-component>
 		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1;scrollto:top" class="invisible">
 			<ui-bind path="?" config="show:value.ispriority && (value.statusid==='open'||value.statusid==='review'||value.statusid==='pending')" class="hidden block" style="border-top:4px solid #E8483F;height:4px"></ui-bind>
 			<div class="padding bg-smoke">
+
 				<ui-bind path="?" config="track:id;template" class="meta">
 					<script type="text/html">
 
@@ -134,7 +145,7 @@
 
 						{{ if !value.ispublic }}
 						<div style="height:70px">
-							<div class="exec users" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
+							<div class="exec users users-bg" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
 						</div>
 						{{ fi }}
 
@@ -250,6 +261,7 @@
 			exports.refresh_paper();
 			exports.refresh_timer();
 			exports.refresh_links();
+			exports.refresh_readers();
 			caller = exports.caller;
 			title = common.title;
 			SET('common.title', model.name);
@@ -259,6 +271,17 @@
 		exports.refresh_links = function() {
 			var model = exports.model;
 			exports.tapi('tickets_links/' + model.id, 'links');
+		};
+
+		exports.refresh_readers = function() {
+			var readers = [];
+			var col = common.clients;
+			for (var key in col) {
+				var client = col[key];
+				if (client.ticketid === ID)
+					readers.push(client.userid);
+			}
+			exports.set('readers', readers);
 		};
 
 		exports.remlink = function(el) {
@@ -273,6 +296,8 @@
 		};
 
 		exports.comments = function() {
+			var model = exports.model;
+			SET('formcomments', { id: model.id });
 			SET('common.form2', 'formcomments');
 		};
 
@@ -912,6 +937,9 @@
 			if (model.readonly)
 				return;
 
+			e.preventDefault();
+			e.stopPropagation();
+
 			var opt = {};
 			opt.items = [];
 			opt.x = e.pageX;
@@ -1096,6 +1124,9 @@
 		if (!is)
 			return;
 
+		e.stopPropagation();
+		e.preventDefault();
+
 		var opt = {};
 		var tag = el[0].tagName;
 
@@ -1153,5 +1184,10 @@
 		el.aclass('highlight');
 		e.preventDefault();
 	});
+
+
+	WATCH('common.clients', function() {
+		EXEC('formdetail/refresh_readers');
+	}, true);
 
 </script>

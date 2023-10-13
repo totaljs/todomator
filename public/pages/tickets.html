@@ -246,6 +246,7 @@
 		var limit = 50;
 		var skip = 0;
 		var prevunread = 0;
+		var data = exports.model;
 
 		CACHEPATH('?.type__"pending"', '1 month');
 
@@ -419,6 +420,7 @@
 				location.hash = id;
 				SET('formdetail @hideloading', response);
 				SET('common.form', 'formdetail');
+				SETTER('websocket/send', { TYPE: 'ticket', id: id });
 			});
 		};
 
@@ -530,7 +532,7 @@
 			date.setHours(12);
 			date.setMinutes(0);
 
-			SET('formcreateticket @default', { folderid: folderid, userid: [user.id], isbillable: folder ? folder.isbillable : true, date: date });
+			SET('formcreateticket @default', { folderid: folderid, userid: [], isbillable: folder ? folder.isbillable : true, date: date });
 			SET('common.form2', 'formcreateticket');
 		};
 
@@ -619,29 +621,6 @@
 
 		ON('service', function() {
 			exports.counter();
-		});
-
-		ON('message', function(msg) {
-
-			switch (msg.TYPE) {
-				case 'setter':
-					SETTER(msg.name, msg.value);
-					break;
-				case 'reload':
-					location.reload(true);
-					break;
-			}
-
-			if (msg.TYPE === 'refresh') {
-
-				if (msg.markdown) {
-					if (common.form === 'formdetail' && msg.id === W.formdetail.id)
-						SET('formdetail.markdown', msg.markdown);
-					return;
-				}
-
-				exports.refresh();
-			}
 		});
 
 		WATCH('#status', function() {
