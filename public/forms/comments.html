@@ -1,14 +1,17 @@
 <style>
-	.CLASS figure { margin-top: 15px; }
-	.CLASS figure .msg { padding: 10px; border: 1px solid #E0E0E0; background-color: #F8F8F8; border-radius: var(--radius); min-width: 250px; float: left; max-width: 70%; }
+	.CLASS figure { border-top: 1px solid #E0E0E0; }
+	.CLASS figure:first-child { border-top: 0; }
+	.CLASS figure .msg { padding: 20px; }
 	.CLASS figure:first-child { margin-top: 0; }
 	.CLASS figure .date { float: right; font-size: 11px; margin-top: 2px; color: #a0a0a0; }
+	.CLASS figure .edited { float: right; font-size: 11px; color: #C0C0C0; margin: 2px 0 0 8px; }
 	.CLASS figure .msg > .user { font-size: 11px; font-weight: bold; color: #555; }
 	.CLASS figure .msg > .user img { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; }
 	.CLASS figure .msg > .user span { color: #FFF !important; background-color: #E0E0E0; width: 20px; height: 20px; line-height: 21px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
 	.CLASS figure .content { margin-top: 7px; }
-	.CLASS figure.owner .msg { border-color: #FADADA; background-color: #FFF3F3; float: right; max-width: 70%; }
-	.CLASS .messages { padding: 15px; display: block; }
+	.CLASS figure .control { float: right; margin-left: 10px; }
+	.CLASS figure.owner .msg { background-color: #FFFFF5; }
+	.CLASS .messages { display: block; }
 	.CLASS .markdown p { margin: 0 0 15px; padding-left: 0; padding-right: 0; font-size: 15px !important; color: #000; }
 	.CLASS .markdown { font-size: 15px; }
 	.CLASS .markdown pre { margin-top: 0; }
@@ -21,8 +24,12 @@
 			<ui-bind path="?.messages" config="template:figure" class="messages">
 				<script type="text/html">
 					{{ foreach m in value }}
-					<figure{{ if m.me }} class="owner"{{ fi }}>
+					<figure data-id="{{ m.id }}"{{ if m.me }} class="owner"{{ fi }}>
 						<div class="msg">
+							{{ if m.me }}
+							<span class="control exec" data-exec="?/options"><i class="ti ti-ellipsis-h-circle"></i></span>
+							{{ fi }}
+							{{ if m.dtupdated }}<span class="edited hidden-xs">@(edited)</span>{{ fi }}
 							<span class="date">{{ m.dtcreated | time2 }}</span>
 							<div class="user">{{ if m.userphoto }}<img src="{{ m.userphoto }}" alt="" class="photo" />{{ fi }}{{ m.username }}</div>
 							<div class="content">{{ m.markdown | markdown2 }}</div>
@@ -33,7 +40,7 @@
 				</script>
 			</ui-bind>
 		</ui-component>
-		<ui-component name="chatmessage" path="formdetail.id" config="autoheight:1;send:?/send;button:@(Send);placeholder:@(Enter a message);$assign:?|message" class="invisible"></ui-component>
+		<ui-component name="chatmessage" path="?.id" config="autoheight:1;send:?/send;button:@(Send);placeholder:@(Enter a message);$assign:?|message" class="invisible"></ui-component>
 	</div>
 </ui-component>
 
@@ -56,12 +63,37 @@
 			}
 		};
 
+		exports.options = function(el) {
+			var id = ATTRD(el);
+			var opt = {};
+			opt.element = el;
+			opt.align ='right';
+			opt.items = [];
+			opt.items.push({ id: 'edit', name: '@(Edit)', icon: 'ti ti-pencil' });
+			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-remove red' });
+			opt.callback = function(selected) {
+				switch (selected.id) {
+					case 'edit':
+
+						var comment = exports.model.messages.findItem('id', id);
+						exports.message.edit(comment.markdown, function(text) {
+							exports.tapi('comments_update/{id} ERROR'.args(comment), { markdown: text }, exports.refresh);
+						});
+						break;
+					case 'remove':
+						SETTER('approve/show', '@(Are you sure you want to remove selected comment?)', ':remove: @(Remove)', () => exports.tapi('comments_remove/{0} ERROR'.format(id), exports.refresh));
+						break;
+				}
+			};
+			SETTER('menu/show', opt);
+		};
+
 		exports.refresh = function() {
 			var detail = W.formdetail;
 			if (!detail)
 				return;
 			ticketid = detail.id;
-			exports.tapi('comments/' + detail.id, function(response) {
+			exports.tapi('comments/{id}'.args(detail), function(response) {
 				for (var m of response)
 					m.me = m.userid === user.id;
 				exports.set('messages', response);

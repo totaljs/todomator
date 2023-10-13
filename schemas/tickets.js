@@ -772,7 +772,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			var params = $.params;
 			var query = $.query;
 			var builder = DATA.find('tbl_ticket_comment');
-			builder.fields('id,userid,username,userphoto,markdown,dtcreated');
+			builder.fields('id,userid,username,userphoto,markdown,dtcreated,dtupdated');
 			builder.where('ticketid', params.id);
 			builder.sort('dtcreated');
 
@@ -833,6 +833,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			model.username = $.user.name;
 			model.userphoto = $.user.photo;
 			model.ticketid = undefined;
+			model.dtupdated = NOW;
 
 			await DATA.modify('tbl_ticket_comment', model).id(params.id).promise($);
 
@@ -848,8 +849,8 @@ NEWSCHEMA('Tickets', function(schema) {
 		params: '*id:String',
 		action: async function($) {
 			var params = $.params;
-			await DATA.remove('tbl_ticket_comment').id(params.id).where('userid', $.user.id).error(404).promise($);
-			updatecommentscount(params.id);
+			var comment = await DATA.remove('tbl_ticket_comment').id(params.id).where('userid', $.user.id).returning('ticketid').error(404).promise($);
+			updatecommentscount(comment[0].ticketid);
 			$.success(params.id);
 		}
 	});

@@ -363,7 +363,6 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 });
 
-
 COMPONENT('chatmessage', function(self, config, cls) {
 
 	var input;
@@ -374,17 +373,22 @@ COMPONENT('chatmessage', function(self, config, cls) {
 	var cache = {};
 	var viewbox;
 	var prevmargin = 0;
+	var maincallback = null;
+	var maintext = '';
 
 	var send = function() {
 
 		if (!text)
 			return;
 
-		config.send && self.EXEC(config.send, { ticketid: ticketid, markdown: text });
+		if (maincallback)
+			maincallback(text);
+		else if (config.send)
+			self.EXEC(config.send, { ticketid: ticketid, markdown: text });
 
 		var tmp = ticketid;
 		delete cache[tmp];
-		self.clear('');
+		self.clear();
 		ticketid = tmp;
 	};
 
@@ -406,13 +410,19 @@ COMPONENT('chatmessage', function(self, config, cls) {
 
 	};
 
-	self.edit = function() {
+	self.edit = function(val, callback) {
+
+		maincallback = callback;
 
 		var opt = {};
-		opt.html = '';
+
+		if (val != '')
+			maintext = opt.html = val || '';
+
 		opt.multiline = 2;
 		opt.tabs = true;
 		opt.format = true;
+		opt.focus = true;
 		opt.placeholder = placeholder[0];
 
 		extendeditable(opt);
@@ -432,32 +442,72 @@ COMPONENT('chatmessage', function(self, config, cls) {
 		input.aclass('editmode');
 		editable = true;
 
+		setTimeout(function() {
+			placeholder.tclass('hidden', !!input.text());
+			setTimeout(() => input.focus(), 300);
+		}, 100);
+
 		clearTimeout2('quickpreview');
 		SETTER('!quickpreview/hide');
 
 		Editable(input, opt, function(response) {
+
 			input.rclass('editmode');
 			text = response.text.trim();
-			cache[ticketid] = text;
-			if (response.key === 13)
+
+			if (response.key === 27) {
+				if (maincallback) {
+					maintext = '';
+					maincallback = null;
+					self.clear();
+					return;
+				}
+			}
+
+			if (!maincallback)
+				cache[ticketid] = text;
+
+			if (response.key === 13) {
 				send();
-			editable = false;
-			placeholder.tclass('hidden', !!text);
+			} else {
+				editable = false;
+				placeholder.tclass('hidden', !!text);
+			}
 		});
 	};
 
-	self.event('click', self.edit);
-	self.setter = self.clear = function(val) {
+	self.event('click', function() {
+		self.edit(maintext, maincallback);
+	});
 
-		if (ticketid === val)
+	self.clear = function() {
+		maincallback = null;
+		maintext = '';
+		editable = false;
+		input.rclass('editmode').empty();
+		placeholder.rclass('hidden');
+	};
+
+	self.setter = function(val) {
+
+		if (ticketid === val) {
+			if (maincallback)
+				self.clear();
+			else
+				placeholder.tclass('hidden', !!input.text());
 			return;
+		}
 
 		ticketid = val;
-		editable = false;
-		text = cache[ticketid] || '';
-		input.rclass('editmode');
-		input.html(text);
-		placeholder.tclass('hidden', !!text);
+
+		if (maincallback) {
+			self.clear();
+		} else {
+			text = cache[ticketid] || '';
+			input.text(text);
+			input.rclass('editmode');
+			placeholder.tclass('hidden', !!input.text());
+		}
 	};
 
 });
