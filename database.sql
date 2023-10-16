@@ -103,6 +103,7 @@ CREATE TABLE "public"."tbl_ticket" (
 	"markdown" text,
 	"attachments" json,
 	"note" text,
+	"callback" text,
 	"tags" _text,
 	"comments" int2 DEFAULT 0,
 	"worked" int4 DEFAULT 0,

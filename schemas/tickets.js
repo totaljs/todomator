@@ -1,4 +1,4 @@
-const Returning = 'id,ownerid,userid,parentid,reference,folderid,statusid,source,name,estimate,worked,ispriority,isbillable,ispublic,tags,deadline,attachments,dtcreated,dtupdated,dtparent';
+const Returning = 'id,ownerid,userid,parentid,reference,folderid,statusid,source,name,estimate,worked,ispriority,isbillable,ispublic,tags,deadline,attachments,dtcreated,dtupdated,dtparent,callback';
 
 NEWSCHEMA('Tickets', function(schema) {
 
@@ -175,7 +175,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64]',
+		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String',
 		public: true,
 		action: async function($, model) {
 
@@ -290,12 +290,16 @@ NEWSCHEMA('Tickets', function(schema) {
 			EMIT('ticket', response);
 
 			$.success(model.id);
+
+			if (response.callback)
+				TicketCallback(response, keys);
+
 		}
 	});
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String',
+		input: 'userid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String',
 		params: '*id:String',
 		public: true,
 		action: async function($, model) {
@@ -376,6 +380,10 @@ NEWSCHEMA('Tickets', function(schema) {
 			EMIT('ticket', response);
 
 			$.success(params.id);
+
+			if (response.callback)
+				TicketCallback(response, keys);
+
 		}
 	});
 
@@ -449,6 +457,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			EMIT('ticket', response);
 
 			$.success(item.id);
+
+			if (response.callback)
+				TicketCallback(response, keys);
 		}
 	});
 
@@ -818,6 +829,10 @@ NEWSCHEMA('Tickets', function(schema) {
 			MAIN.ws && MAIN.ws.send({ TYPE: 'comment', id: model.ticketid });
 
 			$.success(model.id);
+
+			if (response.callback)
+				TicketCallback(response);
+
 		}
 	});
 
@@ -856,3 +871,8 @@ NEWSCHEMA('Tickets', function(schema) {
 	});
 
 });
+
+function TicketCallback(data, keys) {
+	data.keys = keys;
+	RESTBuilder.POST(data.callback, data).callback(NOOP);
+}
