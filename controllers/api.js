@@ -77,7 +77,7 @@ function socket() {
 	});
 
 	self.on('close', function(client) {
-		self.send({ TYPE: 'close', data: clients[client.query.id] });
+		self.send({ TYPE: 'close', data: clients[client.query.id], clientid: client.query.id });
 		delete clients[client.query.id];
 	});
 
@@ -85,7 +85,7 @@ function socket() {
 		if (msg.TYPE === 'ticket') {
 			client.ticketid = msg.id;
 			clients[client.query.id] = { clientid: client.query.id, userid: client.user.id, ticketid: msg.id };
-			self.send({ TYPE: 'ticket', data: clients[client.query.id] });
+			self.send({ TYPE: 'ticket', data: clients[client.query.id], clientid: client.query.id });
 		}
 	});
 }

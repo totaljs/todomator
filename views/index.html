@@ -306,7 +306,7 @@
 					UPD('common.clients');
 					break;
 				case 'close':
-					delete common.clients[msg.data.clientid];
+					delete common.clients[msg.clientid];
 					UPD('common.clients');
 					break;
 				case 'ticket':
