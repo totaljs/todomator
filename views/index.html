@@ -391,7 +391,7 @@
 		};
 
 		$(document.body).on('click', 'code', function() {
-			SETTER('clipboard/copy', this.innerHTML);
+			SETTER('clipboard/copy', $(this).text());
 			SETTER('notify/success', '@(Copied)');
 		});
 
