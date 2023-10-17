@@ -348,6 +348,10 @@
 						return 0;
 					if (a.statusid !== b.statusid)
 						return 0;
+					if (a.ispriority)
+						return -1;
+					if (b.ispriority)
+						return 0;
 					if (!a.warn && b.warn)
 						return 1;
 					if (a.warn && !b.warn)
@@ -364,6 +368,12 @@
 						return 0;
 
 					if ((a.statusid !== b.statusid) || (a.isclosed || b.isclosed) || (a.assigned && b.assigned))
+						return 0;
+
+					if (a.ispriority)
+						return -1;
+
+					if (b.ispriority)
 						return 0;
 
 					if (a.assigned)
