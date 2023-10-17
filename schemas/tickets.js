@@ -830,8 +830,8 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			$.success(model.id);
 
-			if (response.callback)
-				TicketCallback(response);
+			if (item.callback)
+				TicketCallback(item);
 
 		}
 	});
