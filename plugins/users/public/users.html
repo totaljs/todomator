@@ -10,6 +10,9 @@
 	.CLASS .name .photo { width: 24px; height: 24px; border-radius: 100px; margin-right: 5px; border: 0; }
 	.CLASS .initials { color: #FFF !important; background-color: #E0E0E0; width: 24px; height: 24px; line-height: 25px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin: -1px 5px 0 0; position: relative; display: inline-block; vertical-align: middle; }
 
+	@media(max-width: 768px) {
+		.CLASS .name { margin-right: 46px; }
+	}
 </style>
 
 <ui-component name="box" path="common.form" config="if:~PATH~;icon:users;title:@(Users);autofocus:true;reload:?/reload;scrollbar:1;width:800" class="hidden CLASS" plugin="~PATH~">
@@ -26,14 +29,15 @@
 							<span class="exec" data-exec="?/edit" data-prevent="true"><i class="ti ti-pencil-alt"></i></span>
 							<span class="exec" data-exec="?/remove" data-prevent="true"><i class="ti ti-remove red"></i></span>
 						</div>
-						{{ if m.dtlogged }}<div class="pull-right gray fs11" style="margin-top:4px"><i class="ti ti-door-alt mr5"></i>{{ m.dtlogged | format('[ts]') }}</div>{{ fi }}
+						{{ if m.dtlogged }}<div class="pull-right gray fs11 hidden-xs" style="margin-top:4px"><i class="ti ti-door-alt mr5"></i>{{ m.dtlogged | format('[ts]') }}</div>{{ fi }}
 						<div class="name">
 							{{ if m.photo }}
 								<img src="{{ m.photo }}" class="photo img-responsive" title="{{ m.name }}" loading="lazy"/>
 							{{ else }}
 								<span class="initials" style="background-color:{{ m.name | color }}">{{ m.initials }}</span>
 							{{ fi }}
-							<span class="{{ if m.isdisabled }}gray nob{{ fi }}">{{ m.name | empty }}</span>
+							{{ if m.isinactive }}<span class="fs11 mr5 badge badge-small badge-red">@(Inactive)</span>{{ fi }}
+							<span class="{{ if m.isinactive }}silver nob{{ else if m.isdisabled }}gray nob{{ fi }}"{{ if m.isinactive }} style="text-decoration:line-through"{{ fi }}>{{ m.name | empty }}</span>
 							{{ if m.isonline }}<span class="fs11 ml5 badge badge-medium badge-green">@(Online)</span>{{ fi }}
 							{{ if m.sa }}<span class="fs11 ml5 badge badge-medium">@(Super admin)</span>{{ fi }}
 							{{ if m.isdisabled }}<span class="fs11 ml5 badge badge-medium badge-silver">@(Disabled)</span>{{ fi }}
@@ -59,9 +63,10 @@
 
 		exports.refresh = function() {
 			exports.tapi('users ERROR', function(response) {
-				for (var item of response)
-					item.initials = DEF.cl.user.findValue('id', item.id, 'initials');
-
+				for (var item of response) {
+					var tmp = item.name.split(' ').trim();
+					item.initials = tmp[0].substring(0, 1) + (tmp[1] ? tmp[1].substring(0, 1) : '');
+				}
 				exports.set('items', response)
 			});
 		};

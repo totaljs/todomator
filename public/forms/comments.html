@@ -52,8 +52,15 @@
 		var box;
 
 		exports.reload = function(com) {
+
+			if (!common.form) {
+				NUL('common.form2');
+				return;
+			}
+
 			caller = exports.caller;
 			box = com;
+
 			if (ticketid) {
 				exports.refresh();
 				setTimeout(exports.message.edit, 800);

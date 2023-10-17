@@ -15,7 +15,7 @@ NEWSCHEMA('Users', function(schema) {
 		name: 'List of users',
 		permissions: 'users',
 		action: function($) {
-			DATA.find('tbl_user').fields('id,name,email,language,photo,isdisabled,sa,isonline,dtlogged,notifications').where('isremoved=FALSE AND id<>\'bot\'').sort('name').callback($);
+			DATA.find('tbl_user').fields('id,name,email,language,photo,isdisabled,sa,isinactive,isonline,dtlogged,notifications').where('isremoved=FALSE AND id<>\'bot\'').sort('isinactive').sort('name').callback($);
 		}
 	});
 
@@ -36,16 +36,32 @@ NEWSCHEMA('Users', function(schema) {
 	schema.action('update', {
 		name: 'Update user',
 		params: '*id:UID',
-		input: 'photo:String, language:Lower(2), *email:Email, password:String, *name:String, sa:Boolean, isdisabled:Boolean, notifications:Boolean, reference:String',
+		input: 'photo:String, language:Lower(2), *email:Email, password:String, *name:String, sa:Boolean, isdisabled:Boolean, isinactive:Boolean, notifications:Boolean, reference:String',
 		permissions: 'users',
-		action: function($, model) {
+		action: async function($, model) {
+
 			var params = $.params;
+
 			if (model.password)
 				model.password = model.password.sha256(CONF.auth_secret);
+
 			model.search = model.name.toSearch().replace(/\s/g, '');
 			model.dtupdated = NOW;
+
+			await DATA.modify('tbl_user', model).id(params.id).where('isremoved=FALSE').error(404).callback($);
+
 			MAIN.session.refresh(params.id);
-			DATA.modify('tbl_user', model).id(params.id).where('isremoved=FALSE').error(404).callback($.done(params.id));
+			$.success(params.id);
+
+			if (model.isinactive) {
+				// Remove from all tickets
+				DATA.query('UPDATE tbl_ticket SET userid=ARRAY_REMOVE(userid, \'{0}\') WHERE isremoved=FALSE AND userid && \'{{0}}\'::_text'.format(params.id));
+				DATA.remove('tbl_ticket_bookmark').where('userid', params.id);
+				DATA.remove('tbl_ticket_unread').where('userid', params.id);
+				DATA.remove('tbl_notification').where('userid', params.id);
+				DATA.remove('tbl_session').where('userid', params.id);
+			}
+
 		}
 	});
 
@@ -55,7 +71,7 @@ NEWSCHEMA('Users', function(schema) {
 		permissions: 'users',
 		action: function($, model) {
 			var params = $.params;
-			DATA.read('tbl_user', model).fields('id,language,photo,name,email,sa,isdisabled,notifications').id(params.id).where('isremoved=FALSE').error(404).callback($);
+			DATA.read('tbl_user', model).fields('id,language,photo,name,email,sa,isdisabled,isinactive,notifications').id(params.id).where('isremoved=FALSE').error(404).callback($);
 		}
 	});
 
@@ -66,7 +82,7 @@ NEWSCHEMA('Users', function(schema) {
 		action: function($) {
 			var params = $.params;
 			if (params.id === 'bot')
-				$.invalid("@(You can't remove HelpDesk bot)");
+				$.invalid("@(You can't remove Todomator's bot)");
 			else {
 				var index = MAIN.users.indexOf(params.id);
 				if (index !== -1)
@@ -82,7 +98,7 @@ NEWSCHEMA('Users', function(schema) {
 		input: '*email:Email,*password:String',
 		action: async function($, model) {
 
-			var user = await DATA.read('tbl_user').fields('id,isdisabled').where('email', model.email).where('password', model.password.sha256(CONF.auth_secret)).error('@(Invalid credentials)').where('isremoved=FALSE').promise($);
+			var user = await DATA.read('tbl_user').fields('id,isdisabled').where('email', model.email).where('password', model.password.sha256(CONF.auth_secret)).error('@(Invalid credentials)').where('isinactive=FALSE AND isremoved=FALSE').promise($);
 
 			if (user.isdisabled) {
 				$.invalid('@(Account is banned)');
@@ -109,7 +125,7 @@ NEWSCHEMA('Users', function(schema) {
 		query: '*token:String',
 		action: async function($) {
 
-			var user = await DATA.read('tbl_user').fields('id,isdisabled').where('token', $.query.token).error('@(Invalid token)').where('isremoved=FALSE').promise($);
+			var user = await DATA.read('tbl_user').fields('id,isdisabled').where('token', $.query.token).error('@(Invalid token)').where('isinactive=FALSE AND isremoved=FALSE').promise($);
 
 			if (user.isdisabled) {
 				$.invalid('@(Account is banned)');
