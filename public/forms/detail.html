@@ -913,7 +913,7 @@
 				location.hash = '';
 
 			exports.model.id = '';
-			changed && caller && caller.exec('refresh');
+			changed && caller && caller.exec('refresh', true);
 		};
 
 		exports.icon = function(meta, callback) {
