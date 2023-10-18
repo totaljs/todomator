@@ -164,6 +164,22 @@ CREATE TABLE "public"."tbl_ticket_data" (
 	PRIMARY KEY ("id")
 );
 
+CREATE TABLE "public"."tbl_notification" (
+	"id" text NOT NULL,
+	"ticketid" text,
+	"userid" text,
+	"typeid" text,
+	"createdby" text,
+	"reference" text,
+	"value" text,
+	"isprocessed" bool DEFAULT false,
+	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
+	CONSTRAINT "tbl_notification_ticketid_fkey" FOREIGN KEY ("ticketid") REFERENCES "public"."tbl_ticket"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT "tbl_notification_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT "tbl_notification_typeid_fkey" FOREIGN KEY ("typeid") REFERENCES "public"."cl_notification"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY ("id")
+);
+
 CREATE TABLE "public"."tbl_ticket_time" (
 	"id" text NOT NULL,
 	"ticketid" text,
@@ -226,22 +242,6 @@ CREATE TABLE "public"."tbl_session" (
 	"dtlogged" timestamp,
 	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
 	CONSTRAINT "tbl_session_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-	PRIMARY KEY ("id")
-);
-
-CREATE TABLE "public"."tbl_notification" (
-	"id" text NOT NULL,
-	"ticketid" text,
-	"userid" text,
-	"typeid" text,
-	"createdby" text,
-	"reference" text,
-	"value" text,
-	"isprocessed" bool DEFAULT false,
-	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
-	CONSTRAINT "tbl_notification_ticketid_fkey" FOREIGN KEY ("ticketid") REFERENCES "public"."tbl_ticket"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT "tbl_notification_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT "tbl_notification_typeid_fkey" FOREIGN KEY ("typeid") REFERENCES "public"."cl_notification"("id") ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY ("id")
 );
 
