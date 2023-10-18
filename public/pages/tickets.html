@@ -170,7 +170,7 @@
 												<div class="date">{{ if !m.postponed && (m.statusid === 'closed' || !m.deadline) }}{{ m.date | time3 }}{{ else if m.deadline && !m.postponed }}<b class="red">{{ m.deadline | deadline }}<i class="ti ti-start ml5" title="@(Deadline)"></i></b>{{ else }}<b class="green">{{ m.date | format('[date]') }}<i class="ti ti-start green ml5"></i></b>{{ fi }}</div>
 												<div class="worked">{{ if m.estimate }}<span>{{ m.estimate | logwork }} /</span>{{ fi }}{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</div>
 												<div class="status">{{ m.statusid | status }}</div>
-												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip">{{ if m.folder_icon }}<i class="{{ m.folder_icon }}"></i>{{ fi }}{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
+												<div class="folder exec" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip">{{ if m.folder_icon }}<i class="{{ m.folder_icon }}"></i>{{ fi }}{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
 													<!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
@@ -401,6 +401,11 @@
 
 				exports.set('next', response.length === limit);
 			});
+		};
+
+		exports.folder = function(el) {
+			var id = ATTRD(el);
+			REDIRECT('/{0}/'.format(id));
 		};
 
 		exports.preview = function(el, e) {

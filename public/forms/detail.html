@@ -156,7 +156,7 @@
 									<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
 								</div>
 								<div class="keyvalue">
-									<span>@(Folder)</span>
+									<span>@(Folder) <i class="ti ti-external exec" data-exec="?/foldertasks"></i></span>
 									<div class="exec control" data-exec="?/folder"{{ if value.folder }} style="background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</div>
 								</div>
 								<div class="keyvalue">
@@ -1026,6 +1026,14 @@
 				opt.html = '<div class="quickpreview-window markdown-small inlinecomment" style="max-width:500px"><div>{2}<b>{1}</b></div>{0}</div>'.format(Thelpers.markdown2(last.markdown), Thelpers.encode(last.username), last.userphoto ? '<img src="{0}" alt="" class="photo" />'.format(last.userphoto) : '');
 				SETTER('quickpreview/show', opt);
 			});
+		};
+
+		exports.foldertasks = function() {
+			var model = exports.model;
+			if (model.folderid) {
+				NUL('common.form');
+				REDIRECT('/{folderid}/'.args(model));
+			}
 		};
 
 		var prerendercomments = function() {
