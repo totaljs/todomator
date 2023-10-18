@@ -281,7 +281,6 @@ CREATE VIEW view_ticket AS
 		a.source,
 		a.markdown,
 		a.ispublic,
-		d.icon AS status_icon,
 		a.note
 	FROM tbl_ticket a
 	LEFT JOIN tbl_folder b ON b.id = a.folderid
