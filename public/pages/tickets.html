@@ -3,7 +3,7 @@
 	.CLASS .folder { width: 140px; float: left; border-right: 1px solid #E0E0E0; padding-right: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; line-height: 21px; }
 	.CLASS .folder > div { border-radius: var(--radius); color: rgba(0,0,0,0.7); padding: 0 5px; }
 	.CLASS .closed .folder > div { color: rgba(100,100,100,0.7); opacity: 0.8; }
-	.CLASS .folder i { margin-right: 5px; }
+	.CLASS .folder i { margin: 4px 2px 0 0; }
 	.CLASS .folder a { color: #777; }
 	.CLASS .id { font-family: Menlo, Consolas, monospace; font-size: 11px; margin-right: 5px; color: #A0A0A0; }
 	.CLASS .status { width: 120px; float: left; border-right: 1px solid #E0E0E0; margin-right: 10px; padding: 3px 0 0 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #000; }
@@ -20,7 +20,8 @@
 	.CLASS .worked { float: right; color: #777; text-align: right; border-right: 1px solid #E0E0E0; margin-right: 10px; padding-right: 10px; line-height: 21px; min-height: 21px; }
 	.CLASS .worked span { margin-right: 5px; color: #A0A0A0; }
 	.CLASS .sender { width: 120px; float: right; border-right: 1px solid #E0E0E0; margin-right: 10px; padding-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #777; line-height: 21px; }
-	.CLASS .unread { background-color: rgba(239,157,75,0.2); }
+	.CLASS .unread { background-color: rgba(255,254,209,0.4); }
+	.CLASS .unreadicon { color: #CCCB41; animation: unreadnotification 1s infinite forwards; margin-right: 5px; font-size: 14px; }
 	.CLASS .foreign { background-color: rgba(255,254,97,0.1); }
 	.CLASS .expired { background-color: rgba(232,72,63,0.06); }
 	.CLASS .name { line-height: 21px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding-left: 10px; }
@@ -85,6 +86,13 @@
 		0% { transform: scale(1); }
 		50% { transform: scale(1.15); }
 		100% { transform: scale(1); }
+	}
+
+	@keyframes unreadnotification {
+		0% { transform: translate(0, 0); }
+		30% { transform: translate(-2px, 0); }
+		60% { transform: translate(1px, 0); }
+		100% { transform: translate(0, 0); }
 	}
 
 	@media(max-width: 768px)  {
@@ -170,9 +178,9 @@
 												<div class="date">{{ if !m.postponed && (m.statusid === 'closed' || !m.deadline) }}{{ m.date | time3 }}{{ else if m.deadline && !m.postponed }}<b class="red">{{ m.deadline | deadline }}<i class="ti ti-start ml5" title="@(Deadline)"></i></b>{{ else }}<b class="green">{{ m.date | format('[date]') }}<i class="ti ti-start green ml5"></i></b>{{ fi }}</div>
 												<div class="worked">{{ if m.estimate }}<span>{{ m.estimate | logwork }} /</span>{{ fi }}{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</div>
 												<div class="status">{{ m.statusid | status }}</div>
-												<div class="folder exec" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip">{{ if m.folder_icon }}<i class="{{ m.folder_icon }}"></i>{{ fi }}{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
+												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip"><i class="ti ti-external exec pull-right" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}"></i>{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													<!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti fs12 ti ti-bell-alt unreadicon red mr5"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													<!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.ispublic }}
 													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
