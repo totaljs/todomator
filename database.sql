@@ -351,7 +351,7 @@ INSERT INTO "public"."cl_config" ("id", "value", "type") VALUES
 	('language', '', 'string'),
 	('minlogtime', '10', 'number'),
 	('auth_cookie_expire', '1 month', 'string'),
-	('auth_secret', SUBSTRING(MD5(RANDOM()::text), 0, 16), 'string'),
+	('auth_secret', '{secret}', 'string'),
 	('auth_cookie', SUBSTRING(MD5(RANDOM()::text), 0, 5), 'string'),
 	('salt', SUBSTRING(MD5(RANDOM()::text), 0, 13), 'string');
 
