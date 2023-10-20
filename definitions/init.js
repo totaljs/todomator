@@ -32,7 +32,8 @@ async function init() {
 
 		var data = {};
 		data.id = UID();
-		data.password = 'admin'.sha256(CONF.auth_secret);
+		data.secret = GUID(16);
+		data.password = 'admin'.sha256(data.secret);
 
 		var sql = buffer.toString('utf8').arg(data);
 
