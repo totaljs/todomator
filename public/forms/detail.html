@@ -316,7 +316,7 @@
 			opt.custom = true;
 
 			opt.items = function(search, next) {
-				exports.tapi(QUERIFY('tickets', { q: search, type: 'all', folderid: model.folderid, limit: 50 }) + ' ERROR', next);
+				exports.tapi(QUERIFY('tickets', { q: search, type: 'all', folderid: model.folderid, notin: model.id, limit: 50 }) + ' ERROR', next);
 			};
 
 			opt.render = function(item, name) {
