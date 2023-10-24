@@ -316,7 +316,14 @@
 			opt.custom = true;
 
 			opt.items = function(search, next) {
-				exports.tapi(QUERIFY('tickets', { q: search, type: 'all', folderid: model.folderid, notin: model.id, limit: 50 }) + ' ERROR', next);
+				var notin = [model.id];
+
+				if (model.links) {
+					for (var m of model.links)
+						notin.push(m.id);
+				}
+
+				exports.tapi(QUERIFY('tickets', { q: search, type: 'all', folderid: model.folderid, notin: notin.join(','), limit: 50 }) + ' ERROR', next);
 			};
 
 			opt.render = function(item, name) {
