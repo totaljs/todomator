@@ -73,10 +73,11 @@
 	.inlinecomment .photo { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; }
 
 	.related-container ul li { padding: 5px 40px 5px 10px; font-size: 12px; }
-	.related-container ul li .status { display: inline-block; width: 100px; height: 14px; border-right: 1px solid #e0e0e0; padding-right: 15px; margin-right: 15px; }
-	.related-container ul li .folder { width: 140px; display: inline-block; padding: 0 5px; color: rgb(0 0 0 / 70%); border-radius: var(--radius); font-size: 12px; height: 18px; line-height: 21px; border-left: 1px solid #e0e0e0; }
-	.related-container ul li .name { padding-left: 15px; margin-left: 15px; border-left: 1px solid #e0e0e0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 565px; }
+	.related-container ul li .status { display: inline-block; width: 100px; height: 14px; border-right: 1px solid #e0e0e0; padding-right: 15px; margin-right: 15px; vertical-align: middle; }
+	.related-container ul li .folder { width: 140px; display: inline-block; padding: 0 5px; color: rgb(0 0 0 / 70%); border-radius: var(--radius); font-size: 12px; height: 18px; line-height: 21px; vertical-align: middle; }
+	.related-container ul li .name { padding-left: 15px; margin-left: 15px; border-left: 1px solid #e0e0e0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 565px; vertical-align: middle; }
 	.related-container ul li .worked { float: right; color: gray; }
+
 	.ui-directory .widget { padding: 5px 10px; }
 	.ui-directory .widget i { width: 14px; text-align: center; }
 	.ui-directory .widget span { padding-left: 10px; margin-left: 10px; border-left: 1px solid rgba(0,0,0,0.1); }
@@ -319,7 +320,7 @@
 			};
 
 			opt.render = function(item, name) {
-				return '<span class="status">{4}</span><span class="folder" style="background-color:{0}">{1}</span><span class="name" title="{2}">{2}</span><span class="worked">{3}</span>'.format(Thelpers.rgba(item.folder_color, 0.2), item.folder, name, item.worked > 0 ? Thelpers.logwork(item.worked) : null, Thelpers.status(item.statusid));
+				return '<span class="status hellip">{4}</span><span class="folder hellip" style="background-color:{0}">{1}</span><span class="name hellip" title="{2}">{2}</span><span class="worked">{3}</span>'.format(item.folder_color ? Thelpers.rgba(item.folder_color, 0.2) : '#FFF', item.folder || DEF.empty, name, item.worked > 0 ? Thelpers.logwork(item.worked) : null, Thelpers.status(item.statusid));
 			};
 
 			opt.callback = function(selected) {
