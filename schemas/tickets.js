@@ -60,7 +60,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			var istag = false;
 			var own = false;
 
-			search = search.replace(/#[a-z0-9\-\_]+/g, function(text) {
+			search = search.replace(/#[a-z0-9\-_]+/g, function(text) {
 				istag = true;
 				let tag = text.substring(1).trim().slug().replace(/-/g, '');
 				for (var m of REPO.tags) {
@@ -103,7 +103,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('list', {
 		name: 'List of tickets',
-		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number, notin:UID',
+		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number, notin:String',
 		public: true,
 		action: function($) {
 			var builder = DATA.query('SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,b.isunread,b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
@@ -460,7 +460,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			$.success(item.id);
 
 			if (response.callback)
-				TicketCallback(response, keys);
+				TicketCallback(response);
 		}
 	});
 
