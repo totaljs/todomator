@@ -12,7 +12,8 @@ NEWSCHEMA('Tickets', function(schema) {
 			builder.where('date', query.date);
 		}
 
-		query.folderid && builder.where('folderid', query.folderid);
+		query.folderid && builder.where('a.folderid', query.folderid);
+		query.notin && builder.notin('a.id', query.notin.split(','));
 
 		switch (query.type) {
 			case 'pending':
@@ -102,7 +103,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('list', {
 		name: 'List of tickets',
-		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number',
+		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number, notin:UID',
 		public: true,
 		action: function($) {
 			var builder = DATA.query('SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,b.isunread,b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
