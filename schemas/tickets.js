@@ -302,6 +302,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		name: 'Update ticket',
 		input: 'userid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String',
 		params: '*id:String',
+		partial: true,
 		public: true,
 		action: async function($, model) {
 

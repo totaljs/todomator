@@ -3,9 +3,8 @@ exports.install = function() {
 	ROUTE('-GET /*', 'login');
 };
 
-function index() {
+function index($) {
 
-	var self = this;
 	var plugins = [];
 
 	for (var key in F.plugins) {
@@ -14,7 +13,7 @@ function index() {
 		obj.id = item.id;
 		obj.routes = item.routes;
 		obj.position = item.position;
-		obj.name = TRANSLATOR(self.user.language || '', item.name);
+		obj.name = TRANSLATE($.user.language || '', item.name);
 		obj.icon = item.icon;
 		obj.import = item.import ? '/_{id}/{import}'.args(item) : '';
 		obj.hidden = item.hidden;
@@ -22,5 +21,5 @@ function index() {
 	}
 
 	plugins.quicksort('position');
-	self.view('index', plugins);
+	$.view('index', plugins);
 }
