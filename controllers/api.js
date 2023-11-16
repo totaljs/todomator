@@ -98,7 +98,7 @@ async function upload($) {
 		obj.id = UID();
 		obj.type = file.type;
 		obj.size = file.size;
-		obj.ext = file.extension;
+		obj.ext = file.ext;
 		obj.url = '/download/' + obj.id.sign(CONF.salt) + '.' + obj.ext;
 		obj.name = file.filename;
 		obj.width = file.width;
