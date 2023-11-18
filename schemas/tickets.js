@@ -505,7 +505,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			var ticket = await DATA.read('tbl_ticket').fields('statusid').id(model.ticketid).where('isremoved=FALSE').error(404).promise($);
 			if (ticket.statusid === 'pending') {
 				// change status to "open"
-				await $.action('#update', { statusid: 'open' }).params({ id: model.ticketid }).user($.user).promise($);
+				await $.action('Tickets/update', { statusid: 'open' }).params({ id: model.ticketid }).user($.user).promise($);
 			}
 
 			NOW = new Date();
