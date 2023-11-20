@@ -439,6 +439,15 @@
 
 				common.form2 && NUL('common.form2');
 
+				var model = exports.model;
+				if (model.type === 'unread' && model.data) {
+					var index = model.data.items.findIndex('id', id);
+					if (index !== -1) {
+						model.data.items.splice(index, 1);
+						setTimeout(() => exports.upd('data'), 1500);
+					}
+				}
+
 				if (response.isunread)
 					exports.counter();
 
@@ -563,6 +572,10 @@
 		};
 
 		exports.detail = function(id, callback) {
+
+
+
+
 			TAPI('tickets_detail/{0} ERROR @showloading'.format(id), callback);
 		};
 
