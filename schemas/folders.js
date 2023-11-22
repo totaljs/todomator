@@ -1,4 +1,4 @@
-NEWSCHEMA('Folder', '*name,reference,icon:Icon,color:Color,customer,isdisabled:Boolean,ispinned:Boolean,isarchived:Boolean,isprivate:Boolean,isdisabled:Boolean,isbillable:Boolean,email:Email,phone:String');
+NEWSCHEMA('@Folder', '*name,reference,icon:Icon,color:Color,customer,isdisabled:Boolean,ispinned:Boolean,isarchived:Boolean,isprivate:Boolean,isdisabled:Boolean,isbillable:Boolean,email:Email,phone:String');
 
 NEWACTION('Folders/list', {
 	name: 'List of folders',
