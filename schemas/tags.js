@@ -23,6 +23,16 @@ NEWACTION('Tags/create', {
 	input: 'folderid:UID, *name:String, icon:Icon, color:Color',
 	permissions: 'admin',
 	action: async function($, model) {
+
+		// Check existing
+		if (model.folderid) {
+			let tmp = await DATA.read('tbl_tag').fields('id').where('folderid', model.folderid).where('name', model.name).promise();
+			if (tmp) {
+				$.success(tmp.id);
+				return;
+			}
+		}
+
 		model.id = U.random_text(3);
 		model.dtcreated = NOW;
 		model.search = model.name.slug().replace(/-/g, '');

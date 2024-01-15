@@ -589,14 +589,20 @@
 				// Create new tag
 				if (typeof(val) === 'string') {
 					if (!UNAUTHORIZED('admin')) {
-						var data = { folderid: model.folderid, name: val };
-						TAPI('tags_create ERROR', data, function(response) {
-							data.id = response.value;
-							DEF.cl.tag.push(data);
-							opt.callback({ id: response.value });
-						});
-					}
-					return;
+						var item = opt.items.findItem('name', val);
+						if (item) {
+							val = item;
+						} else {
+							var data = { folderid: model.folderid, name: val };
+							TAPI('tags_create ERROR', data, function(response) {
+								data.id = response.value;
+								DEF.cl.tag.push(data);
+								opt.callback({ id: response.value });
+							});
+							return;
+						}
+					} else
+						return;
 				}
 
 				val = val.id;
