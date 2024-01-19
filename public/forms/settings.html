@@ -12,6 +12,8 @@
 		<div class="padding">
 			<ui-component name="input" path="?.token" config="camouflage:1">@(Token)</ui-component>
 			<div class="help m"><span class="exec link" data-exec="?/token"><i class="ti ti-magic mr5"></i>@(Generate)</span>. @(Access token to access the Todomator API.) <a href="https://docs.totaljs.com/todomator/" target="_blank">@(Documentation)</a>.</div>
+			<hr />
+			<ui-component name="input" path="?.backup" config="type:checkbox" class="m">@(Backup ticket markdown body)</ui-component>
 		</div>
 	</div>
 	<nav>

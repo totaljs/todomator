@@ -1,13 +1,13 @@
 require('querybuilderpg').init('default', CONF.database, CONF.pooling || 1, ERROR('DB'));
 
-CONF.allow_custom_titles = true;
+CONF.$customtitles = true;
 CONF.version = '1.1';
 
 // UI components
 ON('ready', function() {
 
 	// Componentator
-	COMPONENTATOR('ui', 'exec,menu,columns,input,extend,loading,icons,floatingbox,autofill,rawinput,edit,errorhandler,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,validate,selection,searchinput,selected,box,tangular-color,tangular-filesize,intranetcss,notify,tabmenu,ready,iframepreview,preview,datepicker,paper,timepicker,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,sounds,markdown,clipboardimage,shortcuts,faviconunread,filesaver,info,inlinedatepicker', true);
+	COMPONENTATOR('ui', 'exec,menu,input,columns,idletime,loading,extend,icons,floatingbox,autofill,rawinput,edit,errorhandler,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,validate,selection,searchinput,selected,box,tangular-color,tangular-filesize,intranetcss,notify,tabmenu,ready,iframepreview,preview,datepicker,paper,timepicker,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,sounds,markdown,clipboardimage,shortcuts,faviconunread,filesaver,info,inlinedatepicker,uibuilder,uistudio,prompt', true);
 
 });
 
@@ -32,7 +32,7 @@ async function init() {
 
 		var data = {};
 		data.id = UID();
-		data.secret = GUID(16);
+		data.secret = GUID(10);
 		data.password = 'admin'.sha256(data.secret);
 
 		var sql = buffer.toString('utf8').arg(data);

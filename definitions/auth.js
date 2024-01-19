@@ -10,7 +10,6 @@ opt.strict = false;
 opt.ddos = 10;
 
 opt.onauthorize = function($) {
-
 	var token = $.headers['x-token'] || $.query.token;
 	if (token) {
 
@@ -77,4 +76,4 @@ ON('service', function(counter) {
 
 });
 
-LOCALIZE(req => req.query.language || (req.user ? req.user.language : CONF.language));
+LOCALIZE(ctrl => ctrl.query.language || (ctrl.user ? ctrl.user.language : CONF.language));

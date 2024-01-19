@@ -61,20 +61,19 @@
 			});
 		};
 
-		exports.toggle = function(el, name) {
+		exports.toggle = function(el, note) {
 			var model = exports.model;
 			var id = ATTRD(el);
-			var timer = model.items.findItem('ticketid', id);
+			var timer = model.items.findItem(n => n.ticketid == id && (note ? n.note === note : true));
 			if (timer) {
-				exports.stop(timer.id, function() {
-					if (timer.note == name)
-						exports.refresh();
-					else
-						exports.start(id, name);
-				});
+				exports.stop(timer.id, exports.refresh);
 			} else
-				exports.start(id, name);
+				exports.start(id, note);
 		};
+
+		ON('reload', function() {
+			exports.refresh();
+		});
 
 		exports.refresh();
 

@@ -1,7 +1,7 @@
 <style>
 
 	.CLASS .ui-box-icon { color: #68B25B; margin-right: 10px; }
-	.CLASS .ui-box-label { font-weight: normal; color: #A0A0A0; font-size: 13px; user-select: text; }
+	.CLASS .ui-box-label { font-weight: normal; color: #A0A0A0; font-size: 13px; user-select: text; font-family: Menlo, Consolas, monospace; }
 	.CLASS .meta i { transform: scale(1); }
 	.CLASS .attachments { font-size: 12px; padding: 0; margin-top: 10px; }
 	.CLASS .attachments .file { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
@@ -23,6 +23,7 @@
 	.CLASS .options button:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
 	.CLASS .users-bg { padding: 10px; background-color: #F0F0F0; border-radius: var(--radius); line-height: 0; }
 	.CLASS .users-bg:hover { background-color: #F3F3F3; }
+	.CLASS .users { margin-top: 8px; }
 	.CLASS .users > div { position: relative; display: inline-block; font-size: 12px; padding-top: 2px; margin-left: 10px; color: #A0A0A0; vertical-align: middle; }
 	.CLASS .users > span { width: 32px; height: 32px; line-height: 32px; font-weight: bold; vertical-align: middle; }
 	.CLASS .users > img { width: 32px; height: 32px; vertical-align: middle; }
@@ -84,7 +85,7 @@
 
 </style>
 
-<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-check-circle;reload:?/reload;scrollbar:1;submit:?/submit;scrollbar:0;width:800;hide:?/hide" class="hidden ~PATH~" plugin="~PATH~">
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-check-circle;reload:?/reload;scrollbar:1;submit:?/submit;width:800;hide:?/hide" class="hidden ~PATH~" plugin="~PATH~">
 	<nav class="hidden-xs">
 		<ui-bind path="?.bookmark.is" config=".selected" child=".bookmark">
 			<ui-bind path="?.istimer" config="macro:ticketdetailtimer" child=".timer">
@@ -145,8 +146,17 @@
 						<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
 
 						{{ if !value.ispublic }}
-						<div style="height:70px">
-							<div class="exec users users-bg" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
+						<div style="height:90px">
+							<div class="grid-2">
+								<div class="m">
+									<div class="help nmt"><i class="ti ti-users-alt"></i>@(Users)</div>
+									<div class="exec users users-bg" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
+								</div>
+								<div class="m">
+									<div class="help nmt"><i class="ti ti-eye"></i>@(Watchers)</div>
+									<div class="exec users users-bg" data-exec="?/watcher" data-type="watcher"><span style="background:#A0A0A0" title="@(Watchers)"><i class="ti ti-users-alt"></i></span>{{ if value.watcherid && value.watcherid.length }}{{ value.watcherid | users(true) }}{{ else }}<div>@(Choose watchers)</div>{{ fi }}</div>
+								</div>
+							</div>
 						</div>
 						{{ fi }}
 
@@ -470,11 +480,14 @@
 			EXEC('-menu/show', opt);
 		};
 
-		exports.user = function(el) {
+		exports.user = exports.watcher = function(el) {
+
+			var type = el.attrd('type');
 
 			var model = exports.model;
 			var opt = {};
 			var sel = EMPTYARRAY;
+			var prop = type === 'watcher' ? 'watcherid' : 'userid';
 
 			opt.element = el;
 			opt.items = CLONE(DEF.cl.user);
@@ -482,9 +495,9 @@
 			opt.offsetWidth = 20;
 			opt.offsetY = 25;
 
-			if (model.userid) {
+			if (model[prop]) {
 				for (var item of opt.items)
-					item.selected = model.userid.indexOf(item.id) !== -1;
+					item.selected = model[prop].indexOf(item.id) !== -1;
 			}
 
 			opt.callback = function(selected) {
@@ -494,9 +507,9 @@
 			opt.close = function() {
 				if (sel !== EMPTYARRAY) {
 					var items = sel.map(n => n.id);
-					exports.tapi('tickets_update/{0} ERROR'.format(model.id), { userid: items }, function() {
+					exports.tapi('tickets_update/{0} ERROR'.format(model.id), { [prop]: items }, function() {
 						changed = true;
-						model.userid = items;
+						model[prop] = items;
 						exports.upd('id');
 					});
 				}
@@ -508,15 +521,17 @@
 		exports.note = function(el) {
 			var model = exports.model;
 			var opt = {};
-			opt.align = 'right';
-			opt.offsetX = 25;
-			opt.offsetY = 36;
-			opt.icon = 'ti ti-lightbulb-on';
-			opt.minwidth = 400;
-			opt.placeholder = '@(Enter a note)';
-			opt.element = el;
+			// opt.align = 'right';
+			// opt.offsetX = 25;
+			// opt.offsetY = 36;
+			// opt.icon = 'ti ti-lightbulb-on';
+			// opt.minwidth = 400;
+			// opt.element = el;
+			// opt.monospace = true;
+			opt.name = '@(Note)';
+			opt.summary = '@(Enter a note for this task. This note will be displayed as an alert in the task detail.)';
 			opt.value = model.note;
-			opt.monospace = true;
+			opt.width = 600;
 			opt.callback = function(val) {
 
 				if (opt.value === val)
@@ -527,7 +542,7 @@
 					exports.upd('id');
 				});
 			};
-			SETTER('floatinginput/show', opt);
+			SETTER('prompt/show', opt);
 		};
 
 		exports.owner = function(el) {
@@ -589,14 +604,20 @@
 				// Create new tag
 				if (typeof(val) === 'string') {
 					if (!UNAUTHORIZED('admin')) {
-						var data = { folderid: model.folderid, name: val };
-						TAPI('tags_create ERROR', data, function(response) {
-							data.id = response.value;
-							DEF.cl.tag.push(data);
-							opt.callback({ id: response.value });
-						});
-					}
-					return;
+						var item = opt.items.findItem('name', val);
+						if (item) {
+							val = item;
+						} else {
+							var data = { folderid: model.folderid, name: val };
+							TAPI('tags_create ERROR', data, function(response) {
+								data.id = response.value;
+								DEF.cl.tag.push(data);
+								opt.callback({ id: response.value });
+							});
+							return;
+						}
+					} else
+						return;
 				}
 
 				val = val.id;
@@ -1071,6 +1092,11 @@
 				setTimeout(exports.refresh_timer, 500);
 		});
 
+		ON('reload', function() {
+			if (common.form === exports.name)
+				exports.refresh();
+		});
+
 	});
 
 	MACRO('ticketdetailtimer', function(self, element) {
@@ -1199,8 +1225,8 @@
 		EXEC('-menu/show', opt);
 		el.aclass('highlight');
 		e.preventDefault();
-	});
 
+	});
 
 	WATCH('common.clients', function() {
 		EXEC('formdetail/refresh_readers');

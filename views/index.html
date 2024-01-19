@@ -5,12 +5,15 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=11" />
-	<meta name="format-detection" content="telephone=no" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta name="robots" content="all,follow" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-title" content="Todomator" />
+	<link rel="apple-touch-icon" href="/icon.png" />
 	<link href="@{'%cdn'}/spa.min@19.css" rel="stylesheet" />
 	<script src="@{'%cdn'}/spa.min@19.js"></script>
+	<script src="@{'%cdn'}/uibuilder.min@1.js"></script>
 	<script src="@{REPO.ui}"></script>
 	@{import('meta', 'head', 'default.js + ui.js', 'default.css + ui.css', 'favicon.ico')}
 </head>
@@ -25,6 +28,7 @@
 	<ui-component name="title" path="common.title"></ui-component>
 	<ui-component name="nativenotifications"></ui-component>
 	<ui-component name="markdown"></ui-component>
+	<ui-component name="idletime" config="count:1"></ui-component>
 	<ui-component name="shortcuts"></ui-component>
 	<ui-component name="clipboardimage" config="output:file"></ui-component>
 	<ui-component name="faviconunread" path="tickets.counter.unread"></ui-component>
@@ -33,6 +37,7 @@
 
 	<ui-component name="info"></ui-component>
 
+	<ui-component name="LAZY prompt" config="cancel:@(Cancel);submit:@(OK);zindex:100"></ui-component>
 	<ui-component name="LAZY timepicker"></ui-component>
 	<ui-component name="LAZY sounds"></ui-component>
 	<ui-component name="LAZY fileuploader"></ui-component>

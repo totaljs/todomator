@@ -1,40 +1,37 @@
-NEWSCHEMA('Settings', function(schema) {
+NEWACTION('Settings/read', {
+	name: 'Read settings',
+	action: async function($) {
 
-	schema.action('read', {
-		name: 'Read settings',
-		action: async function($) {
+		if (UNAUTHORIZED($, 'settings'))
+			return;
 
-			if (UNAUTHORIZED($, 'settings'))
-				return;
+		var keys = 'name,token,minlogtime,backup'.split(',');
+		var obj = {};
 
-			var response = await DATA.find('cl_config').fields('id,value').in('id', 'name,token,minlogtime'.split(',')).promise($);
-			var obj = {};
+		for (var m of keys)
+			obj[m] = CONF[m];
 
-			for (var m of response)
-				obj[m.id] = m.value;
+		$.callback(obj);
+	}
+});
 
-			obj.minlogtime = obj.minlogtime ? +obj.minlogtime : 0;
-			$.callback(obj);
+NEWACTION('Settings/save', {
+	name: 'Save settings',
+	input: 'name:String, token:String, minlogtime:Number, backup:Boolean',
+	action: async function($, model) {
+
+		if (UNAUTHORIZED($, 'settings'))
+			return;
+
+		if (!model.minlogtime)
+			model.minlogtime = 1;
+
+		for (var key in model) {
+			var val = model[key];
+			await DATA.modify('cl_config', { id: key, value: val, type: val instanceof Date ? 'date' : val == null ? 'string' : typeof(val) }, true).id(key).promise($);
 		}
-	});
 
-	schema.action('save', {
-		name: 'Save settings',
-		input: 'name:String, token:String, minlogtime:Number',
-		action: async function($, model) {
-
-			if (UNAUTHORIZED($, 'settings'))
-				return;
-
-			if (!model.minlogtime)
-				model.minlogtime = 1;
-
-			for (var key in model)
-				await DATA.modify('cl_config', { value: model[key] }).id(key).promise($);
-
-			FUNC.reconfigure();
-			$.success();
-		}
-	});
-
+		FUNC.reconfigure();
+		$.success();
+	}
 });

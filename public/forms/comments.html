@@ -120,6 +120,11 @@
 				exports.refresh();
 		});
 
+		ON('reload', function() {
+			if (common.form2 === exports.name)
+				exports.refresh();
+		});
+
 	});
 
 </script>

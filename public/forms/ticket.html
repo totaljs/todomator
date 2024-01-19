@@ -14,9 +14,16 @@
 			</div>
 		</div>
 
-		<div class="m">
-			<ui-bind path="?.ispublic" config="disabled" class="block m">
-				<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)">@(Assign to)</ui-component>
+		<div>
+			<ui-bind path="?.ispublic" config="disabled" class="block">
+				<div class="m">
+					<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)">@(Assign to)</ui-component>
+				</div>
+				<!--
+				<div>
+					<ui-component name="input" path="?.watcherid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)">@(Watchers)</ui-component>
+				</div>
+				-->
 			</ui-bind>
 			<ui-component name="input" path="?.ispublic" config="type:checkbox">@(Open to all)</ui-component>
 		</div>
