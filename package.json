@@ -7,7 +7,7 @@
     "url": "https://github.com/totaljs/todomator"
   },
   "dependencies": {
-    "total4": "beta",
+    "total5": "beta",
     "querybuilderpg": "latest"
   },
   "scripts": {
