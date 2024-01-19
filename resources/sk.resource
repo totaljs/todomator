@@ -250,3 +250,16 @@ T4gucvc      : Réport tiketu
 Tqahqde      : Vložiť bohatý obsah
 T1nt1wo7     : <b>Vložiť nižšie</b> bohatý obsah z emailu, Word dokumentu alebo webovej stránky.
 T1637al      : Naozaj chcete vyčistiť obsah?
+T1y4         : OK
+Txh3l5w      : Skopírované
+T1degrah     : upravené
+T1a6ui       : Editovať
+T1rgob4t     : Naozaj chcete vymazať vybraný komentár?
+T1vqh1xc     : Vybrať sledovateľov
+T1frrnji      : Zadajte poznámku pre tento tiket. Poznámka bude zobrazená ako upozornenie v detail tiketu.
+Ta32253      : Sledovatelia
+Ttxhq59      : Zálohovať zmeny v tele tiketu
+T1sp6l5w     : PRIORITA
+T1ri4hyk     : Používateľ je neaktívny
+T1h67ij      : Neaktívny
+Tqtl7a0      : Nie je možné vymazať Todomator BOT
