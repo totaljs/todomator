@@ -4,6 +4,7 @@
 	.CLASS .currency { float: right; width: 40px; color: #777; border-right: 1px solid #D0D0D0; margin-right: 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; text-align: left; }
 	.CLASS .rate { float: right; width: 170px; color: #777; text-align: right; padding: 0 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 	.CLASS .name { margin-right: 300px; }
+	.CLASS .time { color: #A0A0A0; margin-right: 20px !important; }
 	.CLASS .name > i { width: 12px; margin-right: 5px; text-align: center; }
 	.CLASS .buttons span { line-height: 21px; margin:0px 2px 2px 2px ; border-radius: var(--radius); border: 0; margin: 0 5px; }
 	.CLASS figure .name .customer { margin-right: 15px; }
@@ -29,6 +30,7 @@
 					<figure data-id="{{ m.id }}" class="exec items" data-exec="?/update">
 						<section>
 							<div class="buttons">
+								<span class="time monospace">{{ m.minutes | logwork }}</span>
 								<span class="exec" data-exec="?/update" data-prevent="true"><i class="ti ti-pencil-alt"></i></span>
 								<span class="exec" data-exec="?/remove" data-prevent="true"><i class="ti ti-trash red"></i></span>
 							</div>

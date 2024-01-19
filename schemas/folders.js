@@ -5,7 +5,7 @@ NEWACTION('Folders/list', {
 	public: true,
 	permissions: 'admin',
 	action: function($) {
-		DATA.find('tbl_folder').fields('id,name,icon,color,customer,isbillable,isdisabled,isprivate,isarchived,ispinned,email,phone,reference,dtcreated,dtupdated').sort('name').callback($);
+		DATA.query('SELECT id,name,icon,color,customer,isbillable,isdisabled,isprivate,isarchived,ispinned,email,phone,reference,dtcreated,dtupdated,(SELECT SUM(x.worked) FROM tbl_ticket x WHERE x.isremoved=FALSE AND x.folderid=tbl_folder.id)::int4 AS minutes FROM tbl_folder ORDER BY name ASC').callback($);
 	}
 });
 
