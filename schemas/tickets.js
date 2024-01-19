@@ -49,7 +49,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		if (query.type === 'review')
 			builder.query('a.ownerid={1}'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
 		else if (!$.user.admin || !query.admin)
-			builder.query('(a.ispublic=TRUE OR a.ownerid={1} OR a.userid && {0}::_text)'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
+			builder.query('(a.ispublic=TRUE OR a.ownerid={1} OR a.userid && {0}::_text OR a.watcherid && {0}::_text)'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
 
 		var search = query.q;
 
@@ -157,7 +157,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			builder.where('a.id', params.id);
 
 			if (!$.user.sa || $.user.permissions.includes('admin'))
-				builder.query('(a.ispublic=TRUE OR (a.userid && {1}::_text) OR ownerid={0})'.format(userid, PG_ESCAPE('{' + $.user.id + '}')));
+				builder.query('(a.ispublic=TRUE OR (a.userid && {1}::_text) OR (a.watcherid && {1}::_text) OR ownerid={0})'.format(userid, PG_ESCAPE('{' + $.user.id + '}')));
 
 			builder.first();
 			builder.error('@(Ticket not found)');
@@ -176,7 +176,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String',
+		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String',
 		public: true,
 		action: async function($, model) {
 
@@ -190,9 +190,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			}
 
 			if (model.users) {
-				var userid = [];
-				for (var m of model.users) {
-					var user = await DATA.read('tbl_user').fields('id').or(b => b.search('name', m).search('email', m)).promise($);
+				let userid = [];
+				for (let m of model.users) {
+					let user = await DATA.read('tbl_user').fields('id').or(b => b.search('name', m).search('email', m)).promise($);
 					if (user) {
 						userid.push(user.id);
 					} else {
@@ -204,7 +204,23 @@ NEWSCHEMA('Tickets', function(schema) {
 				model.userid = userid;
 			}
 
+			if (model.watchers) {
+				let watchers = [];
+				for (let m of model.watchers) {
+					let user = await DATA.read('tbl_user').fields('id').or(b => b.search('name', m).search('email', m)).promise($);
+					if (user) {
+						watchers.push(user.id);
+					} else {
+						$.error.replace('@', m);
+						$.invalid('@(User "@" not found)');
+						break;
+					}
+				}
+				model.watcherid = watchers;
+			}
+
 			model.users = undefined;
+			model.watchers = undefined;
 			model.folder = undefined;
 
 			NOW = new Date();
@@ -300,7 +316,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String',
+		input: 'userid:[String], watcherid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String',
 		params: '*id:String',
 		partial: true,
 		public: true,
@@ -339,6 +355,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			model.isprocessed = false;
 
 			var response = await DATA.modify('tbl_ticket', model).error(404).id(params.id).where('isremoved=FALSE').returning(Returning).first().promise($);
+
+			if (CONF.backup && model.markdown != null)
+				DATA.insert('tbl_ticket_backup', { id: UID(), ticketid: params.id, userid: $.user.id, markdown: model.markdown, ip: $.ip, ua: $.ua });
 
 			if (model.ispublic == null && model.userid) {
 				var newbie = [];
