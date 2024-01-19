@@ -27,6 +27,7 @@
 	.CLASS .name { line-height: 21px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding-left: 10px; }
 	.CLASS .name b { padding: 2px 0; }
 	.CLASS .name .ti-paperclip { color: #999; }
+	.CLASS .period { float: left; margin-right: 8px; color: rgba(0,0,0,0.6); border-radius: var(--radius); padding: 0 2px; }
 	.CLASS .arrows { float: left; }
 	.CLASS .arrows .ti-minus { color: #777; }
 	.CLASS .priority.open .assigned b { background-color: rgba(232,72,63,0.15); }
@@ -180,7 +181,7 @@
 												<div class="status">{{ m.statusid | status }}</div>
 												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip"><i class="ti ti-external exec pull-right" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}"></i>{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													<!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													<span class="period" style="background-color:{{ {{ m.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ m.date | format('yyyy/MM') }}</span> <!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.ispublic }}
 													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
@@ -667,6 +668,10 @@
 				exports.model.version = Date.now();
 				exports.refresh();
 			}
+		});
+
+		ON('reload', function() {
+			exports.refresh(true);
 		});
 
 		exports.counter(true);

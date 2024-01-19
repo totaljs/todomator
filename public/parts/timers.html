@@ -71,6 +71,10 @@
 				exports.start(id, note);
 		};
 
+		ON('reload', function() {
+			exports.refresh();
+		});
+
 		exports.refresh();
 
 	});

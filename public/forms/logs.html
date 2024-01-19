@@ -3,7 +3,7 @@
 	.CLASS h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
 </style>
 
-<ui-component name="box" path="common.form2" config="if:~PATH~;width:700;title:@(Logs);autofocus:1;closeesc:1;closeoutside:1;submit:?/submit;close:?/hide;reload:?/reload;icon:ti ti-history;zindex:30" plugin="~PATH~" class="hidden ~PATH~">
+<ui-component name="box" path="common.form2" config="if:CLASS;width:700;title:@(Logs);autofocus:1;closeesc:1;closeoutside:1;submit:?/submit;close:?/hide;reload:?/reload;icon:ti ti-history;zindex:30" plugin="CLASS" class="hidden CLASS">
 
 	<div class="padding">
 
@@ -158,6 +158,11 @@
 				});
 			});
 		};
+
+		ON('reload', function() {
+			if (common.form2 === exports.name)
+				exports.refresh();
+		});
 
 	});
 </script>
