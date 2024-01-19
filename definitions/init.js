@@ -1,7 +1,7 @@
 require('querybuilderpg').init('default', CONF.database, CONF.pooling || 1, ERROR('DB'));
 
 CONF.$customtitles = true;
-CONF.version = '1.1';
+CONF.version = '1.2';
 
 // UI components
 ON('ready', function() {
