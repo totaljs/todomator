@@ -6,6 +6,7 @@ html,body { overflow: hidden; margin: 0; padding: 0; color: #303030; }
 .bg-smoke { background-color: #F8F8F8; }
 .bg-body { background-color: #FFF; }
 .monospace { font-family: Menlo, Consolas, monospace; }
+.ti { transform: none; }
 
 .ui-dark .bg-smoke { background-color: #151515; }
 .ui-dark .bg-body { background-color: #232323; }
@@ -170,3 +171,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 @media(max-width: 768px) {
 	.nopadding-xs { padding: 0 !important; }
 }
+
+.nav nav > a i { font-size: 15px; }
+.ui-box-title > nav button i { font-size: 14px; }
+.ui-input-checkbox span { line-height: 17px; }
