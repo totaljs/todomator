@@ -133,13 +133,14 @@
 						<a href="/review/" class="item exec jR"><ui-bind path="?.counter.review" config="text:value>99?99:value;show" class="hidden counterunread">0</ui-bind><i class="ti ti-clean"></i>@(Review)</a>
 						<a href="/unread/" class="item exec jR"><ui-bind path="?.counter.unread" config="text:value>99?99:value;show" class="hidden counterunread">0</ui-bind><i class="ti ti-bell"></i>@(Unread)</a>
 						<a href="/bookmarks/" class="item exec jR"><ui-bind path="?.counter.bookmarks" config="text:value>99?99:value;show" class="hidden counterbookmark">0</ui-bind><i class="ti ti-bookmark"></i>@(Bookmarks)</a>
+						<a href="/postponed/" class="item exec jR"><i class="ti ti-history"></i>@(Postponed)</a>
 						<a href="/all/" class="item exec jR"><i class="ti ti-archive"></i>@(All tickets)</a>
 					</nav>
 				</div>
 				<div class="searchfolders">
 					<ui-component name="searchinput" path="%searchfolders" config="placeholder:@(Search in folders)"></ui-component>
 				</div>
-				<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;margin:218;marginxs:258;scrollbarshadow:0" class="invisible">
+				<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;margin:248;marginxs:288;scrollbarshadow:0" class="invisible">
 					<ui-component name="search" path="%searchfolders" config="selector:.item;datasource:#folder" class="nav folders">
 						<ui-bind path="#folder" config="template:.item;changes" child="nav">
 							<nav class="npb">
@@ -204,6 +205,7 @@
 							<div class="toolbar" style="margin:20px 0 20px 10px">
 								<button class="exec b" data-exec="?/next"><i class="ti ti-spinner"></i>@(Load more)</button>
 							</div>
+							<br class="visible-xs" />
 						</ui-bind>
 					</div>
 				</ui-component>
@@ -476,6 +478,9 @@
 				case 'unread':
 					title = '@(Unread changes)';
 					break;
+				case 'postponed':
+					title = '@(Postponed tickets)';
+					break;
 				case 'bookmarks':
 					title = '@(Bookmarks)';
 					break;
@@ -573,10 +578,6 @@
 		};
 
 		exports.detail = function(id, callback) {
-
-
-
-
 			TAPI('tickets_detail/{0} ERROR @showloading'.format(id), callback);
 		};
 
@@ -648,11 +649,6 @@
 				});
 			};
 			SETTER('datepicker/show', opt);
-		};
-
-		exports.contextmenu = function(el) {
-			var id = ATTRD(el);
-			// console.log(id);
 		};
 
 		exports.mobilemenu = function(el) {

@@ -19,6 +19,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			case 'pending':
 				builder.where("statusid='pending' AND (isprivate=FALSE OR isprivate IS NULL)" + (query.date || query.date2 ? "" : " AND date<=timezone('utc'::text, now())"));
 				break;
+			case 'postponed':
+				builder.where("statusid='postponed' AND (isprivate=FALSE OR isprivate IS NULL)");
+				break;
 			case 'review':
 				builder.where("statusid='review' AND (isprivate=FALSE OR isprivate IS NULL)");
 				break;
