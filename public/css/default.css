@@ -173,5 +173,5 @@ header .toolbar button { height: 26px; font-size: 12px; }
 }
 
 .nav nav > a i { font-size: 15px; }
-.ui-box-title > nav button i { font-size: 14px; }
+.ui-box-title > nav button i { font-size: 14px; width: 14px; }
 .ui-input-checkbox span { line-height: 17px; }
