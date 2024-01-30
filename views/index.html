@@ -80,7 +80,7 @@
 		var common = {};
 
 		DEF.color = '#4285F4';
-		DEF.api = '/api/';
+		DEF.api = '@{CONF.$api}';
 		DEF.versionhtml = '@{CONF.version}';
 		DEF.languagehtml = '@{user.language}';
 
@@ -91,7 +91,7 @@
 		NAV.clientside('.jR');
 
 		(function() {
-			ADD('websocket', { url: '/api/?id=' + common.clientid });
+			ADD('websocket', { url: DEF.api + '?id=' + common.clientid });
 		})();
 
 		Thelpers.logwork = function(val, billing) {

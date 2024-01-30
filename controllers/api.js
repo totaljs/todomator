@@ -1,65 +1,65 @@
 exports.install = function() {
 
 	// Misc
-	ROUTE('+API    /api/       -account                   --> Account/read');
-	ROUTE('+API    /api/       +cl                        --> Common/cl');
-	ROUTE('+API    /api/       -version                   --> Common/version');
+	ROUTE('+API    ?       -account                   --> Account/read');
+	ROUTE('+API    ?       +cl                        --> Common/cl');
+	ROUTE('+API    ?       -version                   --> Common/version');
 
 	// Tickets
-	ROUTE('+API    /api/       -tickets                   --> Tickets/list');
-	ROUTE('+API    /api/       -tickets_find              --> Tickets/find');
-	ROUTE('+API    /api/       -tickets_calendar          --> Tickets/calendar');
-	ROUTE('+API    /api/       -tickets_detail/{id}       --> Tickets/read');
-	ROUTE('+API    /api/       -tickets_users             --> Tickets/users');
-	ROUTE('+API    /api/       +tickets_create            --> Tickets/create', 1024 * 10);
-	ROUTE('+API    /api/       +tickets_update/{id}       --> Tickets/update', 1024 * 10);
-	ROUTE('+API    /api/       +tickets_clone/{id}        --> Tickets/clone');
-	ROUTE('+API    /api/       -tickets_remove/{id}       --> Tickets/remove');
-	ROUTE('+API    /api/       -tickets_logs/{id}         --> Tickets/logs');
-	ROUTE('+API    /api/       -tickets_history/{id}      --> Tickets/history');
-	ROUTE('+API    /api/       +tickets_bookmarks/{id}    --> Tickets/bookmark');
-	ROUTE('+API    /api/       -tickets_unread            --> Tickets/unread');
-	ROUTE('+API    /api/       -tickets_counter           --> Tickets/counter');
-	ROUTE('+API    /api/       +tickets_link/{id}         --> Tickets/link');
-	ROUTE('+API    /api/       -tickets_links/{id}        --> Tickets/links');
-	ROUTE('+API    /api/       -tickets_reset/{id}        --> Tickets/reset');
-	ROUTE('+API    /api/       -tickets_markdown/{id}     --> Tickets/markdown');
-	ROUTE('+API    /api/       +logwork_create            --> Tickets/logwork_create');
-	ROUTE('+API    /api/       +logwork_update/{id}       --> Tickets/logwork_update');
-	ROUTE('+API    /api/       -logwork_remove/{id}       --> Tickets/logwork_remove');
-	ROUTE('+API    /api/       -logwork_open              --> Tickets/logwork_open');
-	ROUTE('+API    /api/       +logwork_start             --> Tickets/logwork_start');
-	ROUTE('+API    /api/       +logwork_stop              --> Tickets/logwork_stop');
-	ROUTE('+API    /api/       -comments/{id}             --> Tickets/comments');
-	ROUTE('+API    /api/       +comments_create           --> Tickets/comments_create');
-	ROUTE('+API    /api/       +comments_update/{id}      --> Tickets/comments_update');
-	ROUTE('+API    /api/       -comments_remove/{id}      --> Tickets/comments_remove');
-	ROUTE('+API    /api/       -data_read/{id}            --> Tickets/data_read');
-	ROUTE('+API    /api/       +data_save/{id}            --> Tickets/data_save');
+	ROUTE('+API    ?       -tickets                   --> Tickets/list');
+	ROUTE('+API    ?       -tickets_find              --> Tickets/find');
+	ROUTE('+API    ?       -tickets_calendar          --> Tickets/calendar');
+	ROUTE('+API    ?       -tickets_detail/{id}       --> Tickets/read');
+	ROUTE('+API    ?       -tickets_users             --> Tickets/users');
+	ROUTE('+API    ?       +tickets_create            --> Tickets/create', 1024 * 10);
+	ROUTE('+API    ?       +tickets_update/{id}       --> Tickets/update', 1024 * 10);
+	ROUTE('+API    ?       +tickets_clone/{id}        --> Tickets/clone');
+	ROUTE('+API    ?       -tickets_remove/{id}       --> Tickets/remove');
+	ROUTE('+API    ?       -tickets_logs/{id}         --> Tickets/logs');
+	ROUTE('+API    ?       -tickets_history/{id}      --> Tickets/history');
+	ROUTE('+API    ?       +tickets_bookmarks/{id}    --> Tickets/bookmark');
+	ROUTE('+API    ?       -tickets_unread            --> Tickets/unread');
+	ROUTE('+API    ?       -tickets_counter           --> Tickets/counter');
+	ROUTE('+API    ?       +tickets_link/{id}         --> Tickets/link');
+	ROUTE('+API    ?       -tickets_links/{id}        --> Tickets/links');
+	ROUTE('+API    ?       -tickets_reset/{id}        --> Tickets/reset');
+	ROUTE('+API    ?       -tickets_markdown/{id}     --> Tickets/markdown');
+	ROUTE('+API    ?       +logwork_create            --> Tickets/logwork_create');
+	ROUTE('+API    ?       +logwork_update/{id}       --> Tickets/logwork_update');
+	ROUTE('+API    ?       -logwork_remove/{id}       --> Tickets/logwork_remove');
+	ROUTE('+API    ?       -logwork_open              --> Tickets/logwork_open');
+	ROUTE('+API    ?       +logwork_start             --> Tickets/logwork_start');
+	ROUTE('+API    ?       +logwork_stop              --> Tickets/logwork_stop');
+	ROUTE('+API    ?       -comments/{id}             --> Tickets/comments');
+	ROUTE('+API    ?       +comments_create           --> Tickets/comments_create');
+	ROUTE('+API    ?       +comments_update/{id}      --> Tickets/comments_update');
+	ROUTE('+API    ?       -comments_remove/{id}      --> Tickets/comments_remove');
+	ROUTE('+API    ?       -data_read/{id}            --> Tickets/data_read');
+	ROUTE('+API    ?       +data_save/{id}            --> Tickets/data_save');
 
 	// Folders
-	ROUTE('+API    /api/       -folders                   --> Folders/list');
-	ROUTE('+API    /api/       -folders_read/{id}         --> Folders/read');
-	ROUTE('+API    /api/       +folders_create            --> Folders/create');
-	ROUTE('+API    /api/       +folders_update/{id}       --> Folders/update');
-	ROUTE('+API    /api/       -folders_remove/{id}       --> Folders/remove');
+	ROUTE('+API    ?       -folders                   --> Folders/list');
+	ROUTE('+API    ?       -folders_read/{id}         --> Folders/read');
+	ROUTE('+API    ?       +folders_create            --> Folders/create');
+	ROUTE('+API    ?       +folders_update/{id}       --> Folders/update');
+	ROUTE('+API    ?       -folders_remove/{id}       --> Folders/remove');
 
 	// Tags
-	ROUTE('+API    /api/       -tags                      --> Tags/list');
-	ROUTE('+API    /api/       -tags_read/{id}            --> Tags/read');
-	ROUTE('+API    /api/       +tags_create               --> Tags/create');
-	ROUTE('+API    /api/       +tags_update/{id}          --> Tags/update');
-	ROUTE('+API    /api/       -tags_remove/{id}          --> Tags/remove');
+	ROUTE('+API    ?       -tags                      --> Tags/list');
+	ROUTE('+API    ?       -tags_read/{id}            --> Tags/read');
+	ROUTE('+API    ?       +tags_create               --> Tags/create');
+	ROUTE('+API    ?       +tags_update/{id}          --> Tags/update');
+	ROUTE('+API    ?       -tags_remove/{id}          --> Tags/remove');
 
 	// Settings
-	ROUTE('+API    /api/       -settings_read             --> Settings/read');
-	ROUTE('+API    /api/       +settings_save             --> Settings/save');
+	ROUTE('+API    ?       -settings_read             --> Settings/read');
+	ROUTE('+API    ?       +settings_save             --> Settings/save');
 
 	// Files
 	ROUTE('+POST  /upload/ @upload <5MB', upload);
 	ROUTE('FILE   /download/*.*', files);
 
-	ROUTE('+SOCKET  /api/', socket);
+	ROUTE('+SOCKET ?', socket);
 };
 
 function socket($) {

@@ -1,4 +1,3 @@
-// database                        : postgresql://user:pass@localhost:5432/todomator
-database    (env)               : DATABASE
+database                        : postgres://kviesta:skavenger3@localhost/helpdesk
 pooling                         : 1
-default_uid                     : f
+$api                            : /api/
