@@ -1,4 +1,4 @@
-	mkdir -p .bundle
+mkdir -p .bundle
 
 cd .bundle
 cp -a ../controllers/ controllers
@@ -12,7 +12,7 @@ cp -a ../resources/ resources
 rm resources/en.resource
 
 # cd ..
-total4 --bundle app.bundle
+total5 --bundle app.bundle
 cp app.bundle ../app.bundle
 
 cd ..
