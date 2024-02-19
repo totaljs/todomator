@@ -40,9 +40,7 @@ NEWACTION('Users/update', {
 
 		var params = $.params;
 
-		if (model.password)
-			model.password = model.password.sha256(CONF.auth_secret);
-
+		model.password = model.password ? model.password.sha256(CONF.auth_secret) : undefined;
 		model.search = model.name.toSearch().replace(/\s/g, '');
 		model.dtupdated = NOW;
 
