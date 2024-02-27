@@ -55,7 +55,6 @@ NEWSCHEMA('Tickets', function(schema) {
 			builder.query('(a.ispublic=TRUE OR a.ownerid={1} OR a.userid && {0}::_text OR a.watcherid && {0}::_text)'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
 
 		var search = query.q;
-
 		if (search) {
 
 			var tags = [];
@@ -190,6 +189,12 @@ NEWSCHEMA('Tickets', function(schema) {
 				model.folderid = folder.id;
 				if (model.isbillable == null && folder.isbillable)
 					model.isbillable = true;
+			}
+
+			if (model.date) {
+				model.date.setHours(0);
+				model.date.setMinutes(0);
+				model.date.setSeconds(0);
 			}
 
 			if (model.users) {
@@ -330,6 +335,12 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			model.changed = 'metadata';
 			model.dtupdated = NOW;
+
+			if (model.date) {
+				model.date.setHours(0);
+				model.date.setMinutes(0);
+				model.date.setSeconds(0);
+			}
 
 			if (model.name)
 				model.search = model.name.toSearch();

@@ -115,7 +115,7 @@ CREATE TABLE "public"."tbl_ticket" (
 	"ispriority" bool DEFAULT false,
 	"isprocessed" bool DEFAULT false,
 	"isremoved" bool DEFAULT false,
-	"date" date,
+	"date" timestamp,
 	"dtparent" timestamp,
 	"deadline" timestamp,
 	"dtstatus" timestamp,
