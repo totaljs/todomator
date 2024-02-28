@@ -1,5 +1,4 @@
 const BOT = { id: 'bot', name: 'Bot', sa: true, permissions: ['bot'] };
-
 var opt = {};
 
 opt.secret = CONF.auth_secret;
