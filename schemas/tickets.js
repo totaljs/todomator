@@ -336,12 +336,6 @@ NEWSCHEMA('Tickets', function(schema) {
 			model.changed = 'metadata';
 			model.dtupdated = NOW;
 
-			if (model.date) {
-				model.date.setHours(0);
-				model.date.setMinutes(0);
-				model.date.setSeconds(0);
-			}
-
 			if (model.name)
 				model.search = model.name.toSearch();
 
@@ -405,8 +399,11 @@ NEWSCHEMA('Tickets', function(schema) {
 				}
 			}
 
-			if (response.userid && response.userid.length)
-				DATA.remove('tbl_ticket_unread').where('ticketid', params.id).notin('userid', response.userid);
+			if (response.userid && response.userid.length) {
+				let notin = response.userid.slice(0);
+				notin.push(response.ownerid);
+				DATA.remove('tbl_ticket_unread').where('ticketid', params.id).notin('userid', notin);
+			}
 
 			var filter = client => client.query.id !== $.query.clientid && (response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id));
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown }, filter);
