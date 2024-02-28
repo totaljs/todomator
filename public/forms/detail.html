@@ -667,6 +667,13 @@
 			opt.element = el;
 			opt.value = model.deadline || NOW;
 			opt.callback = function(val) {
+
+				if (val) {
+					val.setHours(0);
+					val.setMinutes(0);
+					val.setSeconds(0);
+				}
+
 				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { deadline: val }, function() {
 					model.deadline = val;
 					changed = true;
@@ -682,6 +689,12 @@
 			opt.element = el;
 			opt.value = model.date || NOW;
 			opt.callback = function(val) {
+
+				if (val) {
+					val.setHours(0);
+					val.setMinutes(0);
+					val.setSeconds(0);
+				}
 
 				var data = {};
 				data.date = val;
