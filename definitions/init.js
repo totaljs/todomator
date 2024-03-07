@@ -24,6 +24,7 @@ async function init() {
 		FUNC.reconfigure();
 		FUNC.refreshtags();
 		PAUSESERVER('Database');
+		EMIT('start');
 		return;
 	}
 
@@ -44,6 +45,7 @@ async function init() {
 
 		FUNC.reconfigure();
 		FUNC.refreshtags();
+		EMIT('start');
 	});
 
 }

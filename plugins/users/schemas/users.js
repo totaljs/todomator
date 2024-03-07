@@ -1,13 +1,19 @@
 // Temporary object for users
 MAIN.users = [];
 
-(async function() {
+async function refresh() {
 	var tmp = await DATA.find('tbl_user').fields('id').where('isremoved=FALSE').promise();
 	for (let m of tmp) {
 		if (m.id !== 'bot')
 			MAIN.users.push(m.id);
 	}
-})();
+}
+
+ON('start', refresh);
+ON('service', function(counter) {
+	if (counter % 10 === 0)
+		refresh();
+});
 
 NEWACTION('Users/list', {
 	name: 'List of users',
