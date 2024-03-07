@@ -363,7 +363,7 @@ INSERT INTO "public"."cl_config" ("id", "value", "type") VALUES
 	('cdn', '//cdn.componentator.com', 'string'),
 	('name', 'Todomator', 'string'),
 	('token', '', 'string'),
-	('language', '', 'string'),
+	('language', 'eu', 'string'),
 	('minlogtime', '10', 'number'),
 	('auth_cookie_expire', '1 month', 'string'),
 	('auth_secret', '{secret}', 'string'),
