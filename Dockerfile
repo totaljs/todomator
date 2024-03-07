@@ -9,7 +9,7 @@ COPY index.js .
 COPY config .
 COPY package.json .
 COPY database.sql .
-COPY --bundles--/app.bundle ./bundles/
+COPY /--bundles--/app.bundle ./bundles/
 
 RUN npm install
 EXPOSE 8000
