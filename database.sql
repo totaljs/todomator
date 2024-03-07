@@ -95,7 +95,7 @@ CREATE TABLE "public"."tbl_ticket" (
 	"ownerid" text,
 	"typeid" text,
 	"userid" _text,
-	"watcherid" text,
+	"watcherid" _text,
 	"source" text,
 	"reference" text,
 	"changed" text,
