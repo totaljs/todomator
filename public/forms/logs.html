@@ -5,6 +5,10 @@
 
 <ui-component name="box" path="common.form2" config="if:CLASS;width:700;title:@(Logs);autofocus:1;closeesc:1;closeoutside:1;submit:?/submit;close:?/hide;reload:?/reload;icon:ti ti-history;zindex:30" plugin="CLASS" class="hidden CLASS">
 
+	<nav>
+		<button class="exec" data-exec="?/copy"><i class="ti ti-copy"></i>@(Copy to clipboard)</button>
+	</nav>
+
 	<div class="padding">
 
 		<ui-bind path="?" config="template;track:id" class="block m">
@@ -82,6 +86,15 @@
 			caller.model.worked = model.worked;
 			caller.changed();
 			caller.upd('id');
+		};
+
+		exports.copy = function() {
+			var model = exports.model;
+			var builder = [];
+			for (var m of model.items)
+				builder.push(m.date.format('[date]') + '\t' + m.user_name + '\t' + (m.name || '') + '\t' + Thelpers.logwork(m.minutes));
+			SETTER('clipboard/copy', builder.join('\n'));
+			SETTER('notify/success', '@(Copied)');
 		};
 
 		exports.refresh = function() {
