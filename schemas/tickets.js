@@ -180,6 +180,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		name: 'Create ticket',
 		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String',
 		public: true,
+		partial: true,
 		action: async function($, model) {
 
 			var keys = Object.keys(model);
