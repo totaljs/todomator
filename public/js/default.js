@@ -434,7 +434,7 @@ function Editable(el, opt, callback) {
 	var paste = function(e) {
 		e.preventDefault();
 		var text = (e.originalEvent || e).clipboardData.getData('text/plain');
-		document.execCommand('insertHTML', false, text);
+		document.execCommand('insertHTML', false, text.encode());
 	};
 
 	var keyup = function(e) {
