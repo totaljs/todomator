@@ -560,7 +560,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('logwork_stop', {
 		name: 'Stop logwork timer',
-		input: '*id:String',
+		input: '*id:String,name',
 		action: async function($, model) {
 
 			var item = await DATA.read('tbl_ticket_time').fields('ticketid,start').id(model.id).where('userid', $.user.id).where('start IS NOT NULL').error('@(Timer not found)').promise($);
@@ -573,7 +573,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (diff < CONF.minlogtime)
 				diff = CONF.minlogtime;
 
-			await DATA.modify('tbl_ticket_time', { '+minutes': diff, start: null }).id(model.id).promise($);
+			await DATA.modify('tbl_ticket_time', { '+minutes': diff, start: null, name: model.name }).id(model.id).promise($);
 			await DATA.modify('tbl_ticket', { '+worked': diff }).id(item.ticketid).promise($);
 
 			var ticket = await DATA.read('tbl_ticket').fields('id,ownerid,userid,worked,ispublic').id(item.ticketid).promise($);

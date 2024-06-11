@@ -393,9 +393,9 @@
 			});
 		};
 
-		exports.timer = function() {
+		exports.timer = function(el) {
 			var model = exports.model;
-			EXEC('parttimers/toggle', model.id);
+			EXEC('parttimers/toggle', model.id, null, el);
 		};
 
 		exports.timer2 = function() {

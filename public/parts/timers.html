@@ -44,29 +44,49 @@
 			});
 		};
 
-		exports.stop = function(el, callback) {
+		exports.stop = function(el, callback, btn) {
 			var id = ATTRD(el);
-			exports.tapi('logwork_stop ERROR @showloading', { id: id }, function(response) {
-				SETTER('sounds/play', 'success');
+			var opt = {};
+			opt.element = btn || el;
+			opt.align = 'left';
+			opt.offsetY = btn ? -7 : -10;
+			opt.offsetX = -10;
+			opt.offsetWidth = btn ? 260 : 242;
+			opt.placeholder = '@(What did you do?)';
+			opt.position = 'top';
 
-				if (common.form === 'formdetail' && W.formdetail.id === response.id) {
-					formdetail.worked = response.worked;
-					UPD('formdetail.id');
-				}
+			var sent = false;
 
-				if (typeof(callback) === 'function')
-					callback();
-				else
-					exports.refresh();
-			});
+			opt.callback = opt.close = function(value) {
+
+				if (sent)
+					return;
+
+				sent = true;
+
+				exports.tapi('logwork_stop ERROR @showloading', { id: id, name: value }, function(response) {
+
+					SETTER('sounds/play', 'success');
+
+					if (common.form === 'formdetail' && W.formdetail.id === response.id) {
+						formdetail.worked = response.worked;
+						UPD('formdetail.id');
+					}
+					if (typeof(callback) === 'function')
+						callback();
+					else
+						exports.refresh();
+				});
+			};
+			SETTER('floatinginput/show', opt);
 		};
 
-		exports.toggle = function(el, note) {
+		exports.toggle = function(el, note, btn) {
 			var model = exports.model;
 			var id = ATTRD(el);
 			var timer = model.items.findItem(n => n.ticketid == id && (note ? n.note === note : true));
 			if (timer) {
-				exports.stop(timer.id, exports.refresh);
+				exports.stop(timer.id, exports.refresh, btn);
 			} else
 				exports.start(id, note);
 		};
