@@ -350,14 +350,13 @@ NEWSCHEMA('Tickets', function(schema) {
 			}
 
 			var userid = null;
-			var tmp;
+			var ticket = await DATA.read('tbl_ticket').fields('userid').id(params.id).where('isremoved=FALSE').error(404).promise($);
 
 			if (model.ispublic)
 				model.userid = [];
 			else if (model.userid) {
 				model.changed = 'user';
-				tmp = await DATA.read('tbl_ticket').fields('userid').id(params.id).where('isremoved=FALSE').error(404).promise($);
-				userid = tmp.userid;
+				userid = ticket.userid;
 			} else if (model.statusid)
 				model.changed = 'status';
 

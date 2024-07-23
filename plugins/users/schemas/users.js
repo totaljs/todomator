@@ -19,19 +19,22 @@ NEWACTION('Users/list', {
 	name: 'List of users',
 	permissions: 'users',
 	action: function($) {
-		DATA.find('tbl_user').fields('id,name,email,language,photo,isdisabled,sa,isinactive,isonline,dtlogged,notifications').where('isremoved=FALSE AND id<>\'bot\'').sort('isinactive').sort('name').callback($);
+		DATA.find('tbl_user').fields('id,name,email,search,language,photo,isdisabled,sa,isinactive,isonline,dtlogged,notifications').where('isremoved=FALSE AND id<>\'bot\'').sort('isinactive').sort('name').callback($);
 	}
 });
 
 NEWACTION('Users/create', {
 	name: 'Create user',
-	input: 'photo:String, language:Lower(2), *email:Email, password:String, *name:String, isdisabled:Boolean, sa:Boolean, notifications:Boolean, reference:String',
+	input: 'photo:String, language:Lower(2), *email:Email, search:String, password:String, *name:String, isdisabled:Boolean, sa:Boolean, notifications:Boolean, reference:String',
 	permissions: 'users',
 	action: function($, model) {
 		model.id = UID();
 		model.permissions = [];
 		model.password = model.password ? model.password.sha256(CONF.auth_secret) : null;
-		model.search = model.name.toSearch().replace(/\s/g, '');
+
+		if (!model.search)
+			model.search = model.name.slug().replace(/-/g, '');
+
 		DATA.insert('tbl_user', model).callback($.done(model.id));
 		MAIN.users.push(model.id);
 	}
@@ -40,14 +43,17 @@ NEWACTION('Users/create', {
 NEWACTION('Users/update', {
 	name: 'Update user',
 	params: '*id:UID',
-	input: 'photo:String, language:Lower(2), *email:Email, password:String, *name:String, sa:Boolean, isdisabled:Boolean, isinactive:Boolean, notifications:Boolean, reference:String',
+	input: 'photo:String, language:Lower(2), *email:Email, search:String, password:String, *name:String, sa:Boolean, isdisabled:Boolean, isinactive:Boolean, notifications:Boolean, reference:String',
 	permissions: 'users',
 	action: async function($, model) {
 
 		var params = $.params;
 
 		model.password = model.password ? model.password.sha256(CONF.auth_secret) : undefined;
-		model.search = model.name.toSearch().replace(/\s/g, '');
+
+		if (!model.search)
+			model.search = model.name.slug().replace(/-/g, '');
+
 		model.dtupdated = NOW;
 
 		await DATA.modify('tbl_user', model).id(params.id).where('isremoved=FALSE').error(404).callback($);
@@ -73,7 +79,7 @@ NEWACTION('Users/read', {
 	permissions: 'users',
 	action: function($, model) {
 		var params = $.params;
-		DATA.read('tbl_user', model).fields('id,language,photo,name,email,sa,isdisabled,isinactive,notifications').id(params.id).where('isremoved=FALSE').error(404).callback($);
+		DATA.read('tbl_user', model).fields('id,language,search,photo,name,email,sa,isdisabled,isinactive,notifications').id(params.id).where('isremoved=FALSE').error(404).callback($);
 	}
 });
 

@@ -1043,7 +1043,36 @@
 
 		exports.savemarkdown = function(val) {
 			var model = exports.model;
-			setTimeout2('savemarkdown', () => exports.tapi('tickets_update/{0}?clientid={1} ERROR'.format(model.id, common.clientid), { markdown: val }, NOOP), 500);
+			setTimeout2('savemarkdown', function() {
+
+				let users = [];
+				let data = {};
+				let changed = false;
+
+				data.markdown = val;
+
+				var inline = val.match(/@\w+/g);
+
+				if (inline) {
+					for (let m of inline) {
+						let usr = DEF.cl.user.findItem('search', m.substring(1));
+						if (usr) {
+							if (!model.userid.includes(usr.id)) {
+								model.userid.push(usr.id);
+								changed = true;
+							}
+						}
+					}
+				}
+
+				if (changed) {
+					data.userid = model.userid;
+					exports.upd('id');
+				}
+
+				exports.tapi('tickets_update/{0}?clientid={1} ERROR'.format(model.id, common.clientid), data, NOOP);
+
+			}, 500);
 		};
 
 		exports.notifications = function() {
