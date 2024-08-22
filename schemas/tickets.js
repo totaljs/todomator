@@ -25,6 +25,9 @@ NEWSCHEMA('Tickets', function(schema) {
 			case 'review':
 				builder.where("statusid='review' AND (isprivate=FALSE OR isprivate IS NULL)");
 				break;
+			case 'assigned':
+				builder.where("statusid IN ('pending','open','review') AND isprivate=FALSE AND NOT ({0}=ANY(a.userid))".format(PG_ESCAPE($.user.id)) + (query.date || query.date2 ? "" : " AND date<=timezone('utc'::text, now())"));
+				break;
 			case 'note':
 				builder.where("statusid='note' AND (isprivate=FALSE OR isprivate IS NULL)");
 				break;
@@ -49,8 +52,8 @@ NEWSCHEMA('Tickets', function(schema) {
 				break;
 		}
 
-		if (query.type === 'review')
-			builder.query('a.ownerid={1}'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
+		if (query.type === 'review' || query.type === 'assigned')
+			builder.query('a.ownerid={0}'.format(PG_ESCAPE($.user.id)));
 		else if (!$.user.admin || !query.admin)
 			builder.query('(a.ispublic=TRUE OR a.ownerid={1} OR a.userid && {0}::_text OR a.watcherid && {0}::_text)'.format(PG_ESCAPE('{' + $.user.id + '}'), PG_ESCAPE($.user.id)));
 
@@ -178,7 +181,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String',
+		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Number, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String',
 		public: true,
 		partial: true,
 		action: async function($, model) {
@@ -325,7 +328,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], watcherid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Boolean, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String',
+		input: 'userid:[String], watcherid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Number, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String',
 		params: '*id:String',
 		partial: true,
 		public: true,
@@ -346,7 +349,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			if (model.statusid) {
 				model.dtstatus = NOW;
 				if (model.statusid === 'closed')
-					model.ispriority = false;
+					model.ispriority = 0;
 			}
 
 			var userid = null;

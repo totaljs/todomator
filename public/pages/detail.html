@@ -1,75 +1,83 @@
 <style>
 
-	.CLASS .ui-box-icon { color: #68B25B; margin-right: 10px; }
-	.CLASS .ui-box-label { font-weight: normal; color: #A0A0A0; font-size: 13px; user-select: text; font-family: Menlo, Consolas, monospace; }
-	.CLASS .meta i { transform: scale(1); }
-	.CLASS .attachments { font-size: 12px; padding: 0; margin-top: 10px; }
-	.CLASS .attachments .file { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
-	.CLASS .keyvalue { min-height: 20px; }
-	.CLASS .keyvalue > div { padding: 3px 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-height: 18px }
-	.CLASS .keyvalue > span { padding-top: 2px; }
-	.CLASS .control { cursor: pointer; border-radius: var(--radius); }
-	.CLASS .control:hover { background-color: #FFF; }
-	.CLASS .options { float: right; }
-	.CLASS .title { margin-top: 0; }
-	.CLASS .note { border-radius:var(--radius); margin-top: 0; }
-	.CLASS .note > div { font-size: 14px; }
-	.CLASS .note p { margin-bottom: 0; }
-	.CLASS .options button { cursor: pointer; border: 1px solid #E0E0E0; border-left: 0; width: 30px; height: 26px; line-height: 24px; text-align: center; background-color: #F0F0F0; }
-	.CLASS .options button:hover { background-color: #FFF; }
-	.CLASS .options button:disabled { background-color: #F0F0F0 !important; cursor: not-allowed; }
-	.CLASS .options button:disabled i { color: #B0B0B0; }
-	.CLASS .options button:first-child { border-top-left-radius: var(--radius); border-bottom-left-radius: var(--radius); border-left: 1px solid #E0E0E0; }
-	.CLASS .options button:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
-	.CLASS .users-bg { padding: 10px; background-color: #F0F0F0; border-radius: var(--radius); line-height: 0; }
-	.CLASS .users-bg:hover { background-color: #F3F3F3; }
-	.CLASS .users { margin-top: 8px; }
-	.CLASS .users > div { position: relative; display: inline-block; font-size: 12px; padding-top: 2px; margin-left: 10px; color: #A0A0A0; vertical-align: middle; }
-	.CLASS .users > span { width: 32px; height: 32px; line-height: 32px; font-weight: bold; vertical-align: middle; }
-	.CLASS .users > img { width: 32px; height: 32px; vertical-align: middle; }
-	.CLASS .users i { font-size: 18px; padding-top: 2px; }
-	.CLASS .readers { position: absolute; top: 15px; left: -50px }
-	.CLASS .readers .users > img, .CLASS .readers .users > div { display: block; margin-bottom: 10px; }
-	.CLASS .readers .photo { border-color: #68B25B; border-width: 2px; }
-	.CLASS .tags i { cursor: pointer; }
-	.CLASS .tabmenu li { padding: 0 10px; }
-	.CLASS .badge { margin: 0 5px 5px 0; font-size: 12px; padding: 5px 8px; }
-	.CLASS .badge i { margin-right: 0; }
-	.CLASS .addtag { cursor: pointer; }
-	.CLASS .addtag:hover { opacity: 0.8; }
-	.CLASS .toolbar { height: 30px; }
-	.CLASS button.selected { background-color: var(--color); color: #FFF; }
-	.CLASS button.selected2 { background-color: #EC8632; color: #FFF; }
-	.CLASS button.selected3 { background-color: #E73323 !important; }
-	.CLASS button.bookmark i { margin: 0; }
-	.CLASS button.comments i { margin: 0; }
-	.CLASS button.comments ui-bind { position: absolute; background-color: #777; color: #FFF; font-size: 10px; width: 18px; height: 18px; text-align: center; line-height: 18px; z-index: 10; pointer-events: none; border-radius: 100px; margin: -10px 0 0 10px; }
-	.CLASS button.nm i { margin: 0; }
-	.CLASS button.timer { background-color: #68B25B; color: #FFF; }
-	.CLASS button.timer i { margin: 0; }
-	.CLASS .meta > h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
-	.CLASS .a-bk { color: #000; }
-	.CLASS .ui-iframepreview { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #E0E0E0; padding-left: 10px; padding-right: 10px; }
+	.~ID~ > nav { font-size: 14px; display: block; height: 50px; padding: 10px 0 0 10px; }
+	.~ID~ > nav button { border: 0; margin: 0; background-color: #F0F0F0; height: 28px; padding: 0 10px; color: #000; cursor: pointer; font-family: Arial; line-height: 23px; vertical-align: middle; outline: 0; font-size: 12px; text-decoration: none; transition: all 0.3s; float: left; border-left: 1px solid #E0E0E0; }
+	.~ID~ > nav button i { width: 12px; text-align: center; margin-right: 5px; }
+	.~ID~ > nav button:active { background-color: #D0D0D0; }
+	.~ID~ > nav button:disabled { background-color: #F5F5F5 !important; border-color: #E0E0E0 !important; color: silver !important; cursor: not-allowed; box-shadow: none; }
+	.~ID~ > nav button:disabled i { color: silver !important; }
+	.~ID~ > nav button:first-child { border-top-left-radius: var(--radius); border-bottom-left-radius: var(--radius); border-left: 0; }
+	.~ID~ > nav button:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+	.~ID~ .ui-box-icon { color: #68B25B; margin-right: 10px; }
+	.~ID~ .ui-box-label { font-weight: normal; color: #A0A0A0; font-size: 13px; user-select: text; font-family: Menlo, Consolas, monospace; }
+	.~ID~ .meta i { transform: scale(1); }
+	.~ID~ .attachments { font-size: 12px; padding: 0; margin-top: 10px; }
+	.~ID~ .attachments .file { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
+	.~ID~ .keyvalue { min-height: 20px; }
+	.~ID~ .keyvalue > div { padding: 3px 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-height: 18px }
+	.~ID~ .keyvalue > span { padding-top: 2px; }
+	.~ID~ .control { cursor: pointer; border-radius: var(--radius); }
+	.~ID~ .control:hover { background-color: #FFF; }
+	.~ID~ .options { float: right; }
+	.~ID~ .title { margin-top: 0; }
+	.~ID~ .note { border-radius:var(--radius); margin-top: 0; }
+	.~ID~ .note > div { font-size: 14px; }
+	.~ID~ .note p { margin-bottom: 0; }
+	.~ID~ .options button { cursor: pointer; border: 1px solid #E0E0E0; border-left: 0; width: 30px; height: 26px; line-height: 24px; text-align: center; background-color: #F0F0F0; }
+	.~ID~ .options button:hover { background-color: #FFF; }
+	.~ID~ .options button:disabled { background-color: #F0F0F0 !important; cursor: not-allowed; }
+	.~ID~ .options button:disabled i { color: #B0B0B0; }
+	.~ID~ .options button:first-child { border-top-left-radius: var(--radius); border-bottom-left-radius: var(--radius); border-left: 1px solid #E0E0E0; }
+	.~ID~ .options button:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+	.~ID~ .users-bg { padding: 10px; background-color: #F0F0F0; border-radius: var(--radius); line-height: 0; }
+	.~ID~ .users-bg:hover { background-color: #F3F3F3; }
+	.~ID~ .users { margin-top: 8px; }
+	.~ID~ .users > div { position: relative; display: inline-block; font-size: 12px; padding-top: 2px; margin-left: 10px; color: #A0A0A0; vertical-align: middle; }
+	.~ID~ .users > span { width: 32px; height: 32px; line-height: 32px; font-weight: bold; vertical-align: middle; }
+	.~ID~ .users > img { width: 32px; height: 32px; vertical-align: middle; }
+	.~ID~ .users i { font-size: 18px; padding-top: 2px; }
+	.~ID~ .readers { position: absolute; top: 15px; left: -50px; z-index: 100; }
+	.~ID~ .readers .users > img, .~ID~ .readers .users > div { display: block; margin-bottom: 10px; }
+	.~ID~ .readers .photo { border-color: #68B25B; border-width: 2px; }
+	.~ID~ .tags i { cursor: pointer; }
+	.~ID~ .tabmenu li { padding: 0 10px; }
+	.~ID~ .badge { margin: 0 5px 5px 0; font-size: 12px; padding: 5px 8px; }
+	.~ID~ .badge i { margin-right: 0; }
+	.~ID~ .addtag { cursor: pointer; }
+	.~ID~ .addtag:hover { opacity: 0.8; }
+	.~ID~ .toolbar { height: 30px; }
+	.~ID~ button.selected { background-color: var(--color); color: #FFF; }
+	.~ID~ button.selected2 { background-color: #EC8632; color: #FFF; }
+	.~ID~ button.selected3 { background-color: #E73323 !important; }
+	.~ID~ button.bookmark i { margin: 0; }
+	.~ID~ button.comments i { margin: 0; }
+	.~ID~ button.comments ui-bind { position: absolute; background-color: #777; color: #FFF; font-size: 10px; width: 18px; height: 18px; text-align: center; line-height: 18px; z-index: 10; pointer-events: none; border-radius: 100px; margin: -10px 0 0 10px; }
+	.~ID~ button.nm i { margin: 0; }
+	.~ID~ button.timer { background-color: #68B25B; color: #FFF; }
+	.~ID~ button.timer i { margin: 0; }
+	.~ID~ .meta > h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
+	.~ID~ .a-bk { color: #000; }
+	.~ID~ .ui-iframepreview { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #E0E0E0; padding-left: 10px; padding-right: 10px; }
 
-	.CLASS .relatedtickets .users { background-color: #fff; padding: 0; border-radius: 0; }
-	.CLASS .relatedtickets .users > img, .CLASS .relatedtickets .users > span { width: 20px; height: 20px; line-height: 20px; }
-	.CLASS .relatedtickets .users > span { line-height: 20px; font-size: 10px; }
-	.CLASS .relatedtickets { font-size: 12px; padding: 0; margin-top: 10px; }
-	.CLASS .relatedtickets .ticket { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
-	.CLASS .relatedtickets .ticket .status { width: 120px; display: inline-block; margin-right: 10px; padding-right: 10px; border-right: 1px solid #e0e0e0; }
-	.CLASS .badge-small, .badge.small { font-size: 10px; padding: 0px 3px 1px; }
-	.CLASS .relatedtickets .name { padding: 1px 4px; border-radius: var(--radius); }
-	.CLASS .relatedtickets .remicon { margin-top: 3px; }
-	.CLASS .relatedtickets .remicon i { transform: scale(1); }
-	.CLASS .addticketbtn { background-color: #e0e0e0; padding: 0 10px; border: 0; border-radius: var(--radius); color: #000; line-height: 23px; height: 28px; font-size: 12px; text-decoration: none; transition: all .3s; outline: 0; vertical-align: middle; margin-bottom: 15px; }
-	.CLASS .addticketbtn:hover { opacity: .7; }
-	.CLASS .addticketbtn i { width: 12px; text-align: center; margin-right: 5px; }
-	.CLASS .relatedtickets .ticket.child a { background-color: rgba(255,199,92,0.2); }
-	.CLASS .meta button { height: 30px; font-size: 12px; width: 120px; background: #FFF; }
-	.CLASS .mbody .markdown p { margin: 0 0 15px; padding-left: 0; padding-right: 0; font-size: 15px !important; color: #000; }
-	.CLASS .mbody .markdown { font-size: 15px; }
-	.CLASS .mbody .markdown pre { margin-top: 0; }
-	.CLASS .mbody .markdown-tasks > li { cursor: pointer; }
+	.~ID~ .relatedtickets .users { background-color: #fff; padding: 0; border-radius: 0; }
+	.~ID~ .relatedtickets .users > img, .~ID~ .relatedtickets .users > span { width: 20px; height: 20px; line-height: 20px; }
+	.~ID~ .relatedtickets .users > span { line-height: 20px; font-size: 10px; }
+	.~ID~ .relatedtickets { font-size: 12px; padding: 0; margin-top: 10px; }
+	.~ID~ .relatedtickets .ticket { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; border-radius: var(--radius); padding: 4px 5px; display: block; vertical-align: top; color: #777; margin-top: 2px; }
+	.~ID~ .relatedtickets .ticket .status { width: 120px; display: inline-block; margin-right: 10px; padding-right: 10px; border-right: 1px solid #e0e0e0; }
+	.~ID~ .badge-small, .badge.small { font-size: 10px; padding: 0px 3px 1px; }
+	.~ID~ .relatedtickets .name { padding: 1px 4px; border-radius: var(--radius); }
+	.~ID~ .relatedtickets .remicon { margin-top: 3px; }
+	.~ID~ .relatedtickets .remicon i { transform: scale(1); }
+	.~ID~ .addticketbtn { background-color: #e0e0e0; padding: 0 10px; border: 0; border-radius: var(--radius); color: #000; line-height: 23px; height: 28px; font-size: 12px; text-decoration: none; transition: all .3s; outline: 0; vertical-align: middle; margin-bottom: 15px; }
+	.~ID~ .addticketbtn:hover { opacity: .7; }
+	.~ID~ .addticketbtn i { width: 12px; text-align: center; margin-right: 5px; }
+	.~ID~ .relatedtickets .ticket.child a { background-color: rgba(255,199,92,0.2); }
+	.~ID~ .meta button { height: 30px; font-size: 12px; width: 120px; background: #FFF; }
+	.~ID~ .mbody .markdown p { margin: 0 0 15px; padding-left: 0; padding-right: 0; font-size: 15px !important; color: #000; }
+	.~ID~ .mbody .markdown { font-size: 15px; }
+	.~ID~ .mbody .markdown pre { margin-top: 0; }
+	.~ID~ .mbody .markdown-tasks > li { cursor: pointer; }
 
 	.inlinecomment .photo { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; }
 
@@ -85,8 +93,8 @@
 
 </style>
 
-<ui-component name="box" path="common.form" config="if:~PATH~;icon:ti ti-check-circle;reload:?/reload;scrollbar:1;submit:?/submit;width:800;hide:?/hide" class="hidden ~PATH~" plugin="~PATH~">
-	<nav class="hidden-xs">
+<ui-plugin path="CLASS formdetail" class="~ID~">
+	<nav>
 		<ui-bind path="?.bookmark.is" config=".selected" child=".bookmark">
 			<ui-bind path="?.istimer" config="macro:ticketdetailtimer" child=".timer">
 				<ui-bind path="?.isunread" config="macro:ticketnotificationsunread" child=".notifications">
@@ -95,12 +103,14 @@
 					<button class="exec bookmark" data-exec="?/bookmark" title="@(Toggle bookmark)"><i class="ti ti-bookmark"></i></button>
 					<button class="exec nm notifications" data-exec="?/notifications" title="@(Toggle notifications)"><i class="ti ti-bell"></i></button>
 					<button class="exec nm" data-exec="?/note" title="@(Note)"><i class="ti ti-lightbulb-on"></i></button>
+					<button class="exec nm" data-exec="?/addticket" title="@(Add related ticket)"><i class="ti ti-relations"></i></button>
 					<button class="exec" data-exec="?/options"><i class="ti ti-sliders-h"></i>@(Options)</button>
 				</ui-bind>
 			</ui-bind>
 		</ui-bind>
 	</nav>
 	<div>
+		<!--
 		<ui-bind path="?.readers" config="template" class="readers hidden-md">
 			<script type="text/html">
 				<div class="users">
@@ -108,163 +118,158 @@
 				</div>
 			</script>
 		</ui-bind>
+		-->
 		<ui-component name="extend" config="name:detail"></ui-component>
-		<ui-component name="viewbox" path="common.form" config="parent:auto;scrollbarshadow:1;scrollto:top" class="invisible">
-			<ui-bind path="?" config="show:value.ispriority && (value.statusid==='open'||value.statusid==='review'||value.statusid==='pending')" class="hidden block" style="border-top:4px solid #E8483F;height:4px"></ui-bind>
-			<div class="padding bg-smoke">
+		<ui-component name="viewbox" path="*form" config="parent:auto;margin:50;scrollbarshadow:1;scrollto:top" class="invisible">
+			<ui-component name="display">
+				<ui-bind path="?" config="show:value.ispriority && (value.statusid==='open'||value.statusid==='review'||value.statusid==='pending');exec:?/hihglightpriority;track:ispriority,statusid" class="hidden block" style="height:4px"></ui-bind>
+				<div class="padding bg-smoke">
 
-				<ui-bind path="?" config="track:id;template" class="meta">
-					<script type="text/html">
+					<ui-bind path="?" config="track:id;template" class="meta">
+						<script type="text/html">
 
-						{{ if value.note }}
-							<div class="markdown">
-								<section class="note">
-									<div class="b"><i class="ti ti-lightbulb-on mr5"></i>@(Note)</div>
-									{{ value.note | markdown2({ wrap: false }) }}
-								</section>
-							</div>
-						{{ fi }}
+							{{ if value.note }}
+								<div class="markdown">
+									<section class="note">
+										<div class="b"><i class="ti ti-lightbulb-on mr5"></i>@(Note)</div>
+										{{ value.note | markdown2({ wrap: false }) }}
+									</section>
+								</div>
+							{{ fi }}
 
-						{{ if value.statusid === 'pending' }}
-							<div class="toolbar m">
-								<button class="exec" data-exec="?/timer"><i class="ti ti-start red"></i>@(Start work)</button>
-							</div>
-						{{ else if value.statusid === 'open' }}
-							<div class="toolbar m">
-								<button class="exec" data-exec="?/forcestatus" data-id="review"><i class="ti ti-clean orange"></i>@(Review)</button>
-								{{ if value.iamowner }}
-								<button class="exec" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
-								{{ fi }}
-							</div>
-						{{ else if value.statusid === 'review' }}
-							<div class="toolbar m">
-								<button class="exec" data-exec="?/forcestatus" data-id="open"><i class="ti ti-history blue"></i>@(Re-open)</button>
-								<button class="exec b" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
-							</div>
-						{{ fi }}
+							{{ if value.statusid === 'pending' }}
+								<div class="toolbar m">
+									<button class="exec" data-exec="?/timer"><i class="ti ti-start red"></i>@(Start work)</button>
+								</div>
+							{{ else if value.statusid === 'open' }}
+								<div class="toolbar m">
+									<button class="exec" data-exec="?/forcestatus" data-id="review"><i class="ti ti-clean orange"></i>@(Review)</button>
+									{{ if value.iamowner }}
+									<button class="exec" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+									{{ fi }}
+								</div>
+							{{ else if value.statusid === 'review' }}
+								<div class="toolbar m">
+									<button class="exec" data-exec="?/forcestatus" data-id="open"><i class="ti ti-history blue"></i>@(Re-open)</button>
+									<button class="exec b" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+								</div>
+							{{ fi }}
 
-						<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
+							<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
 
-						{{ if !value.ispublic }}
-						<div style="height:90px">
-							<div class="grid-2">
-								<div class="m">
-									<div class="help nmt"><i class="ti ti-users-alt"></i>@(Users)</div>
-									<div class="exec users users-bg" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
-								</div>
-								<div class="m">
-									<div class="help nmt"><i class="ti ti-eye"></i>@(Watchers)</div>
-									<div class="exec users users-bg" data-exec="?/watcher" data-type="watcher"><span style="background:#A0A0A0" title="@(Watchers)"><i class="ti ti-users-alt"></i></span>{{ if value.watcherid && value.watcherid.length }}{{ value.watcherid | users(true) }}{{ else }}<div>@(Choose watchers)</div>{{ fi }}</div>
+							{{ if !value.ispublic }}
+							<div style="min-height:90px">
+								<div class="grid-2 grid-xs-1">
+									<div class="m">
+										<div class="help nmt"><i class="ti ti-users-alt"></i>@(Users)</div>
+										<div class="exec users users-bg" data-exec="?/user"><span style="background:#A0A0A0" title="@(Users)"><i class="ti ti-users-alt"></i></span>{{ if value.userid && value.userid.length }}{{ value.userid | users(true) }}{{ else }}<div>@(Choose users)</div>{{ fi }}</div>
+									</div>
+									<div class="m">
+										<div class="help nmt"><i class="ti ti-eye"></i>@(Watchers)</div>
+										<div class="exec users users-bg" data-exec="?/watcher" data-type="watcher"><span style="background:#A0A0A0" title="@(Watchers)"><i class="ti ti-users-alt"></i></span>{{ if value.watcherid && value.watcherid.length }}{{ value.watcherid | users(true) }}{{ else }}<div>@(Choose watchers)</div>{{ fi }}</div>
+									</div>
 								</div>
 							</div>
-						</div>
-						{{ fi }}
+							{{ fi }}
 
-						<div class="row">
-							<div class="col-md-6">
-								<div class="keyvalue">
-									<span>@(Status)</span>
-									<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
+							<div class="grid-2 grid-xs-1">
+								<div>
+									<div class="keyvalue">
+										<span>@(Status)</span>
+										<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
+									</div>
+									<div class="keyvalue">
+										<span>@(Folder) <i class="ti ti-external exec" data-exec="?/foldertasks"></i></span>
+										<div class="exec control" data-exec="?/folder"{{ if value.folder }} style="background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</div>
+									</div>
+									<div class="keyvalue">
+										<span>@(Owner)</span>
+										<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
+									</div>
+									<div class="keyvalue">
+										<span>@(Source)</span>
+										<div>{{ value.source | empty }}</div>
+									</div>
 								</div>
-								<div class="keyvalue">
-									<span>@(Folder) <i class="ti ti-external exec" data-exec="?/foldertasks"></i></span>
-									<div class="exec control" data-exec="?/folder"{{ if value.folder }} style="background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</div>
-								</div>
-								<div class="keyvalue">
-									<span>@(Owner)</span>
-									<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
-								</div>
-								<div class="keyvalue">
-									<span>@(Source)</span>
-									<div>{{ value.source | empty }}</div>
+								<div>
+									<div class="keyvalue">
+										<span><i class="ti ti-start green"></i>@(Date from)</span>
+										<div class="exec control" data-exec="?/date">{{ value.date | format }}</div>
+									</div>
+									<div class="keyvalue">
+										<span><i class="ti ti-calendar red"></i>@(Deadline)</span>
+										<div class="exec control" data-exec="?/deadline">{{ value.deadline | format('[date]') | empty }}</div>
+									</div>
+									<div class="keyvalue">
+										<span>@(Estimate)</span>
+										<div class="exec control" data-exec="?/estimate">{{ value.estimate | logwork }}</div>
+									</div>
+									<div class="keyvalue">
+										<span>@(Worked)</span>
+										<div class="exec control b" data-exec="?/logwork">{{ value.worked | logwork }} <span class="green">&bull;</span></div>
+									</div>
 								</div>
 							</div>
-							<div class="col-md-6">
-								<div class="keyvalue">
-									<span><i class="ti ti-start green"></i>@(Date from)</span>
-									<div class="exec control" data-exec="?/date">{{ value.date | format }}</div>
-								</div>
-								<div class="keyvalue">
-									<span><i class="ti ti-calendar red"></i>@(Deadline)</span>
-									<div class="exec control" data-exec="?/deadline">{{ value.deadline | format('[date]') | empty }}</div>
-								</div>
-								<div class="keyvalue">
-									<span>@(Estimate)</span>
-									<div class="exec control" data-exec="?/estimate">{{ value.estimate | logwork }}</div>
-								</div>
-								<div class="keyvalue">
-									<span>@(Worked)</span>
-									<div class="exec control b" data-exec="?/logwork">{{ value.worked | logwork }} <span class="green">&bull;</span></div>
+							<hr />
+							<div class="keyvalue">
+								<span style="padding-top:4px">@(Tags)</span>
+								<div class="tags">
+									{{ if value.tags }}
+										{{ foreach m in value.tags }}
+										<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
+										{{ end }}
+									{{ fi }}
+									<span class="badge badge-silver addtag exec" data-exec="?/addtag"><i class="ti ti-plus-circle green"></i>@(Add)</span>
 								</div>
 							</div>
-						</div>
-						<hr />
-						<div class="keyvalue">
-							<span style="padding-top:4px">@(Tags)</span>
-							<div class="tags">
-								{{ if value.tags }}
-									{{ foreach m in value.tags }}
-									<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
-									{{ end }}
-								{{ fi }}
-								<span class="badge badge-silver addtag exec" data-exec="?/addtag"><i class="ti ti-plus-circle green"></i>@(Add)</span>
-							</div>
-						</div>
 
-						{{ if value.attachments && value.attachments.length }}
-						<hr />
-						<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
-						<div class="attachments">
-							{{ foreach m in value.attachments }}
-							<a href="{{ m.url }}" target="_blank" class="file quickpreview"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11 ml10">{{ m.dtcreated | format('[date]') }}</span><span class="pull-right silver fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
+							{{ if value.attachments && value.attachments.length }}
+							<hr />
+							<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
+							<div class="attachments">
+								{{ foreach m in value.attachments }}
+								<a href="{{ m.url }}" target="_blank" class="file quickpreview"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11 ml10">{{ m.dtcreated | format('[date]') }}</span><span class="pull-right silver fs11">{{ m.size | filesize }}</span><i class="ti ti-file mr5"></i>{{ m.name }}</a>
+								{{ end }}
+							</div>
+							{{ fi }}
+						</script>
+					</ui-bind>
+
+					<hr style="margin-top:10px" />
+
+					<ui-bind path="?.links" config="template" class="relatedtickets">
+						<script type="text/html">
+							{{ foreach m in value }}
+							<div class="ticket {{ if m.type && m.type === 'child' }}child{{ fi }}" data-id="{{ m.id }}"><span class="status">{{ m.statusid | status }}</span><a href="#{{ m.id }}" class="name">{{ m.name }}</a><span class="users">{{ if m.userid && m.userid.length }}{{ m.userid | users(true) }}{{ fi }}</span><span class="remicon pull-right fs11 red ml5 exec" data-exec="?/remlink" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11" style="margin-top:3px">{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</span></div>
 							{{ end }}
-						</div>
-						{{ fi }}
-					</script>
-				</ui-bind>
+						</script>
+					</ui-bind>
 
-				<hr />
-				<div class="center">
-					<button class="addticketbtn exec" data-exec="?/addticket"><i class="t ti ti-search-plus"></i>@(Add a related ticket)</button>
 				</div>
-
-				<ui-bind path="?.links" config="template" class="relatedtickets">
-					<script type="text/html">
-						{{ foreach m in value }}
-						<div class="ticket {{ if m.type && m.type === 'child' }}child{{ fi }}" data-id="{{ m.id }}"><span class="status">{{ m.statusid | status }}</span><a href="#{{ m.id }}" class="name">{{ m.name }}</a><span class="users">{{ if m.userid && m.userid.length }}{{ m.userid | users(true) }}{{ fi }}</span><span class="remicon pull-right fs11 red ml5 exec" data-exec="?/remlink" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11" style="margin-top:3px">{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</span></div>
-						{{ end }}
-					</script>
-				</ui-bind>
-
-			</div>
-			<div class="padding">
-				<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
-				<div class="pull-right help exec" data-exec="?/edit" style="margin-right:10px"><i class="ti ti-pencil-alt"></i>@(Edit content)</div>
-				<div class="clearfix"></div>
-				<div class="ticketmarkdownbody">
-					<ui-component name="markdownbody" path="?.markdown" config="save:?/savemarkdown;$setter:?/inlinecomments;placeholder:@(Double-click to edit markdown);$assign:?|markdownbody" class="hidden invisible npt nmb"></ui-component>
+				<div style="padding:5px">
+					<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
+					<div class="pull-right help exec" data-exec="?/edit" style="margin-right:10px"><i class="ti ti-pencil-alt"></i>@(Edit content)</div>
+					<div class="clearfix"></div>
+					<div class="ticketmarkdownbody">
+						<ui-component name="markdownbody" path="?.markdown" config="minheightoffset:300;save:?/savemarkdown;$setter:?/inlinecomments;placeholder:@(Double-click to edit markdown);$assign:?|markdownbody" class="hidden invisible npt nmb"></ui-component>
+					</div>
 				</div>
-			</div>
+				<br />
+			</ui-component>
 		</ui-component>
 	</div>
-	<nav>
-		<button name="cancel" style="width:100%">@(Close)</button>
-	</nav>
-</ui-component>
-
+</ui-plugin>
 
 <script>
-	PLUGIN(function(exports) {
+	PLUGIN('CLASS formdetail', function(exports) {
 
 		var changed = false;
 		var cache = {};
-		var title = '';
-		var caller;
+		var caller = PLUGINS.tickets;
 		var ID;
 
-		exports.reload = function(com) {
+		exports.reload = function() {
 			var model = exports.model;
-			com.reconfigure({ title: 'ID: ' + model.id });
 			changed = false;
 			ID = model.id;
 			exports.refresh();
@@ -273,9 +278,6 @@
 			exports.refresh_timer();
 			exports.refresh_links();
 			exports.refresh_readers();
-			caller = exports.caller;
-			title = common.title;
-			SET('common.title', model.name);
 			model.iscomment && setTimeout(exports.comments, 1000);
 		};
 
@@ -289,7 +291,7 @@
 			var col = common.clients;
 			for (var key in col) {
 				var client = col[key];
-				if (client.ticketid === ID)
+				if (client.ticketid.includes(ID))
 					readers.push(client.userid);
 			}
 			exports.set('readers', readers);
@@ -308,8 +310,8 @@
 
 		exports.comments = function() {
 			var model = exports.model;
-			SET('formcomments', { id: model.id });
-			SET('common.form2', 'formcomments');
+			SET('formcomments', { id: model.id, plugin: exports });
+			SET('*form2', 'formcomments');
 		};
 
 		exports.addticket = function(el) {
@@ -382,7 +384,8 @@
 		exports.refresh_timer = function() {
 			var model = exports.model;
 			var timers = W.parttimers ? W.parttimers.items : EMPTYARRAY;
-			exports.set('istimer', timers.findIndex('ticketid', model.id) !== -1);
+			var is = !!timers.findItem('ticketid', model.id);
+			exports.set('istimer', is);
 		};
 
 		exports.bookmark = function() {
@@ -870,6 +873,7 @@
 		};
 
 		exports.options = function(el) {
+
 			var model = exports.model;
 			var opt = {};
 			opt.element = el;
@@ -879,7 +883,7 @@
 			// opt.items.push({ id: 'close', name: '@(Mark as solved)', classname: 'b', icon: 'ti ti-check-circle green' });
 			opt.items.push('-');
 			opt.items.push({ id: 'drop', name: '@(Upload attachment)', icon: 'ti ti-file' });
-			opt.items.push({ id: 'priority', name: '@(High priority)', icon: 'ti ti-arrow-up', selected: model.ispriority == true });
+			opt.items.push({ id: 'priority', name: '@(Priority)', icon: 'ti ti-arrow-up', children: [{ id: 'priority', value: 3, name: '@(High)', icon: 'ti ti-flag red', selected: model.ispriority === 3 }, { id: 'priority', value: 2, name: '@(Medium)', icon: 'ti ti-flag orange', selected: model.ispriority === 2 }, { id: 'priority', value: 1, name: '@(Low)', icon: 'ti ti-flag blue', selected: model.ispriority === 1 }, { id: 'priority', value: 0, name: '@(None)', icon: 'ti ti-flag', selected: model.ispriority === 0 }] });
 			opt.items.push({ id: 'billable', name: '@(Billable)', icon: 'ti ti-invoice', selected: model.isbillable == true });
 			opt.items.push({ id: 'public', name: '@(Open to all)', icon: 'ti ti-users', selected: model.ispublic == true });
 			opt.items.push('-');
@@ -887,6 +891,7 @@
 			opt.items.push({ id: 'clone', name: '@(Clone)', icon: 'ti ti-clone' });
 			opt.items.push('-');
 			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-remove red' });
+			opt.plugin = exports;
 
 			EMIT('detail_menu', opt);
 			EXEC('-menu/show', opt);
@@ -901,7 +906,7 @@
 					case 'public':
 						var data = {};
 						var key = 'is' + selected.id;
-						data[key] = !selected.selected;
+						data[key] = selected.id === 'priority' ? selected.value : !selected.selected;
 						exports.tapi('tickets_update/{0} ERROR'.format(model.id), data, function() {
 							model[key] = data[key];
 							exports.upd(key);
@@ -947,17 +952,6 @@
 			changed = true;
 		};
 
-		exports.hide = function() {
-			SET('common.title', title);
-			var model = exports.model;
-
-			if (location.hash.substring(1) === model.id)
-				location.hash = '';
-
-			exports.model.id = '';
-			changed && caller && caller.exec('refresh', true);
-		};
-
 		exports.icon = function(meta, callback) {
 			var opt = {};
 			opt.element = meta.element;
@@ -986,6 +980,7 @@
 			opt.items = [];
 			opt.x = e.pageX;
 			opt.y = e.pageY;
+			opt.plugin = exports;
 
 			if (e.target.classList.contains('plink')) {
 				opt.items.push({ id: 'editlink', name: '@(Edit link)', icon: 'ti ti-link' });
@@ -1129,15 +1124,13 @@
 			setTimeout2(exports.id + 'comments', prerendercomments, 100);
 		};
 
-		WATCH('parttimers.items', function() {
-			if (common.form === 'formdetail')
-				setTimeout(exports.refresh_timer, 500);
-		});
+		exports.hihglightpriority = function(value, path, el) {
+			var priority = DEF.cl.priority.findItem('id', value.ispriority);
+			if (priority)
+				el.css('border-top', '4px solid ' + priority.color);
+		};
 
-		ON('reload', function() {
-			if (common.form === exports.name)
-				exports.refresh();
-		});
+		setTimeout(exports.reload, 10);
 
 	});
 
@@ -1163,8 +1156,10 @@
 
 	$(document).on('click', '.commented', function(e) {
 		var el = $(this);
-		if (!el.closest('.markdown-tasks').length)
-			PLUGINS.formdetail.showinlinecomment(el.attrd('line'));
+		if (!el.closest('.markdown-tasks').length) {
+			var path = $(el).plugin();
+			EXEC(path + '/showinlinecomment', el.attrd('line'));
+		}
 		clearTimeout2('quickpreview');
 	});
 
@@ -1180,7 +1175,8 @@
 
 		if (t.classList.contains('commented')) {
 			var line = t.getAttribute('data-line');
-			setTimeout2('quickpreview', line => PLUGINS.formdetail.showinlinecomment(line), 1000, null, line);
+			var path = $(t).plugin();
+			setTimeout2('quickpreview', line => EXEC(path + '/showinlinecomment', line), 1000, null, line);
 			return;
 		}
 
@@ -1207,6 +1203,8 @@
 		var is = el.closest('.ticketmarkdownbody').length > 0;
 		if (!is)
 			return;
+
+		var plugin = el.plugin();
 
 		e.stopPropagation();
 		e.preventDefault();
@@ -1246,8 +1244,8 @@
 						var line = +el.attrd('line');
 						val = '> :ti ti-long-arrow-right: ' + el.text().replace(/\s{2,}/g, ' ').trim().replace(/\n/g, '<br>') + '\n' + val;
 						SETTER('sounds/play', 'badge');
-						TAPI('comments_create ERROR', { ticketid: formdetail.id, markdown: val, line: line }, function() {
-							var detail = PLUGINS.formdetail;
+						TAPI('comments_create ERROR', { ticketid: plugin.model.id, markdown: val, line: line }, function() {
+							var detail = plugin;
 							var model = detail.model;
 							detail.inc('comments', 1);
 							el.aclass('commented');
@@ -1255,7 +1253,7 @@
 							if (linecomment)
 								linecomment.count++;
 							else
-								PUSH('formdetail.linecomments', { line: line, count: 1 });
+								PUSH(plugin.path + '.linecomments', { line: line, count: 1 });
 						});
 					};
 					EXEC('-floatinginput/show', optinput);
@@ -1270,8 +1268,9 @@
 
 	});
 
-	WATCH('common.clients', function() {
-		EXEC('formdetail/refresh_readers');
+	WATCH('*clients', function() {
+		for (let m of common.windows)
+			EXEC(m.path + '/refresh_readers');
 	}, true);
 
 </script>

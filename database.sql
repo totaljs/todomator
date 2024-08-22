@@ -112,7 +112,7 @@ CREATE TABLE "public"."tbl_ticket" (
 	"estimate" int4 DEFAULT 0,
 	"ispublic" bool DEFAULT false,
 	"isbillable" bool DEFAULT true,
-	"ispriority" bool DEFAULT false,
+	"ispriority" int2 DEFAULT 0,
 	"isprocessed" bool DEFAULT false,
 	"isremoved" bool DEFAULT false,
 	"date" timestamp,

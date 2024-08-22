@@ -13,7 +13,7 @@ Todomator is a task manager app for small teams up to 30 members (recommended).
 
 ## Installation
 
-WARNING: Please do not execute `database.sql`, this script will use Todomator internally.
+WARNING: Please do not execute `database.sql`, this script will use Todomator internally. If you want to update an existing version of the Todomator, then check the database_*.sql update scripts.
 
 __Manual installation__:
 

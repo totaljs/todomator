@@ -35,7 +35,7 @@
 		<div class="grid-2">
 			<div class="m">
 				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW" class="m">@(Date)</ui-component>
-				<ui-component name="input" path="?.isdeadline" config="type:checkbox" default="true">@(Use as deadline)</ui-component>
+				<ui-component name="input" path="?.isdeadline" config="type:checkbox" default="false">@(Use as deadline)</ui-component>
 			</div>
 			<div class="m">
 				<ui-bind path="?.logwork" config="disabled">
@@ -48,7 +48,26 @@
 	<hr class="nmt" />
 
 	<div class="padding npt">
-		<ui-component name="input" path="?.ispriority" config="type:checkbox"><b class="red">@(High priority)</b></ui-component>
+
+		<ui-component name="choose" path="?.ispriority" config="selector:div;limit:1" class="iconmenu m" default="'0'">
+			<div data-id="3">
+				<i class="ti ti-flag red"></i>
+				<span>@(High)</span>
+			</div>
+			<div data-id="2">
+				<i class="ti ti-flag orange"></i>
+				<span>@(Medium)</span>
+			</div>
+			<div data-id="1">
+				<i class="ti ti-flag blue"></i>
+				<span>@(Low)</span>
+			</div>
+			<div data-id="0">
+				<i class="ti ti-flag"></i>
+				<span>@(None)</span>
+			</div>
+		</ui-component>
+
 		<ui-component name="input" path="?.isbillable" config="type:checkbox">@(Billable)</ui-component>
 		<ui-component name="input" path="?.logwork" config="type:checkbox">@(Start work)</ui-component>
 	</div>

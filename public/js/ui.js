@@ -125,7 +125,7 @@ function extendeditable(opt) {
 	};
 }
 
-COMPONENT('markdownbody', function(self, config, cls) {
+COMPONENT('markdownbody', 'minheightoffset:120', function(self, config, cls) {
 
 	var mbody = null;
 	var medit = null;
@@ -241,10 +241,12 @@ COMPONENT('markdownbody', function(self, config, cls) {
 
 	self.resizeforce = function() {
 		var scrollbar = self.closest('.ui-scrollbar');
-		var offset = self.element.offset();
-		var h = WH - scrollbar[0].scrollTop - offset.top - 120;
-		mbody.css('min-height', h);
-		medit.css('min-height', h);
+		if (scrollbar.length) {
+			var offset = self.element.offset();
+			var h = WH - scrollbar[0].scrollTop - offset.top - config.minheightoffset;
+			mbody.css('min-height', h);
+			medit.css('min-height', h);
+		}
 	};
 
 	self.setter = function(val, path, type) {

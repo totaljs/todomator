@@ -20,13 +20,14 @@
 <body>
 
 	<ui-component name="errorhandler"></ui-component>
-	<ui-component name="dropfiles" config="check:common/dropcheck;exec:common/dropsend" class="hidden">@(Drag &amp; Drop files here)</ui-component>
+	<ui-component name="dropfiles" config="check:*/dropcheck;exec:*/dropsend" class="hidden">@(Drag &amp; Drop files here)</ui-component>
 	<ui-component name="loading" config="style:2" class="hidden"></ui-component>
 	<ui-component name="locale" config="language:@{user.language}"></ui-component>
 	<ui-component name="exec"></ui-component>
 	<ui-component name="edit"></ui-component>
-	<ui-component name="title" path="common.title"></ui-component>
+	<ui-component name="title" path="*title"></ui-component>
 	<ui-component name="nativenotifications"></ui-component>
+	<ui-component name="windows" path="*windows"></ui-component>
 	<ui-component name="markdown"></ui-component>
 	<ui-component name="idletime" config="count:1"></ui-component>
 	<ui-component name="shortcuts"></ui-component>
@@ -56,7 +57,6 @@
 		<ui-component name="page" path="common.page" config="if:tickets;url:/pages/tickets.html;reload:?/reload" class="invisible hidden"></ui-component>
 	</div>
 
-	<ui-component name="importer" path="common.form" config="if:formdetail;url:/forms/detail.html"></ui-component>
 	<ui-component name="importer" path="common.form" config="if:formfolders;url:/forms/folders.html"></ui-component>
 	<ui-component name="importer" path="common.form2" config="if:formcreateticket;url:/forms/ticket.html"></ui-component>
 	<ui-component name="importer" path="common.form" config="if:formsettings;url:/forms/settings.html"></ui-component>
@@ -83,10 +83,13 @@
 		DEF.api = '@{CONF.$api}';
 		DEF.versionhtml = '@{CONF.version}';
 		DEF.languagehtml = '@{user.language}';
+		DEF.cl.priority = [{ id: 0, name: '@(None)', icon: 'ti ti-flag' }, { id: 1, name: '@(Low)', color: '#2E67C5', icon: 'ti ti-flag' }, { id: 2, name: '@(Medium)', color: '#EC8632', icon: 'ti ti-flag' }, { id: 3, name: '@(High)', color: '#E73323', icon: 'ti ti-flag' }];
 
+		common.detail = true;
 		common.clientid = GUID(5) + Date.now().toString(36);
 		common.plugins = PARSE('#pluginsdata');
 		common.name = document.title;
+		common.windows = [];
 
 		NAV.clientside('.jR');
 
@@ -150,11 +153,24 @@
 			var model = exports.model;
 
 			exports.dropcheck = function(e) {
-				return model.form === 'formdetail';
+				for (let m of common.windows) {
+					if (m.focused)
+						return true;
+				}
+				return false;
 			};
 
 			exports.dropsend = function(files) {
-				EXEC(model.form + '/drop', files);
+				var path = model.form || model.form2 || model.form3;
+				if (!path) {
+					for (let m of common.windows) {
+						if (m.focused) {
+							path = m.path;
+							break;
+						}
+					}
+				}
+				path && EXEC(path + '/drop', files);
 			};
 
 			exports.version = function() {
@@ -186,13 +202,10 @@
 
 		$(W).on('hashchange', function() {
 			var id = location.hash.substring(1);
-			if (id && id.length > 9) {
+			if (id && id.length > 9)
 				EXEC(true, 'tickets/preview', id);
-			} else {
+			else
 				SETTER('websocket/send', { TYPE: 'ticket', id: '' });
-				if (common.form === 'formdetail')
-					NUL('common.form');
-			}
 
 		});
 
@@ -249,8 +262,9 @@
 		};
 
 		ON('clipboardimage', function(file) {
-			if (common.form === 'formdetail')
-				EXEC('formdetail/drop', [file]);
+			var win = common.windows.findItem('focused', true);
+			if (win)
+				EXEC(win.path + '/drop', [file]);
 		});
 
 		SETTER(true, 'shortcuts/register', 'esc', function(e) {
@@ -265,12 +279,10 @@
 				return;
 			}
 
-			if (common.form === 'formdetail') {
-				W.focus();
-				EXEC('formdetail/hide');
-				NULL('common.form', 200);
+			if (common.windows.length) {
+				SETTER('windows/close', common.windows.last().id);
 			} else
-				NULL('common.form');
+				NULL('*form');
 
 		});
 
@@ -323,12 +335,22 @@
 			if (msg.TYPE === 'refresh') {
 
 				if (msg.markdown) {
-					if (common.form === 'formdetail' && msg.id === W.formdetail.id)
-						SET('formdetail.markdown', msg.markdown);
+					for (let m of common.windows) {
+						if (m.id === msg.id)
+							SET(m.path + '.markdown', msg.markdown);
+					}
 					return;
+				} else if (msg.id) {
+					let win = common.windows.findItem('id', msg.id);
+					if (win)
+						EXEC(win.path + '/reload');
 				}
 
-				EXEC('pagetickets/refresh');
+				if (!msg.id || tickets.data.items.findItem('id', msg.id))
+					EXEC('tickets/refresh', true);
+
+				if (msg.id)
+					EMIT('detail_refresh', msg.id);
 			}
 		});
 

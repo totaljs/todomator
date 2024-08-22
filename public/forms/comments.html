@@ -18,7 +18,7 @@
 	.CLASS .markdown-tasks > li { cursor: not-allowed; }
 </style>
 
-<ui-component name="box" path="common.form2" config="if:CLASS;width:680;icon:ti ti-comments;title:@(Comments);reload:?/reload;scrollbar:0" class="hidden CLASS" plugin="CLASS">
+<ui-component name="box" path="*form2" config="if:CLASS;width:680;icon:ti ti-comments;title:@(Comments);reload:?/reload;scrollbar:0" class="hidden CLASS" plugin="CLASS">
 	<div>
 		<ui-component name="viewbox" path="common.form2" config="parent:auto;scrollbarshadow:1;margin:45;$assign:?|viewbox;scrollto:bottom">
 			<ui-bind path="?.messages" config="template:figure" class="messages">
@@ -53,12 +53,13 @@
 
 		exports.reload = function(com) {
 
-			if (!common.form) {
-				NUL('common.form2');
+			if (!common.windows.length) {
+				NUL('*form2');
 				return;
 			}
 
-			caller = exports.caller;
+			var model = exports.model;
+			caller = model.plugin;
 			box = com;
 
 			if (ticketid) {
@@ -96,9 +97,7 @@
 		};
 
 		exports.refresh = function() {
-			var detail = W.formdetail;
-			if (!detail)
-				return;
+			var detail = caller.model;
 			ticketid = detail.id;
 			exports.tapi('comments/{id}'.args(detail), function(response) {
 				for (var m of response)
@@ -116,7 +115,7 @@
 		};
 
 		exports.on('message', function(msg) {
-			if (msg.TYPE === 'comment' && msg.id === ticketid && common.form === 'formdetail')
+			if (msg.TYPE === 'comment' && msg.id === ticketid)
 				exports.refresh();
 		});
 

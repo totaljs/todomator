@@ -7,6 +7,7 @@
 	.CLASS .folder a { color: #777; }
 	.CLASS .id { font-family: Menlo, Consolas, monospace; font-size: 11px; margin-right: 5px; color: #A0A0A0; }
 	.CLASS .status { width: 120px; float: left; border-right: 1px solid #E0E0E0; margin-right: 10px; padding: 3px 0 0 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #000; }
+	.CLASS .status:hover span { text-decoration: underline; }
 	.CLASS .user { position: relative; display: inline-block; }
 	.CLASS .user span { color: #FFF !important; background-color: #E0E0E0; width: 20px; height: 20px; line-height: 21px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
 	.CLASS .user img { width: 20px; height: 20px; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
@@ -70,14 +71,14 @@
 	.CLASS .calendar.selected { animation: ticketscalendarbutton 1s infinite forwards; }
 	.CLASS .calendar.selected i { color: #EA706B; }
 	.CLASS .searchbox .ui-searchinput-is { background-color: #FFE8E8; }
-	.CLASS .comments { font-size: 16px; font-weight: normal; margin: 0 0 0 5px; position: relative; display: inline-block; vertical-align: middle; color: rgba(0,0,0,0.4); }
+	.CLASS .comments { font-size: 16px; font-weight: normal; margin: 0; position: relative; display: inline-block; vertical-align: middle; color: rgba(0,0,0,0.4); border-left: 0; }
 	.CLASS .logo { float: left; margin: 20px 0 0 8px; }
 	.CLASS .logo img { width: 120px; }
 	.CLASS .flag { padding: 3px; border-radius: var(--radius); line-height: 12px; font-size: 11px; margin: 1px 5px 0 0; color: #FFF; vertical-align: middle; text-transform: uppercase; font-weight: bold; float: left; }
 	.CLASS .flag-asap { background-color: #E73323; }
 	.CLASS .flag-week { background-color: #CCCB41; }
 	.CLASS .flag-today { background-color: #EC8632; }
-	.CLASS .flag-priority { background-color: #EA706B; }
+	.CLASS .checkbox { width: 20px; height: 20px; border: 1px solid #E0E0E0; border-radius: var(--radius); background-color: #FFF; }
 
 	.CLASS .mobilemenu { display: none; z-index: 25; align-items: center; justify-content: center; width: 100%; height: 40px; position: absolute; left: 0; bottom: 0; background-color: #fff; border-top: 1px solid #e0e0e0; }
 	.CLASS .mobilemenu i { font-size: 20px; }
@@ -96,11 +97,22 @@
 		100% { transform: translate(0, 0); }
 	}
 
-	@media(max-width: 768px)  {
-		.CLASS .mobilemenu { display: flex; }
+	@media(max-width: 1200px) {
+		.CLASS .searchbox { max-width: 400px; }
+	}
+
+	@media(max-width: 980px) {
+		.CLASS .searchbox { max-width: 300px; margin-left: 50px; margin-right: 100px; }
+		.CLASS .date { display: none; }
+		.CLASS .worked { display: none; }
 		.CLASS .status { width: 30px; }
+		.CLASS .status span { display: none; }
+		.CLASS .period { display: none; }
+	}
+
+	@media(max-width: 980px) {
+		.CLASS .mobilemenu { display: flex; }
 		.CLASS .folder, .CLASS .worked, .CLASS .date { display: none; }
-		.CLASS .tickets { padding: 0 !important; }
 	}
 
 </style>
@@ -124,7 +136,6 @@
 	</header>
 
 	<ui-component name="navlayout" path="?.menu" config="parent:auto;width:200;margin:58" class="invisible">
-
 		<section style="background-color:#fff">
 			<ui-component name="aselected" config="selector:.item">
 				<div class="nav">
@@ -140,7 +151,7 @@
 				<div class="searchfolders">
 					<ui-component name="searchinput" path="%searchfolders" config="placeholder:@(Search in folders)"></ui-component>
 				</div>
-				<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;margin:248;marginxs:288;scrollbarshadow:0" class="invisible">
+				<ui-component name="viewbox" path="*page" config="parent:auto;scrollbar:1;margin:248;marginxs:288;scrollbarshadow:0" class="invisible">
 					<ui-component name="search" path="%searchfolders" config="selector:.item;datasource:#folder" class="nav folders">
 						<ui-bind path="#folder" config="template:.item;changes" child="nav">
 							<nav class="npb">
@@ -162,7 +173,7 @@
 		</section>
 
 		<main style="border-left:1px solid #E0E0E0">
-			<ui-component name="viewbox" path="common.page" config="parent:auto;scrollbar:1;marginxs:40;scrollbarshadow:1;$assign:?|viewbox">
+			<ui-component name="viewbox" path="*page" config="parent:window;scrollbar:1;marginxs:100;marginsm:100;margin:60;scrollbarshadow:1;$assign:?|viewbox">
 				<ui-component name="empty" path="?.data.items" config="parent:auto;icon:ti ti-check-circle green">
 
 					<script type="text/html">
@@ -175,14 +186,14 @@
 							<script type="text/html">
 								{{ foreach m in value }}
 									{{ if m.id }}
-										<figure data-id="{{ m.id }}" class="ticket {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority{{ fi }}{{ if m.isunread }} unread{{ fi }}{{ if m.foreign }} foreign{{ fi }}{{ if m.warn === 3 }} expired{{ fi }}">
+										<figure data-id="{{ m.id }}" class="ticket {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority-{{ m.ispriority }}{{ fi }}{{ if m.isunread }} unread{{ fi }}{{ if m.foreign }} foreign{{ fi }}{{ if m.warn === 3 }} expired{{ fi }}">
 											<section class="exec exec3{{ if m.statusid === 'open' }} open{{ fi }}" data-exec="?/preview" data-exec3="?/contextmenu">
 												<div class="date">{{ if !m.postponed && (m.statusid === 'closed' || !m.deadline) }}{{ m.date | time3 }}{{ else if m.deadline && !m.postponed }}<b class="red">{{ m.deadline | deadline }}<i class="ti ti-start ml5" title="@(Deadline)"></i></b>{{ else }}<b class="green">{{ m.date | format('[date]') }}<i class="ti ti-start green ml5"></i></b>{{ fi }}</div>
 												<div class="worked">{{ if m.estimate }}<span>{{ m.estimate | logwork }} /</span>{{ fi }}{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</div>
-												<div class="status">{{ m.statusid | status }}</div>
+												<div class="status exec" data-exec="?/status" data-prevent="true">{{ m.statusid | status }}</div>
 												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip"><i class="ti ti-external exec pull-right" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}"></i>{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													<span class="period" style="background-color:{{ {{ m.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ m.date | format('yyyy/MM') }}</span> <!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.ispriority }}<span class="flag flag-priority"><i class="ti ti-warning-alt mr5"></i>@(PRIORITY)</span>{{ fi }}{{ m.warn | warn }}{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													<span class="period" style="background-color:{{ {{ m.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ m.date | format('yyyy/MM') }}</span> <!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.priority }}<span class="flag flag-priority" style="background-color:{{ m.priority.color }}"><i class="ti ti-flag"></i></span>{{ fi }}<!-- {{ m.warn | warn }} -->{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.ispublic }}
 													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
@@ -205,18 +216,18 @@
 							<div class="toolbar" style="margin:20px 0 20px 10px">
 								<button class="exec b" data-exec="?/next"><i class="ti ti-spinner"></i>@(Load more)</button>
 							</div>
-							<br class="visible-xs" />
+							<br class="visible-sm" />
 						</ui-bind>
 					</div>
 				</ui-component>
 			</ui-component>
 		</main>
-
 	</ui-component>
 
 	<div class="mobilemenu exec" data-exec="?/mobilemenu">
 		<i class="ti ti-navicon"></i>
 	</div>
+
 </ui-plugin>
 
 <ui-import config="url:/parts/timers.html;path:parttimers"></ui-import>
@@ -349,52 +360,8 @@
 					m.assigned = m.statusid !== 'note' && m.ownerid === user.id && (m.userid.length > 1 || (m.userid.length && !m.userid.includes(user.id)));
 					m.isclosed = m.statusid === 'closed';
 					m.version = model.version; // for reseting of cache
+					m.priority = m.ispriority ? DEF.cl.priority.findItem('id', m.ispriority) : null;
 				}
-
-				var status = { closed: 1, note: 1 };
-
-				// Expiration
-				response.sort(function(a, b) {
-					if (status[a.statusid] || status[b.statusid])
-						return 0;
-					if (a.statusid !== b.statusid)
-						return 0;
-					if (a.ispriority)
-						return -1;
-					if (b.ispriority)
-						return 0;
-					if (!a.warn && b.warn)
-						return 1;
-					if (a.warn && !b.warn)
-						return -1;
-					if (a.warn > b.warn)
-						return -1;
-					return 0;
-				});
-
-				// Assigned
-				response.sort(function(a, b) {
-
-					if (status[a.statusid] || status[b.statusid])
-						return 0;
-
-					if ((a.statusid !== b.statusid) || (a.isclosed || b.isclosed) || (a.assigned && b.assigned))
-						return 0;
-
-					if (a.ispriority)
-						return -1;
-
-					if (b.ispriority)
-						return 0;
-
-					if (a.assigned)
-						return 1;
-
-					if (b.assigned)
-						return -1;
-
-					return 0;
-				});
 
 				if (skip) {
 					if (response.length) {
@@ -419,6 +386,18 @@
 			REDIRECT('/{0}/'.format(id));
 		};
 
+		exports.status = function(el) {
+			var id = ATTRD(el);
+			var opt = {};
+			opt.align = 'left';
+			opt.element = el;
+			opt.items = CLONE(DEF.cl.status);
+			opt.callback = function(selected) {
+				exports.tapi('tickets_update/{0} ERROR'.format(id), { statusid: selected.id }, NOOP);
+			};
+			EXEC('-menu/show', opt);
+		};
+
 		exports.preview = function(el, e) {
 
 			if (e && e.target.tagName === 'A')
@@ -426,14 +405,8 @@
 
 			var id = ATTRD(el);
 
-			if (common.form === 'formdetail' && W.formdetail.id === id)
+			if (common.windows.findItem('id', id))
 				return;
-
-			if (common.form === 'formdetail') {
-				NUL('common.form');
-				setTimeout(() => exports.preview(el), 800);
-				return;
-			}
 
 			// Removes unread class
 			exports.element.find('.tickets .ticket[data-id="{0}"]'.format(id)).rclass('unread').find('.unreadicon').remove();
@@ -456,9 +429,59 @@
 
 				response.iamowner = response.ownerid === user.id;
 				location.hash = id;
-				SET('formdetail @hideloading', response);
-				SET('common.form', 'formdetail');
-				SETTER('websocket/send', { TYPE: 'ticket', id: id });
+				response.visible = true;
+
+				var path = 'ticket' + id;
+				var win = {};
+
+				win.id = id;
+				win.title = '@(Ticket:) ' + id;
+
+				var ww = (WW / 2.5) >> 0;
+				var wh = (WH / 1.5) >> 0;
+
+				if (WW > 750 && ww < 700)
+					ww = 700;
+
+				if (ww < 300)
+					ww = WW - 20;
+
+				if (wh < 300)
+					wh = WH - 20;
+
+				var ismobile = WW < 900;
+				win.offset = { x: ismobile ? 0 : (((WW / 2) - (ww / 2)) >> 0), y: ismobile ? 60 : ((WH / 100) * 10 >> 0), width: ismobile ? WW : ww, height: ismobile ? (WH - 82) : wh, minwidth: 300, minheight: 300 };
+				win.path = path;
+				win.destroy = function() {
+					if (location.hash.substring(1) === id)
+						location.hash = '';
+				};
+
+				if (!ismobile) {
+					for (let m of common.windows) {
+						if (m.offset.x === win.offset.x) {
+							win.offset.x += 50;
+							win.offset.y += 50;
+						}
+					}
+				}
+
+				win.focus = function() {
+					for (let m of common.windows)
+						m.focused = false;
+					win.focused = true;
+				};
+
+				win.html = '<ui-import config="url:/pages/detail.html;path:{0};init:init:{0}/reload;id:formdetail"></ui-import>'.format(path);
+				win.actions = { move: ismobile ? false : true, close: true, hide: false, minimize: false, resize: true, menu: false, maximize: ismobile ? false : true, autosave: false };
+
+				SET(win.path + ' @hideloading', response);
+				PUSH('*windows', win);
+
+				let ids = [];
+				for (let m of common.windows)
+					ids.push(m.id);
+				SETTER('websocket/send', { TYPE: 'ticket', id: ids });
 			});
 		};
 
@@ -574,7 +597,7 @@
 			date.setMinutes(0);
 
 			SET('formcreateticket @default', { folderid: folderid, userid: [], isbillable: folder ? folder.isbillable : true, date: date });
-			SET('common.form2', 'formcreateticket');
+			SET('*form2', 'formcreateticket');
 		};
 
 		exports.detail = function(id, callback) {

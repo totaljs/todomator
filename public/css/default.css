@@ -1,4 +1,4 @@
-html,body { overflow: hidden; margin: 0; padding: 0; color: #303030; }
+html,body { overflow: hidden; margin: 0; padding: 0; color: #303030; overscroll-behavior: none; }
 
 .ui-dark h2 { border-bottom-color: #404040; color: #FFF; }
 
@@ -175,3 +175,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .nav nav > a i { font-size: 15px; }
 .ui-box-title > nav button i { font-size: 14px; width: 14px; }
 .ui-input-checkbox span { line-height: 17px; }
+
+.ui-windows-item { box-shadow: 0 0 30px rgba(0,0,0,0.3); z-index: 20; }
+.jc-xs .ui-windows-body { border-left: 0; border-bottom: 0; border-right: 0; }
+.jc-xs .ui-windows-title { border-left: 0; border-top: 0; border-right: 0; }
