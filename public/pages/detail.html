@@ -121,7 +121,7 @@
 		-->
 		<ui-component name="extend" config="name:detail"></ui-component>
 		<ui-component name="viewbox" path="*form" config="parent:auto;margin:50;scrollbarshadow:1;scrollto:top" class="invisible">
-			<ui-component name="display">
+			<ui-component name="display" config="xs:500">
 				<ui-bind path="?" config="show:value.ispriority && (value.statusid==='open'||value.statusid==='review'||value.statusid==='pending');exec:?/hihglightpriority;track:ispriority,statusid" class="hidden block" style="height:4px"></ui-bind>
 				<div class="padding bg-smoke">
 
