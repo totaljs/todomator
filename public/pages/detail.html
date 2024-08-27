@@ -235,10 +235,11 @@
 						</script>
 					</ui-bind>
 
-					<hr style="margin-top:10px" />
-
 					<ui-bind path="?.links" config="template" class="relatedtickets">
 						<script type="text/html">
+							{{ if value && value.length }}
+							<hr style="margin-top:20px" />
+							{{ fi }}
 							{{ foreach m in value }}
 							<div class="ticket {{ if m.type && m.type === 'child' }}child{{ fi }}" data-id="{{ m.id }}"><span class="status">{{ m.statusid | status }}</span><a href="#{{ m.id }}" class="name">{{ m.name }}</a><span class="users">{{ if m.userid && m.userid.length }}{{ m.userid | users(true) }}{{ fi }}</span><span class="remicon pull-right fs11 red ml5 exec" data-exec="?/remlink" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11" style="margin-top:3px">{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</span></div>
 							{{ end }}
