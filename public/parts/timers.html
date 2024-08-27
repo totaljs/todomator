@@ -76,7 +76,7 @@
 					SETTER('sounds/play', 'success');
 
 					for (let m of common.windows) {
-						if (m.id === id) {
+						if (m.id === response.id) {
 							let plugin = PLUGINS[m.path];
 							let model = plugin.model;
 							model.worked = response.worked;
