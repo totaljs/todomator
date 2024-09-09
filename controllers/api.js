@@ -122,7 +122,7 @@ async function upload($) {
 	}
 }
 
-const Download = { jpeg: 1, jpg: 1, png: 1, gif: 1, ico: 1, webp: 1, mp4: 1, mov: 1, mpeg: 1, svg: 1 };
+const Download = { jpeg: 1, jpg: 1, png: 1, gif: 1, ico: 1, webp: 1, mp4: 1, mov: 1, mpeg: 1, svg: 1, pdf: 1 };
 
 function files($) {
 	var filename = $.split[1];
