@@ -7,7 +7,7 @@ CONF.version = '1.4';
 ON('ready', function() {
 
 	// Componentator
-	COMPONENTATOR('ui', 'exec,menu,input,columns,loading,idletime,extend,icons,floatingbox,autofill,rawinput,errorhandler,edit,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,validate,selection,searchinput,selected,box,tangular-color,tangular-filesize,intranetcss,notify,tabmenu,ready,iframepreview,preview,datepicker,paper,timepicker,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,markdown,sounds,clipboardimage,shortcuts,faviconunread,filesaver,info,inlinedatepicker,uibuilder,uistudio,prompt,display,windows,choose', true);
+	COMPONENTATOR('ui', 'exec,input,menu,columns,loading,idletime,extend,icons,floatingbox,autofill,rawinput,errorhandler,edit,floatinginput,approve,colorpicker,virtualwire,breadcrumb,page,importer,navlayout,viewbox,enter,validate,selection,searchinput,selected,box,tangular-color,tangular-filesize,intranetcss,notify,tabmenu,ready,iframepreview,preview,datepicker,paper,timepicker,dropfiles,locale,empty,miniform,fileuploader,websocket,search,title,aselected,directory,clipboard,nativenotifications,markdown,sounds,clipboardimage,shortcuts,faviconunread,filesaver,info,inlinedatepicker,uibuilder,uistudio,prompt,display,windows,choose', true);
 
 });
 
