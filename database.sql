@@ -203,6 +203,7 @@ CREATE TABLE "public"."tbl_ticket_unread" (
 	"iscomment" bool DEFAULT false,
 	"isunread" bool DEFAULT true,
 	"isprocessed" bool DEFAULT false,
+	"dtupdated" timestamp,
 	CONSTRAINT "tbl_ticket_unread_ticketid_fkey" FOREIGN KEY ("ticketid") REFERENCES "public"."tbl_ticket"("id") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT "tbl_ticket_unread_userid_fkey" FOREIGN KEY ("userid") REFERENCES "public"."tbl_user"("id") ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT "tbl_ticket_unread_notificationid_fkey" FOREIGN KEY ("notificationid") REFERENCES "public"."tbl_notification"("id") ON DELETE CASCADE ON UPDATE CASCADE,

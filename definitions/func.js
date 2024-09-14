@@ -32,9 +32,11 @@ FUNC.unread = async function(ticketid, userid, typeid, value, unread) {
 	}
 
 	if (unread) {
+		NOW = new Date();
 		var udata = {};
 		udata.isunread = true;
 		udata.isprocessed = false;
+		udata.dtupdated = NOW;
 		if (typeid === 'comment')
 			udata.iscomment = true;
 		await DATA.modify('tbl_ticket_unread', udata, true).id(ticketid + userid).insert(unreadinsert, { userid: userid, ticketid: ticketid }).promise();

@@ -64,9 +64,9 @@ NEWACTION('Users/update', {
 		if (model.isinactive) {
 			// Remove from all tickets
 			DATA.query('UPDATE tbl_ticket SET userid=ARRAY_REMOVE(userid, \'{0}\') WHERE isremoved=FALSE AND userid && \'{{0}}\'::_text'.format(params.id));
-			DATA.remove('tbl_ticket_bookmark').where('userid', params.id);
-			DATA.remove('tbl_ticket_unread').where('userid', params.id);
-			DATA.remove('tbl_notification').where('userid', params.id);
+			// DATA.remove('tbl_ticket_bookmark').where('userid', params.id);
+			// DATA.remove('tbl_ticket_unread').where('userid', params.id);
+			// DATA.remove('tbl_notification').where('userid', params.id);
 			DATA.remove('tbl_session').where('userid', params.id);
 		}
 

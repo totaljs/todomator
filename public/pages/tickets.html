@@ -84,6 +84,14 @@
 	.CLASS .mobilemenu i { font-size: 20px; }
 	.CLASS main { position: relative; z-index: 1; }
 
+	.CLASS .fadeout { color: #A0A0A0; }
+	.CLASS .fadeout .period { background-color: rgba(0,0,0,0.06) !important; }
+	.CLASS .fadeout .date { color: #A0A0A0; }
+	.CLASS .fadeout .folder > div { background-color: rgba(0,0,0,0.06) !important; }
+	.CLASS .fadeout .date .red { color: #A0A0A0 !important; }
+	.CLASS .fadeout .status { color: #A0A0A0; }
+	.CLASS .fadeout .status > i { color: #A0A0A0 !important; }
+
 	@keyframes ticketscalendarbutton {
 		0% { transform: scale(1); }
 		50% { transform: scale(1.15); }
@@ -186,14 +194,14 @@
 							<script type="text/html">
 								{{ foreach m in value }}
 									{{ if m.id }}
-										<figure data-id="{{ m.id }}" class="ticket {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority-{{ m.ispriority }}{{ fi }}{{ if m.isunread }} unread{{ fi }}{{ if m.foreign }} foreign{{ fi }}{{ if m.warn === 3 }} expired{{ fi }}">
-											<section class="exec exec3{{ if m.statusid === 'open' }} open{{ fi }}" data-exec="?/preview" data-exec3="?/contextmenu">
+										<figure data-id="{{ m.id }}" class="ticket{{ if m.isread }} fadeout{{ else }} {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority-{{ m.ispriority }}{{ fi }}{{ if m.isunread }} unread{{ fi }}{{ if m.foreign }} foreign{{ fi }}{{ if !m.isunread && m.warn === 3 }} expired{{ fi }}{{ fi }}">
+											<section class="exec exec3{{ if !m.isread && m.statusid === 'open' }} open{{ fi }}" data-exec="?/preview" data-exec3="?/contextmenu">
 												<div class="date">{{ if !m.postponed && (m.statusid === 'closed' || !m.deadline) }}{{ m.date | time3 }}{{ else if m.deadline && !m.postponed }}<b class="red">{{ m.deadline | deadline }}<i class="ti ti-start ml5" title="@(Deadline)"></i></b>{{ else }}<b class="green">{{ m.date | format('[date]') }}<i class="ti ti-start green ml5"></i></b>{{ fi }}</div>
 												<div class="worked">{{ if m.estimate }}<span>{{ m.estimate | logwork }} /</span>{{ fi }}{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</div>
 												<div class="status exec" data-exec="?/status" data-prevent="true">{{ m.statusid | status }}</div>
 												<div class="folder">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip"><i class="ti ti-external exec pull-right" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}"></i>{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
 												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													<span class="period" style="background-color:{{ {{ m.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ m.date | format('yyyy/MM') }}</span> <!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.priority }}<span class="flag flag-priority" style="background-color:{{ m.priority.color }}"><i class="ti ti-flag"></i></span>{{ fi }}<!-- {{ m.warn | warn }} -->{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													<span class="period" style="background-color:{{ {{ m.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ m.date | format('yyyy/MM') }}</span> <!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.priority }}<span class="flag flag-priority" style="background-color:{{ m.priority.color }}"><i class="ti ti-flag"></i></span>{{ fi }}<!-- {{ m.warn | warn }} -->{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' || m.isread }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.ispublic }}
 													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
@@ -344,6 +352,9 @@
 				var week = +NOW.add(day + ' days').format('yyyyMMdd');
 
 				for (var m of response) {
+
+					if (filter.type === 'unread' && !m.isunread)
+						m.isread = true;
 
 					if ((m.statusid === 'pending' || m.statusid === 'open') && m.deadline) {
 						var tmp = +m.deadline.format('yyyyMMdd');

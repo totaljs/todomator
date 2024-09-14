@@ -38,7 +38,8 @@ NEWSCHEMA('Tickets', function(schema) {
 				builder.where('a.id IN (SELECT x.ticketid FROM tbl_ticket_bookmark x WHERE x.userid=\'{0}\')'.format($.user.id));
 				break;
 			case 'unread':
-				builder.where("b.isunread=TRUE AND date<=timezone('utc'::text, now())");
+				// builder.where("isunread=TRUE");
+				// builder.where("date<=timezone('utc'::text, now())");
 				break;
 			case 'open':
 				builder.where("statusid IN ('pending','open') AND (isprivate=FALSE OR isprivate IS NULL)" + (query.date || query.date2 ? "" : " AND date<=timezone('utc'::text, now())"));
@@ -111,13 +112,20 @@ NEWSCHEMA('Tickets', function(schema) {
 		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number, notin:String',
 		public: true,
 		action: function($) {
-			var builder = DATA.query('SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,b.isunread,b.iscomment FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
+			var builder = DATA.query('SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,COALESCE(b.isunread, false) AS isunread,b.iscomment,b.dtupdated AS dtunread FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
 			var query = $.query;
 			makefilter($, builder);
-			builder.sort('sortindex');
-			builder.sort('ispriority', true);
-			builder.sort('date', true);
-			builder.sort('a.dtcreated', true);
+
+			if (query.type === 'unread') {
+				builder.sort('isunread', true);
+				builder.sort('dtupdated', true);
+			} else {
+				builder.sort('sortindex');
+				builder.sort('ispriority', true);
+				builder.sort('date', true);
+				builder.sort('a.dtcreated', true);
+			}
+
 			builder.skip(query.skip || 0);
 			builder.take(query.limit || 10);
 			builder.callback($);
