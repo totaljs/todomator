@@ -422,6 +422,10 @@
 			SETTER('notify/success', '@(Copied)');
 		});
 
+		ON('ready', function() {
+			setTimeout(() => $(W).trigger('resize'), 1000);
+		});
+
 		ON('service', function() {
 			$('.ta-time').each(function() {
 				var el = $(this);

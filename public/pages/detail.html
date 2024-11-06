@@ -814,7 +814,8 @@
 			EXEC('-approve/show', '@(Are you sure you want to remove selected ticket?)', '"ti ti-remove" @(Remove)', function() {
 				exports.tapi('tickets_remove/{0} ERROR'.format(model.id), function() {
 					changed = false;
-					NUL('common.form');
+					console.log(model.id);
+					SETTER('windows/close', model.id);
 					REDIRECT(NAV.url);
 				});
 			});
