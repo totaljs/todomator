@@ -112,7 +112,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .bb { border-bottom: 1px solid #E0E0E0; }
 .ui-dark .bb { border-bottom: 1px solid #333; }
 
-.ui-windows-item { box-shadow: 2px 4px 20px rgba(0,0,0,0.2); }
+.ui-windows-item { box-shadow: 2px 4px 20px rgba(0,0,0,0.15); }
 .ui-edit-window { z-index: 20; }
 
 .users > span, .users > img { margin-left: 5px; padding: 0; border-radius: 100px; line-height: 22px; color: #FFF; width: 22px; height: 22px; text-align: center; display: inline-block; }

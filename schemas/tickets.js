@@ -1,4 +1,4 @@
-const Returning = 'id,ownerid,userid,parentid,reference,folderid,statusid,source,name,estimate,worked,ispriority,isbillable,ispublic,tags,deadline,attachments,dtcreated,dtupdated,dtparent,callback';
+const Returning = 'id,ownerid,userid,parentid,reference,folderid,statusid,source,name,estimate,worked,ispriority,isbillable,ispublic,tags,deadline,attachments,dtcreated,dtupdated,dtparent,callback,attrs';
 
 NEWSCHEMA('Tickets', function(schema) {
 
@@ -38,8 +38,7 @@ NEWSCHEMA('Tickets', function(schema) {
 				builder.where('a.id IN (SELECT x.ticketid FROM tbl_ticket_bookmark x WHERE x.userid=\'{0}\')'.format($.user.id));
 				break;
 			case 'unread':
-				// builder.where("isunread=TRUE");
-				// builder.where("date<=timezone('utc'::text, now())");
+				builder.where("isunread=TRUE AND date<=timezone('utc'::text, now())");
 				break;
 			case 'open':
 				builder.where("statusid IN ('pending','open') AND (isprivate=FALSE OR isprivate IS NULL)" + (query.date || query.date2 ? "" : " AND date<=timezone('utc'::text, now())"));
@@ -189,7 +188,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Number, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String',
+		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Number, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String, attrs:Object',
 		public: true,
 		partial: true,
 		action: async function($, model) {
@@ -202,6 +201,9 @@ NEWSCHEMA('Tickets', function(schema) {
 				if (model.isbillable == null && folder.isbillable)
 					model.isbillable = true;
 			}
+
+			if (model.attrs)
+				model.attrs = JSON.stringify(model.attrs);
 
 			if (model.date) {
 				model.date.setHours(0);
@@ -336,7 +338,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], watcherid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Number, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String',
+		input: 'userid:[String], watcherid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Number, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String, attrs:Object',
 		params: '*id:String',
 		partial: true,
 		public: true,
@@ -347,6 +349,9 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			model.changed = 'metadata';
 			model.dtupdated = NOW;
+
+			if (model.attrs != null)
+				model.attrs = JSON.stringify(model.attrs);
 
 			if (model.name)
 				model.search = model.name.toSearch();
@@ -741,8 +746,17 @@ NEWSCHEMA('Tickets', function(schema) {
 		name: 'Reset unread state',
 		params: '*id:String',
 		action: function($) {
+
 			var params = $.params;
-			DATA.modify('tbl_ticket_unread', { isunread: false }).id(params.id + $.user.id).error(404).callback($.done(params.id));
+			var builder = DATA.modify('tbl_ticket_unread', { isunread: false });
+
+			if (params.id !== 'all') {
+				builder.id(params.id + $.user.id);
+				builder.error(404);
+			} else
+				builder.where('userid', $.user.id);
+
+			builder.callback($.done(params.id));
 		}
 	});
 

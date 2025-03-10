@@ -104,6 +104,7 @@ CREATE TABLE "public"."tbl_ticket" (
 	"html" text,
 	"markdown" text,
 	"attachments" json,
+	"attrs" json,
 	"note" text,
 	"callback" text,
 	"tags" _text,
@@ -297,7 +298,8 @@ CREATE VIEW view_ticket AS
 		a.source,
 		a.markdown,
 		a.ispublic,
-		a.note
+		a.note,
+		a.attrs
 	FROM tbl_ticket a
 	LEFT JOIN tbl_folder b ON b.id = a.folderid
 	LEFT JOIN cl_status d ON d.id = a.statusid

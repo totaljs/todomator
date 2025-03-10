@@ -104,6 +104,7 @@
 					<button class="exec nm notifications" data-exec="?/notifications" title="@(Toggle notifications)"><i class="ti ti-bell"></i></button>
 					<button class="exec nm" data-exec="?/note" title="@(Note)"><i class="ti ti-lightbulb-on"></i></button>
 					<button class="exec nm" data-exec="?/addticket" title="@(Add related ticket)"><i class="ti ti-relations"></i></button>
+					<button class="exec nm" data-exec="?/logs" title="@(Logs)"><i class="ti ti-history"></i></button>
 					<button class="exec" data-exec="?/options"><i class="ti ti-sliders-h"></i>@(Options)</button>
 				</ui-bind>
 			</ui-bind>
@@ -248,6 +249,12 @@
 
 				</div>
 				<div style="padding:5px">
+
+					<ui-bind path="?.attrs" config="show:value" class="block m padding npb fs12">
+						<div class="b"><i class="ti ti-variables mr5"></i>@(Custom attributes:)</div>
+						<ui-component name="objecteditor" path="?.attrs" config="exec:?/attrs" class="mt10"></ui-component>
+					</ui-bind>
+
 					<ui-component name="iframepreview" path="?.html" class="hidden"></ui-component>
 					<div class="pull-right help exec" data-exec="?/edit" style="margin-right:10px"><i class="ti ti-pencil-alt"></i>@(Edit content)</div>
 					<div class="clearfix"></div>
@@ -814,7 +821,6 @@
 			EXEC('-approve/show', '@(Are you sure you want to remove selected ticket?)', '"ti ti-remove" @(Remove)', function() {
 				exports.tapi('tickets_remove/{0} ERROR'.format(model.id), function() {
 					changed = false;
-					console.log(model.id);
 					SETTER('windows/close', model.id);
 					REDIRECT(NAV.url);
 				});
@@ -1130,6 +1136,11 @@
 			var priority = DEF.cl.priority.findItem('id', value.ispriority);
 			if (priority)
 				el.css('border-top', '4px solid ' + priority.color);
+		};
+
+		exports.attrs = function() {
+			var model = exports.model;
+			exports.tapi('tickets_update/' + model.id + ' ERROR', { attrs: model.attrs });
 		};
 
 		setTimeout(exports.reload, 10);

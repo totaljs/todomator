@@ -190,6 +190,11 @@
 					</script>
 
 					<div class="padding tickets">
+
+						<ui-bind path="?" config="show:value.type==='unread' && value.data && value.data.items.length;track:data.items,type" class="block fs12" style="margin-bottom:10px">
+							<span class="exec link" data-exec="?/reset"><i class="ti ti-eye mr5"></i>@(Set as read)</span>
+						</ui-bind>
+
 						<ui-bind path="?.data.items" config="template:figure;changes" class="listing block">
 							<script type="text/html">
 								{{ foreach m in value }}
@@ -619,6 +624,14 @@
 			skip = 0;
 			setTimeout2(exports.name + 'search', exports.refresh, 150);
 		});
+
+		exports.reset = function() {
+			TAPI('tickets_reset/all ERROR', function() {
+				skip = 0;
+				exports.set('data.items', []);
+				exports.counter(true);
+			});
+		};
 
 		exports.counter = function(force) {
 			var tkey = exports.name + 'counter';
