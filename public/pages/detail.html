@@ -1140,7 +1140,7 @@
 
 		exports.attrs = function() {
 			var model = exports.model;
-			exports.tapi('tickets_update/' + model.id + ' ERROR', { attrs: model.attrs });
+			exports.tapi('tickets_update/' + model.id, { attrs: model.attrs }, NOOP);
 		};
 
 		setTimeout(exports.reload, 10);

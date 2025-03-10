@@ -334,24 +334,31 @@
 
 			if (msg.TYPE === 'refresh') {
 
-				if (msg.markdown) {
-					for (let m of common.windows) {
-						if (m.id === msg.id)
-							SET(m.path + '.markdown', msg.markdown);
+				if (msg.clientid !== common.clientid) {
+					if (msg.markdown) {
+						for (let m of common.windows) {
+							if (m.id === msg.id)
+								SET(m.path + '.markdown', msg.markdown);
+						}
+						return;
+					} else if (msg.id) {
+						let win = common.windows.findItem('id', msg.id);
+						if (win)
+							EXEC(win.path + '/reload');
 					}
-					return;
-				} else if (msg.id) {
-					let win = common.windows.findItem('id', msg.id);
-					if (win)
-						EXEC(win.path + '/reload');
+
+					if (msg.id)
+						EMIT('detail_refresh', msg.id);
 				}
 
 				if (!msg.id || tickets.data.items.findItem('id', msg.id))
 					EXEC('tickets/refresh', true);
 
-				if (msg.id)
-					EMIT('detail_refresh', msg.id);
 			}
+		});
+
+		ON('request', function(opt) {
+			opt.headers['x-clientid'] = common.clientid;
 		});
 
 		// Component: Tangular-Time

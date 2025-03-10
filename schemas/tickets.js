@@ -346,6 +346,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			var params = $.params;
 			var keys = Object.keys(model);
+			var clientid = $.query.clientid || $.headers['x-clientid'];
 
 			model.changed = 'metadata';
 			model.dtupdated = NOW;
@@ -421,8 +422,9 @@ NEWSCHEMA('Tickets', function(schema) {
 				DATA.remove('tbl_ticket_unread').where('ticketid', params.id).notin('userid', notin);
 			}
 
-			var filter = client => client.query.id !== $.query.clientid && (response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id));
-			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown }, filter);
+			var filter = client => response.ispublic || response.ownerid === client.user.id || response.userid.includes(client.user.id);
+
+			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown, clientid: clientid }, filter);
 
 			response.type = 'udpate';
 			EMIT('ticket', response);
