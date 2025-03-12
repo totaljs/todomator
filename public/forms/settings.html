@@ -7,6 +7,9 @@
 					<ui-component name="input" path="?.minlogtime" config="required:1;type:number2">@(Min. log time)</ui-component>
 					<div class="help">@(In minutes)</div>
 				</div>
+				<div class="m">
+					<ui-component name="input" path="?.color" config="type:color">@(Color)</ui-component>
+				</div>
 			</div>
 		</div>
 		<div class="padding">
@@ -43,6 +46,8 @@
 		exports.submit = function(hide) {
 			var model = exports.form;
 			exports.tapi('settings_save ERROR', model, function() {
+				if (model.color)
+					APPEARANCE({ color: model.color });
 				SETTER('notify/success', '@(Settings have been updated successfully)');
 				hide();
 			});

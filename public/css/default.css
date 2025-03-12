@@ -1,5 +1,9 @@
 html,body { overflow: hidden; margin: 0; padding: 0; color: #303030; overscroll-behavior: none; }
 
+:root {
+	--radius: 5px;
+}
+
 .ui-dark h2 { border-bottom-color: #404040; color: #FFF; }
 
 .color { color: var(--color); }
@@ -32,12 +36,10 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .header button:disabled i, .toolbar button:disabled i { color: silver !important; }
 .header button.right, .toolbar button.right { float: right; margin-left: 5px; margin-right: 0; text-align: center; }
 
-.mainmenu { height: 30px; width: 30px; float: left; font-size: 16px; line-height: 30px; text-align: center; margin: 15px 10px 0 15px; cursor: pointer; background-color: #F0F0F0; border-radius: var(--radius); }
-.mainmenu:hover { background-color: #F5F5F5; }
+.mainmenu { height: 32px; width: 32px; float: left; font-size: 18px; line-height: 30px; text-align: center; margin: 14px 10px 0 15px; cursor: pointer; background-color: var(--color); border-radius: var(--radius); color: #FFF; }
+.mainmenu i { transform: scale(1); }
 
 .ui-dark .mainmenu { background-color: #404040; }
-.ui-dark .mainmenu:hover { background-color: #454545; }
-
 .ui-dark .header button, .ui-dark  .toolbar button { background: linear-gradient(#323232,#353535); border-color: #404040; color: #FFF; }
 .ui-dark .header button:hover, .ui-dark  .toolbar button:hover { border-top-color: #505050; border-bottom-color: #505050; }
 .ui-dark .header button:disabled, .ui-dark .toolbar button:disabled { color: #505050; border-color: #353535 !important; background: linear-gradient(#202020,#252525); }
@@ -179,3 +181,4 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .ui-windows-item { box-shadow: 0 0 30px rgba(0,0,0,0.3); z-index: 20; }
 .jc-xs .ui-windows-body { border-left: 0; border-bottom: 0; border-right: 0; }
 .jc-xs .ui-windows-title { border-left: 0; border-top: 0; border-right: 0; }
+.ui-miniform-title > i { margin-top: 13px; }

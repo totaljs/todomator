@@ -5,7 +5,7 @@ NEWACTION('Settings/read', {
 		if (UNAUTHORIZED($, 'settings'))
 			return;
 
-		var keys = 'name,token,minlogtime,backup'.split(',');
+		var keys = 'name,token,minlogtime,backup,color'.split(',');
 		var obj = {};
 
 		for (var m of keys)
@@ -17,7 +17,7 @@ NEWACTION('Settings/read', {
 
 NEWACTION('Settings/save', {
 	name: 'Save settings',
-	input: 'name:String, token:String, minlogtime:Number, backup:Boolean',
+	input: 'name:String, token:String, minlogtime:Number, backup:Boolean, color:Color',
 	action: async function($, model) {
 
 		if (UNAUTHORIZED($, 'settings'))
