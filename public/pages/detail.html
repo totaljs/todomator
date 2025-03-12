@@ -159,6 +159,11 @@
 									<button class="exec" data-exec="?/forcestatus" data-id="open"><i class="ti ti-history blue"></i>@(Re-open)</button>
 									<button class="exec b" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
 								</div>
+							{{ else if value.statusid === 'postponed' }}
+								<div class="toolbar m">
+									<button class="exec" data-exec="?/forcestatus" data-id="open"><i class="ti ti-history blue"></i>@(Re-open)</button>
+									<button class="exec b" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+								</div>
 							{{ fi }}
 
 							<div>
