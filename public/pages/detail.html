@@ -1,7 +1,7 @@
 <style>
 
-	.~ID~ > nav { font-size: 14px; display: block; height: 50px; padding: 10px 0 0 10px; border-bottom: 1px solid #E0E0E0; }
-	.~ID~ > nav button { border: 0; margin: 0; background-color: #F0F0F0; height: 28px; padding: 0 10px; color: #000; cursor: pointer; font-family: Arial; line-height: 23px; vertical-align: middle; outline: 0; font-size: 12px; text-decoration: none; transition: all 0.3s; float: left; border-left: 1px solid #E0E0E0; }
+	.~ID~ > nav { font-size: 14px; display: block; height: 60px; padding: 14px 0 0 15px; border-bottom: 1px solid #E0E0E0; }
+	.~ID~ > nav button { border: 0; margin: 0; background-color: #F0F0F0; height: 30px; padding: 0 10px; color: #000; cursor: pointer; font-family: Arial; line-height: 23px; vertical-align: middle; outline: 0; font-size: 13px; text-decoration: none; transition: all 0.3s; float: left; border-left: 1px solid #E0E0E0; }
 	.~ID~ > nav button i { width: 12px; text-align: center; margin-right: 5px; }
 	.~ID~ > nav button:active { background-color: #D0D0D0; }
 	.~ID~ > nav button:disabled { background-color: #F5F5F5 !important; border-color: #E0E0E0 !important; color: silver !important; cursor: not-allowed; box-shadow: none; }
@@ -19,7 +19,7 @@
 	.~ID~ .control { cursor: pointer; border-radius: var(--radius); }
 	.~ID~ .control:hover { background-color: #FFF; }
 	.~ID~ .options { float: right; }
-	.~ID~ .title { margin-top: 0; }
+	.~ID~ .title { margin-top: 5px; }
 	.~ID~ .note { border-radius:var(--radius); margin-top: 0; }
 	.~ID~ .note > div { font-size: 14px; }
 	.~ID~ .note p { margin-bottom: 0; }
@@ -121,7 +121,7 @@
 		</ui-bind>
 		-->
 		<ui-component name="extend" config="name:detail"></ui-component>
-		<ui-component name="viewbox" path="*form" config="parent:auto;margin:50;scrollbarshadow:1;scrollto:top" class="invisible">
+		<ui-component name="viewbox" path="*form" config="parent:auto;margin:60;scrollbarshadow:1;scrollto:top" class="invisible">
 			<ui-component name="display" config="xs:500">
 				<ui-bind path="?" config="show:value.ispriority && (value.statusid==='open'||value.statusid==='review'||value.statusid==='pending');exec:?/hihglightpriority;track:ispriority,statusid" class="hidden block" style="height:4px"></ui-bind>
 				<div class="padding bg-smoke">
@@ -141,11 +141,16 @@
 							{{ if value.statusid === 'pending' }}
 								<div class="toolbar m">
 									<button class="exec" data-exec="?/timer"><i class="ti ti-start red"></i>@(Start work)</button>
+									{{ if value.iamowner || value.ownerid === 'bot' }}
+									<button class="exec" data-exec="?/forcestatus" data-id="postponed"><i class="ti ti-history" style="color:#8C42F6"></i>@(Postpone)</button>
+									<button class="exec" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
+									{{ fi }}
 								</div>
 							{{ else if value.statusid === 'open' }}
 								<div class="toolbar m">
 									<button class="exec" data-exec="?/forcestatus" data-id="review"><i class="ti ti-clean orange"></i>@(Review)</button>
-									{{ if value.iamowner }}
+									{{ if value.iamowner || value.ownerid === 'bot' }}
+									<button class="exec" data-exec="?/forcestatus" data-id="postponed"><i class="ti ti-history" style="color:#8C42F6"></i>@(Postpone)</button>
 									<button class="exec" data-exec="?/forcestatus" data-id="closed"><i class="ti ti-check-circle green"></i>@(Close)</button>
 									{{ fi }}
 								</div>
@@ -156,6 +161,9 @@
 								</div>
 							{{ fi }}
 
+							<div>
+								<span class="exec control" data-exec="?/folder"{{ if value.folder }} style="padding:4px 8px;border-radius:var(--radius);background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</span>
+							</div>
 							<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
 
 							{{ if !value.ispublic }}

@@ -36,7 +36,7 @@ header .toolbar button { height: 26px; font-size: 12px; }
 .header button:disabled i, .toolbar button:disabled i { color: silver !important; }
 .header button.right, .toolbar button.right { float: right; margin-left: 5px; margin-right: 0; text-align: center; }
 
-.mainmenu { height: 32px; width: 32px; float: left; font-size: 18px; line-height: 30px; text-align: center; margin: 14px 10px 0 15px; cursor: pointer; background-color: var(--color); border-radius: var(--radius); color: #FFF; }
+.mainmenu { height: 32px; width: 32px; float: left; font-size: 18px; line-height: 31px; text-align: center; margin: 14px 10px 0 15px; cursor: pointer; background-color: var(--color); border-radius: var(--radius); color: #FFF; }
 .mainmenu i { transform: scale(1); }
 
 .ui-dark .mainmenu { background-color: #404040; }
