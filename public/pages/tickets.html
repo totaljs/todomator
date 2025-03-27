@@ -471,6 +471,7 @@
 				win.destroy = function() {
 					if (location.hash.substring(1) === id)
 						location.hash = '';
+					FREE();
 				};
 
 				if (!ismobile) {
