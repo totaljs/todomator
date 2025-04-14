@@ -373,7 +373,8 @@
 
 					m.foreign = m.ownerid !== user.id && (m.userid.length ? m.userid.includes(user.id) != true : true);
 					m.postponed = (+m.date.format('yyyyMMdd')) > dt;
-					m.assigned = m.statusid !== 'note' && m.ownerid === user.id && (m.userid.length > 1 || (m.userid.length && !m.userid.includes(user.id)));
+					// m.assigned = m.statusid !== 'note' && m.ownerid === user.id && (m.userid.length > 1 || (m.userid.length && !m.userid.includes(user.id)));
+					m.assigned = m.statusid !== 'note' && m.userid.includes(user.id);
 					m.isclosed = m.statusid === 'closed';
 					m.version = model.version; // for reseting of cache
 					m.priority = m.ispriority ? DEF.cl.priority.findItem('id', m.ispriority) : null;
