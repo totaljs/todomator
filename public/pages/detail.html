@@ -46,7 +46,7 @@
 	.~ID~ .addtag { cursor: pointer; }
 	.~ID~ .addtag:hover { opacity: 0.8; }
 	.~ID~ .toolbar { height: 30px; }
-	.~ID~ button.selected { background-color: var(--color); color: #FFF; }
+	.~ID~ button.selected { background-color: #d7d7d7; }
 	.~ID~ button.selected2 { background-color: #EC8632; color: #FFF; }
 	.~ID~ button.selected3 { background-color: #E73323 !important; }
 	.~ID~ button.bookmark i { margin: 0; }
@@ -55,10 +55,11 @@
 	.~ID~ button.nm i { margin: 0; }
 	.~ID~ button.timer { background-color: #68B25B; color: #FFF; }
 	.~ID~ button.timer i { margin: 0; }
-	.~ID~ .meta > h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; }
+	.~ID~ .meta > h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; line-height: 18px; }
 	.~ID~ .a-bk { color: #000; }
 	.~ID~ .ui-iframepreview { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #E0E0E0; padding-left: 10px; padding-right: 10px; }
 
+	.~ID~ .relatedtickets { margin-top: 10px; display: block; }
 	.~ID~ .relatedtickets .users { background-color: #fff; padding: 0; border-radius: 0; }
 	.~ID~ .relatedtickets .users > img, .~ID~ .relatedtickets .users > span { width: 20px; height: 20px; line-height: 20px; }
 	.~ID~ .relatedtickets .users > span { line-height: 20px; font-size: 10px; }
@@ -103,7 +104,6 @@
 					<button class="exec bookmark" data-exec="?/bookmark" title="@(Toggle bookmark)"><i class="ti ti-bookmark"></i></button>
 					<button class="exec nm notifications" data-exec="?/notifications" title="@(Toggle notifications)"><i class="ti ti-bell"></i></button>
 					<button class="exec nm" data-exec="?/note" title="@(Note)"><i class="ti ti-lightbulb-on"></i></button>
-					<button class="exec nm" data-exec="?/addticket" title="@(Add related ticket)"><i class="ti ti-relations"></i></button>
 					<button class="exec nm" data-exec="?/logs" title="@(Logs)"><i class="ti ti-history"></i></button>
 					<button class="exec" data-exec="?/options"><i class="ti ti-sliders-h"></i>@(Options)</button>
 				</ui-bind>
@@ -249,16 +249,22 @@
 						</script>
 					</ui-bind>
 
+					<hr style="margin-top:20px" />
+					<div class="b"><i class="ti ti-relations mr5"></i>@(Related tickets)</div>
 					<ui-bind path="?.links" config="template" class="relatedtickets">
 						<script type="text/html">
 							{{ if value && value.length }}
-							<hr style="margin-top:20px" />
 							{{ fi }}
 							{{ foreach m in value }}
 							<div class="ticket {{ if m.type && m.type === 'child' }}child{{ fi }}" data-id="{{ m.id }}"><span class="status">{{ m.statusid | status }}</span><a href="#{{ m.id }}" class="name">{{ m.name }}</a><span class="users">{{ if m.userid && m.userid.length }}{{ m.userid | users(true) }}{{ fi }}</span><span class="remicon pull-right fs11 red ml5 exec" data-exec="?/remlink" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right fs11" style="margin-top:3px">{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</span></div>
 							{{ end }}
 						</script>
 					</ui-bind>
+
+					<div class="toolbar mt10">
+						<button class="exec" data-exec="?/createsubtask"><i class="ti ti-plus-circle mr5"></i>@(Create)</button>
+						<button class="exec" data-exec="?/addticket"><i class="ti ti-relations mr5"></i>@(Assign)</button>
+					</div>
 
 				</div>
 				<div style="padding:5px">
@@ -319,14 +325,10 @@
 		};
 
 		exports.remlink = function(el) {
-
 			var model = exports.model;
 			var id = ATTRD(el);
 			var link = model.links.findItem('id', id);
-
-			SETTER('approve/show', '@(Are you sure you want to remove related ticket?)', '"ti ti-trash" @(Remove)', function() {
-				exports.tapi('tickets_link/' + model.id + ' ERROR', { ticketid: link.type === 'child' ? model.id : id, type: 'rem' }, exports.refresh_links);
-			});
+			exports.tapi('tickets_link/' + model.id + ' ERROR', { ticketid: link.type === 'child' ? model.id : id, type: 'rem' }, exports.refresh_links);
 		};
 
 		exports.comments = function() {
@@ -341,7 +343,6 @@
 			var opt = {};
 
 			opt.element = el;
-			opt.align = 'center';
 			opt.offsetY = 40;
 			opt.minwidth = 770;
 			opt.height = 250;
@@ -384,6 +385,19 @@
 				});
 			};
 			SETTER('directory/show', opt);
+		};
+
+		exports.createsubtask = function() {
+			var model = exports.model;
+			var data = {};
+			data.folderid = model.folderid;
+			data.ownerid = user.id;
+			data.date = new Date();
+			data.worked = '10';
+			data.parentid = model.id;
+			data.callback = exports.refresh_links;
+			SET('formcreateticket @default', data);
+			SET('*form2', 'formcreateticket');
 		};
 
 		exports.refresh_paper = function() {
@@ -898,7 +912,7 @@
 			var model = exports.model;
 			var opt = {};
 			opt.element = el;
-			opt.align = 'right';
+			opt.align = 'left';
 			opt.items = [];
 			opt.items.push({ id: 'logwork', name: '@(Log work)', class: 'b', icon: 'ti ti-clock' });
 			// opt.items.push({ id: 'close', name: '@(Mark as solved)', classname: 'b', icon: 'ti ti-check-circle green' });
