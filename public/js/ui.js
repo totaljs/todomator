@@ -275,6 +275,7 @@ COMPONENT('markdownbody', 'minheightoffset:120', function(self, config, cls) {
 		if (md) {
 
 			for (var m of md[0].children) {
+
 				m.mdhash = HASH(m.innerHTML).toString(36);
 
 				if (m.tagName === 'UL') {
