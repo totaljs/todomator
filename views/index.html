@@ -129,6 +129,15 @@
 		CLINIT('cl', function(next) {
 			TAPI('cl', function(response) {
 
+				let makehtml = function(arr) {
+					for (let m of arr)
+						m.html = '<i class="{0} mr5" style="color:{1}"></i>{2}'.format(m.icon || 'ti ti-folder', m.color || 'inherit', m.name);
+				};
+
+				makehtml(response.folder);
+				makehtml(response.status);
+				makehtml(response.tag);
+
 				for (var item of response.user) {
 					var tmp = item.name.split(' ');
 					item.initials = tmp[0].substring(0, 1) + (tmp[1] ? tmp[1].substring(0, 1) : '');
