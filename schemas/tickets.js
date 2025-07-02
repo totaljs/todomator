@@ -188,7 +188,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Number, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String, attrs:Object',
+		input: '*name:String, parentid:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Number, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String, attrs:Object',
 		public: true,
 		partial: true,
 		action: async function($, model) {
@@ -770,7 +770,7 @@ NEWSCHEMA('Tickets', function(schema) {
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'review\' AND ownerid={0} AND isremoved=FALSE) AS review,';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'pending\' AND (ispublic=TRUE OR ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS pending,';
 			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE statusid=\'open\' AND (ispublic=TRUE OR ownerid={0} OR {0}=ANY(userid)) AND isremoved=FALSE AND date<=timezone(\'utc\'::text, now()) AND folderid IN (SELECT x.id FROM tbl_folder x WHERE x.isprivate=FALSE AND x.isarchived=FALSE)) AS open,';
-			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE {0}=ANY(userid) AND isremoved=FALSE AND id IN (SELECT x.ticketid FROM tbl_ticket_bookmark x WHERE x.userid={0})) AS bookmarks';
+			builder += '(SELECT COUNT(1)::int4 FROM tbl_ticket WHERE ({0}=ANY(userid) OR ownerid={0} OR {0}=ANY(watcherid)) AND isremoved=FALSE AND id IN (SELECT x.ticketid FROM tbl_ticket_bookmark x WHERE x.userid={0})) AS bookmarks';
 			DATA.query(builder.format(PG_ESCAPE($.user.id))).first().callback($);
 		}
 	});
