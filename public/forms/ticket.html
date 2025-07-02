@@ -1,55 +1,12 @@
-<ui-component name="miniform" path="common.form2" config="if:CLASS;width:440;title:@(Create ticket);autofocus:1;submit:?/submit;icon:ti ti-check-square;enter:true;zindex:30" plugin="CLASS" class="hidden invisible">
-	<div class="padding npb">
+<style>
+	.CLASS .iconmenu > div.selected { background-color: #FFFED1; }
+	.CLASS .iconmenu > div { background-color: #FFF; }
+</style>
 
-		<div class="m">
-			<ui-component name="input" path="?.name" config="type:string;required:1;maxlength:250;placeholder:@(Enter a ticket name)">@(Name)</ui-component>
-		</div>
-
-		<div class="grid-2">
-			<div class="m">
-				<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(Empty);placeholder:@(Choose a folder)">@(Folder)</ui-component>
-			</div>
-			<div class="m">
-				<ui-component name="input" path="?.statusid" config="dirsource:#status" default="'pending'">@(Status)</ui-component>
-			</div>
-		</div>
-
-		<div>
-			<ui-bind path="?.ispublic" config="disabled" class="block">
-				<div class="m">
-					<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)">@(Assign to)</ui-component>
-				</div>
-				<!--
-				<div>
-					<ui-component name="input" path="?.watcherid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)">@(Watchers)</ui-component>
-				</div>
-				-->
-			</ui-bind>
-			<ui-component name="input" path="?.ispublic" config="type:checkbox">@(Open to all)</ui-component>
-		</div>
-
-		<hr />
-
-		<ui-bind path="NOW" config="html span:value.format('[date]') + ' / ' + value.format('dddd')" class="block fs11 gray m"><i class="ti ti-calendar mr5"></i>@(Today:)<span class="ml5 b"></span></ui-bind>
-
-		<div class="grid-2">
-			<div class="m">
-				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW" class="m">@(Date)</ui-component>
-				<ui-component name="input" path="?.isdeadline" config="type:checkbox" default="false">@(Use as deadline)</ui-component>
-			</div>
-			<div class="m">
-				<ui-bind path="?.logwork" config="disabled">
-					<ui-component name="input" path="?.worked" config="placeholder:@(2 h);align:1" default="'10'">@(Log time)</ui-component>
-				</ui-bind>
-			</div>
-		</div>
-	</div>
-
-	<hr class="nmt" />
-
-	<div class="padding npt">
-
-		<ui-component name="choose" path="?.ispriority" config="selector:div;limit:1" class="iconmenu m" default="'0'">
+<ui-component name="box" path="*form2" config="if:CLASS;width:700;autofocus:1;reload:?/reload;submit:?/submit;icon:ti ti-check-square;enter:true;zindex:30" plugin="CLASS" class="hidden invisible CLASS">
+	<div class="padding bg-smoke">
+		<div class="b">@(Priority)</div>
+		<ui-component name="choose" path="?.ispriority" config="selector:div;limit:1" class="iconmenu m mt10" default="'0'">
 			<div data-id="3">
 				<i class="ti ti-flag red"></i>
 				<span>@(High)</span>
@@ -68,8 +25,53 @@
 			</div>
 		</ui-component>
 
-		<ui-component name="input" path="?.isbillable" config="type:checkbox">@(Billable)</ui-component>
-		<ui-component name="input" path="?.logwork" config="type:checkbox">@(Start work)</ui-component>
+		<div class="m">
+			<ui-component name="input" path="?.name" config="type:string;required:1;maxlength:250;placeholder:@(Enter a ticket name)" class="m">@(Name)</ui-component>
+		</div>
+		<div class="m">
+			<ui-component name="input" path="?.markdown" config="type:multiline;monospace:1;height:150" default="''">@(Description)</ui-component>
+		</div>
+	</div>
+	<div class="padding npb">
+
+		<ui-bind path="?.ispublic" config="disabled" class="block">
+			<div class="m">
+				<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)" class="m">@(Assign to)</ui-component>
+				<ui-component name="input" path="?.ispublic" config="type:checkbox">@(Open for all users)</ui-component>
+				<ui-component name="input" path="?.isbillable" config="type:checkbox">@(Billable)</ui-component>
+				<ui-component name="input" path="?.logwork" config="type:checkbox">@(Start working)</ui-component>
+			</div>
+			<!--
+			<div>
+				<ui-component name="input" path="?.watcherid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)">@(Watchers)</ui-component>
+			</div>
+			-->
+		</ui-bind>
+		<hr />
+
+		<ui-bind path="NOW" config="html span:value.format('[date]') + ' / ' + value.format('dddd')" class="block fs11 gray m"><i class="ti ti-calendar mr5"></i>@(Today:)<span class="ml5 b"></span></ui-bind>
+		<div class="grid-3">
+			<div class="m">
+				<ui-component name="input" path="?.date" config="type:date;required:1" default="NOW" class="m">@(Date)</ui-component>
+				<ui-component name="input" path="?.isdeadline" config="type:checkbox" default="false">@(Use as deadline)</ui-component>
+			</div>
+			<div class="m">
+				<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirkey:html;dirraw:1;dirempty:@(Empty);placeholder:@(Choose a folder)" class="m">@(Folder)</ui-component>
+			</div>
+			<div class="m">
+				<ui-bind path="?.logwork" config="disabled" class="block">
+					<ui-component name="input" path="?.statusid" config="dirsource:#status;dirkey:html;dirraw:1" default="'pending'" class="m">@(Status)</ui-component>
+				</ui-bind>
+			</div>
+		</div>
+		<!--
+		<div class="grid-4">
+			<div class="m">
+				<ui-bind path="?.logwork" config="disabled" class="block m">
+					<ui-component name="input" path="?.worked" config="placeholder:@(2 h);align:1" default="'10'">@(Log time)</ui-component>
+				</ui-bind>
+			</div>
+		</div>-->
 	</div>
 
 	<nav>
@@ -84,11 +86,16 @@
 
 	PLUGIN(function(exports) {
 
+		exports.reload = function(com) {
+			let model = exports.model;
+			com.reconfigure({ title: model.parentid ? '@(Create sub ticket)' : '@(Create ticket)' });
+		};
+
 		exports.submit = function(hide) {
 
-			var data = exports.model;
-			var model = CLONE(exports.form);
-			var minutes = model.worked;
+			let data = exports.model;
+			let model = CLONE(exports.form);
+			let minutes = model.worked || '10';
 
 			if (minutes.indexOf('h') !== -1)
 				minutes = minutes.replace(/[^0-9,.]/g, '').parseFloat() * 60;
@@ -106,7 +113,8 @@
 
 				hide();
 
-				var refresh = function() {
+				let refresh = function() {
+					model.callback && model.callback(response.value);
 					PLUGINS.tickets.exec('refresh');
 					if (data.callback)
 						data.callback(response.value);
