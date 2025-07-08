@@ -625,6 +625,8 @@
 
 			opt.element = el;
 			opt.items = CLONE(DEF.cl.tag).remove(tag => tag.folderid && tag.folderid !== model.folderid);
+			opt.key = 'html';
+			opt.raw = true;
 			opt.offsetY = -10;
 			opt.offsetX = -10;
 			opt.offsetWidth = 200;

@@ -5,7 +5,7 @@ NEWACTION('Common/cl', {
 		var db = DB();
 		db.find('cl_status').sort('sortindex').set('status');
 		db.find('tbl_user').fields('id,name,photo,search').where('isinactive=FALSE AND isremoved=FALSE').sort('name').set('user');
-		db.find('tbl_tag').fields('id,name,folderid,color').set('tag');
+		db.find('tbl_tag').fields('id,name,folderid,color,icon').set('tag');
 
 		var builder = db.find('tbl_folder');
 		builder.fields('id,name,color,icon,customer,isbillable,isprivate,ispinned,isarchived');
