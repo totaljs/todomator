@@ -41,7 +41,7 @@
 	.~ID~ .readers .photo { border-color: #68B25B; border-width: 2px; }
 	.~ID~ .tags i { cursor: pointer; }
 	.~ID~ .tabmenu li { padding: 0 10px; }
-	.~ID~ .badge { margin: 0 5px 5px 0; font-size: 12px; padding: 5px 8px; }
+	.~ID~ .badge { margin: 0 5px 5px 0; font-size: 11px; padding: 3px 5px; }
 	.~ID~ .badge i { margin-right: 0; }
 	.~ID~ .addtag { cursor: pointer; }
 	.~ID~ .addtag:hover { opacity: 0.8; }
@@ -138,6 +138,11 @@
 								</div>
 							{{ fi }}
 
+							<div>
+								<span class="exec control" data-exec="?/folder"{{ if value.folder }} style="padding:4px 8px;border-radius:var(--radius);background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ if value.folder_icon }}<i class="{{ value.folder_icon }} mr5"></i>{{ fi }}{{ value.folder | empty }}</span>
+							</div>
+							<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
+
 							{{ if value.statusid === 'pending' }}
 								<div class="toolbar m">
 									<button class="exec" data-exec="?/timer"><i class="ti ti-start red"></i>@(Start work)</button>
@@ -166,11 +171,6 @@
 								</div>
 							{{ fi }}
 
-							<div>
-								<span class="exec control" data-exec="?/folder"{{ if value.folder }} style="padding:4px 8px;border-radius:var(--radius);background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</span>
-							</div>
-							<h2 class="edit2 title" data-edit="prop:name;required:1;exec:?/modify">{{ value.name }}</h2>
-
 							{{ if !value.ispublic }}
 							<div style="min-height:90px">
 								<div class="grid-2 grid-xs-1">
@@ -192,10 +192,12 @@
 										<span>@(Status)</span>
 										<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
 									</div>
+									<!--
 									<div class="keyvalue">
 										<span>@(Folder) <i class="ti ti-external exec" data-exec="?/foldertasks"></i></span>
 										<div class="exec control" data-exec="?/folder"{{ if value.folder }} style="background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</div>
 									</div>
+									-->
 									<div class="keyvalue">
 										<span>@(Owner)</span>
 										<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
@@ -203,6 +205,17 @@
 									<div class="keyvalue">
 										<span>@(Source)</span>
 										<div>{{ value.source | empty }}</div>
+									</div>
+									<div class="keyvalue">
+										<span>@(Tags)</span>
+										<div class="tags" style="text-overflow:initial;white-space:normal">
+											{{ if value.tags }}
+												{{ foreach m in value.tags }}
+												<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
+												{{ end }}
+											{{ fi }}
+											<span class="badge badge-silver addtag exec" data-exec="?/addtag"><i class="ti ti-plus-circle green"></i>@(Add)</span>
+										</div>
 									</div>
 								</div>
 								<div>
@@ -224,18 +237,6 @@
 									</div>
 								</div>
 							</div>
-							<hr />
-							<div class="keyvalue">
-								<span style="padding-top:4px">@(Tags)</span>
-								<div class="tags">
-									{{ if value.tags }}
-										{{ foreach m in value.tags }}
-										<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
-										{{ end }}
-									{{ fi }}
-									<span class="badge badge-silver addtag exec" data-exec="?/addtag"><i class="ti ti-plus-circle green"></i>@(Add)</span>
-								</div>
-							</div>
 
 							{{ if value.attachments && value.attachments.length }}
 							<hr />
@@ -249,7 +250,7 @@
 						</script>
 					</ui-bind>
 
-					<hr style="margin-top:20px" />
+					<hr style="margin-top:10px" />
 					<div class="b"><i class="ti ti-relations mr5"></i>@(Related tickets)</div>
 					<ui-bind path="?.links" config="template" class="relatedtickets">
 						<script type="text/html">
@@ -458,6 +459,8 @@
 
 			opt.element = el;
 			opt.items = CLONE(DEF.cl.folder);
+			opt.raw = true;
+			opt.key = 'html';
 
 			opt.callback = function(selected) {
 				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { folderid: selected.id || null }, function() {
@@ -465,6 +468,11 @@
 					model.folder = selected.name;
 					model.folder_color = selected.color;
 					model.folder_icon = selected.icon;
+
+					// For new tickets
+					if (model.folderid)
+						common.folderid = model.folderid;
+
 					changed = true;
 					exports.upd('id');
 				});
@@ -1260,6 +1268,7 @@
 		opt.y = e.pageY;
 		opt.items = [];
 		opt.tag = tag;
+		opt.plugin = plugin;
 
 		if (el.attrd('line') && tag !== 'HR' && tag !== 'BR' && tag !== 'BLOCKQUOTE' && tag !== 'SECTION')
 			opt.items.push({ id: 'comment', name: '@(Comment)', icon: 'ti ti-comment' });

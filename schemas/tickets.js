@@ -110,9 +110,14 @@ NEWSCHEMA('Tickets', function(schema) {
 		name: 'List of tickets',
 		query: 'type:String, q:String, folderid:UID, skip:Number, limit:Number, date:Date, admin:Number, notin:String',
 		public: true,
-		action: function($) {
-			var builder = DATA.query('SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,COALESCE(b.isunread, false) AS isunread,b.iscomment,b.dtupdated AS dtunread FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id));
-			var query = $.query;
+		action: async function($) {
+
+			let sql = 'SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,COALESCE(b.isunread, false) AS isunread,b.iscomment,b.dtupdated AS dtunread,a.children FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id);
+			let builder = DATA.query(sql);
+			let query = $.query;
+
+			builder.where("(a.parentid IS NULL OR (a.parentid IS NOT NULL AND ownerid<>'{0}' AND EXISTS(SELECT 1 FROM view_ticket x WHERE x.id=a.id AND (ownerid='{0}' OR '{0}'=ANY(x.userid) OR '{0}'=ANY(x.watcherid)))))".format($.user.id));
+			// builder.where("(a.parentid IS NULL OR (a.ownerid<>'{0}' AND a.parentid IS NOT NULL))".format($.user.id));
 			makefilter($, builder);
 
 			if (query.type === 'unread') {
@@ -127,7 +132,41 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			builder.skip(query.skip || 0);
 			builder.take(query.limit || 10);
-			builder.callback($);
+
+			let items = await builder.promise($);
+			let arr = [];
+
+			for (let item of items) {
+				if (item.ownerid === $.user.id && item.children && item.children.length) {
+					for (let m of item.children)
+						arr.push(PG_ESCAPE(m));
+				} else
+					item.children = EMPTYARRAY;
+			}
+
+			// Read tree structure
+			if (arr.length) {
+
+				let children = await DATA.query(sql + ' WHERE a.id IN ({0})'.format(arr.join(','))).promise($);
+				// let rem = [];
+
+				for (let item of items) {
+					let tmp = item.children;
+					if (tmp && tmp.length) {
+						item.children = [];
+						for (let id of tmp) {
+							let subitem = children.findItem('id', id);
+							if (subitem)
+								item.children.push(subitem);
+						}
+					}
+				}
+
+				// items = items.remove(n => rem.includes(n.id));
+			}
+
+			$.callback(items);
+
 		}
 	});
 

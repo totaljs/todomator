@@ -1,12 +1,13 @@
 <style>
 
-	.CLASS .folder { width: 140px; float: left; border-right: 1px solid #E0E0E0; padding-right: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; line-height: 21px; }
-	.CLASS .folder > div { border-radius: var(--radius); color: rgba(0,0,0,0.7); padding: 0 5px; }
+	.CLASS .task { margin-bottom: 4px; background-color: #f8f8f8; border-radius: var(--radius); overflow: hidden; }
+	.CLASS .folder { width: 120px; padding-right: 10px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; line-height: 21px; }
+	.CLASS .folder > div { border-radius: var(--radius); color: rgba(0,0,0,0.7); padding: 0 5px; background-color: #e8e8e8; }
 	.CLASS .closed .folder > div { color: rgba(100,100,100,0.7); opacity: 0.8; }
-	.CLASS .folder i { margin: 4px 2px 0 0; }
+	.CLASS .folder i { margin: 4px 2px 0 5px; }
 	.CLASS .folder a { color: #777; }
 	.CLASS .id { font-family: Menlo, Consolas, monospace; font-size: 11px; margin-right: 5px; color: #A0A0A0; }
-	.CLASS .status { width: 120px; float: left; border-right: 1px solid #E0E0E0; margin-right: 10px; padding: 3px 0 0 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #000; }
+	.CLASS .status { margin: 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #000; background-color: #fff; min-width: 20px; height: 20px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; position: relative; z-index: 10; border: 1px solid #e0e0e0; }
 	.CLASS .status:hover span { text-decoration: underline; }
 	.CLASS .user { position: relative; display: inline-block; }
 	.CLASS .user span { color: #FFF !important; background-color: #E0E0E0; width: 20px; height: 20px; line-height: 21px; font-size: 8px; font-weight: bold; text-align: center; border-radius: 100px; margin-right: 5px; position: relative; display: inline-block; }
@@ -24,11 +25,11 @@
 	.CLASS .unread { background-color: rgba(255,254,209,0.4); }
 	.CLASS .unreadicon { color: #CCCB41; animation: unreadnotification 1s infinite forwards; margin-right: 5px; font-size: 14px; }
 	.CLASS .foreign { background-color: rgba(255,254,97,0.1); }
-	.CLASS .expired { background-color: rgba(232,72,63,0.06); }
-	.CLASS .name { line-height: 21px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding-left: 10px; }
-	.CLASS .name b { padding: 2px 0; }
+	.CLASS .expired .name b { color: #e73323; }
+	.CLASS .name { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding-left: 10px; display: flex; align-items: center; }
+	.CLASS .name b { padding: 2px 0; margin-right: 5px; }
 	.CLASS .name .ti-paperclip { color: #999; }
-	.CLASS .period { float: left; margin-right: 8px; color: rgba(0,0,0,0.6); border-radius: var(--radius); padding: 0 2px; }
+	.CLASS .period { margin-right: 10px; color: rgba(0,0,0,0.6); border-radius: var(--radius); padding: 2px 4px 0; }
 	.CLASS .arrows { float: left; }
 	.CLASS .arrows .ti-minus { color: #777; }
 	.CLASS .priority.open .assigned b { background-color: rgba(232,72,63,0.15); }
@@ -52,14 +53,14 @@
 	.CLASS .closed .user span { color: #A0A0A0; font-weight: normal; filter: grayscale(1); }
 	.CLASS .closed .user img { filter: grayscale(1); }
 	.CLASS .listing { font-size: 12px; }
-	.CLASS .listing figure { border-radius: var(--radius); }
-	.CLASS .listing section { padding: 7px 0 0; height: 34px; }
+	.CLASS .listing figure { border-radius: 0; }
+	.CLASS .listing section { /* padding: 7px 0 0; */ height: 34px; }
 	.CLASS .searchbox { max-width: 600px; text-align: left; position: relative; display: inline-block; width: 100%; margin: 12px 150px 0; }
 	.CLASS .searchbox .ui-searchinput { width: 100%; height: 34px; background-color: #F3F3F3; border: 0; margin-left: 30px; }
 	.CLASS .searchbox .ui-searchinput input { height: 33px; font-size: 14px; }
 	.CLASS .searchbox .ui-searchinput > span { width: 35px; line-height: 34px; font-size: 14px; }
 	.CLASS .searchbox .ui-searchinput > div { margin-left: 35px; }
-	.CLASS .separator { background-color: transparent !important; cursor: default; color: #888; padding: 25px 10px 15px; }
+	.CLASS .separator { background-color: #fff !important; cursor: default; color: #888; padding: 25px 10px 15px; }
 	.CLASS .tickets .toolbar button { height: 34px; padding: 0 15px; font-size: 12px; width: 200px; }
 	.CLASS .counter { float: right; font-size: 11px; color: #A0A0A0; line-height: 18px; width: 18px; margin: 6px 0 0; text-align: center; }
 	.CLASS .counterunread { float: right; font-size: 11px; color: #FFF; background-color: #E73323; border-radius: 100px; line-height: 18px; width: 18px; margin: 6px 0 0; text-align: center; font-weight: bold; }
@@ -74,7 +75,7 @@
 	.CLASS .comments { font-size: 16px; font-weight: normal; margin: 0; position: relative; display: inline-block; vertical-align: middle; color: rgba(0,0,0,0.4); border-left: 0; }
 	.CLASS .logo { float: left; margin: 20px 0 0 0; }
 	.CLASS .logo img { width: 120px; }
-	.CLASS .flag { padding: 3px; border-radius: var(--radius); line-height: 12px; font-size: 11px; margin: 1px 5px 0 0; color: #FFF; vertical-align: middle; text-transform: uppercase; font-weight: bold; float: left; }
+	.CLASS .flag { padding: 3px; border-radius: var(--radius); line-height: 12px; font-size: 11px; margin: 0 5px 0 0; color: #FFF; vertical-align: middle; text-transform: uppercase; font-weight: bold; }
 	.CLASS .flag-asap { background-color: #E73323; }
 	.CLASS .flag-week { background-color: #CCCB41; }
 	.CLASS .flag-today { background-color: #EC8632; }
@@ -91,6 +92,18 @@
 	.CLASS .fadeout .date .red { color: #A0A0A0 !important; }
 	.CLASS .fadeout .status { color: #A0A0A0; }
 	.CLASS .fadeout .status > i { color: #A0A0A0 !important; }
+	.CLASS .subticket { position: relative; padding-left: 20px; }
+	.CLASS .subticket > section { margin: 0 !important; }
+	.CLASS .status-empty-BK { width: 120px; float: left; border-right: 1px solid #E0E0E0; margin-right: 10px; padding: 3px 0 0 5px; }
+	.CLASS .subticket .status { margin-left: 15px; }
+
+	.CLASS .subticket:before { position: absolute; background-color: transparent; width: 15px; height: 38px; display: block; content: ''; margin: -20px 0 0 0; border-left: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0; border-radius: 0 0 0 var(--radius)}
+
+	.CLASS .listing figure > section { border-bottom: 0; display: flex; align-items: center; margin-right: 0; }
+	.CLASS .ticket .name { padding-left: 35px; }
+	.CLASS .ticket.subticket .name { padding-left: 10px; }
+	.CLASS .ticket .name:before { content: ''; width: 35px; height: 1px; background-color: #D0D0D0; position: absolute; left: 30px; }
+	.CLASS .ticket.subticket .name:before { display: none; }
 
 	@keyframes ticketscalendarbutton {
 		0% { transform: scale(1); }
@@ -113,7 +126,6 @@
 		.CLASS .searchbox { max-width: 300px; margin-left: 50px; margin-right: 100px; }
 		.CLASS .date { display: none; }
 		.CLASS .worked { display: none; }
-		.CLASS .status { width: 30px; }
 		.CLASS .status span { display: none; }
 		.CLASS .period { display: none; }
 	}
@@ -189,29 +201,35 @@
 						<div class="help nmt">@(You don't have any tickets)</div>
 					</script>
 
-					<div class="padding tickets">
+					<div class="tickets padding">
 
-						<ui-bind path="?" config="show:value.type==='unread' && value.data && value.data.items.length;track:data.items,type" class="block fs12" style="margin-bottom:10px">
+						<ui-bind path="?" config="show:value.type==='unread' && value.data && value.data.items.length;track:data.items,type" class="block fs12 hidden" style="margin-bottom:10px">
 							<span class="exec link" data-exec="?/reset"><i class="ti ti-eye mr5"></i>@(Set as read)</span>
 						</ui-bind>
 
-						<ui-bind path="?.data.items" config="template:figure;changes" class="listing block">
+						<ui-bind path="?.data.items" config="template:.task;changes" class="listing block">
 							<script type="text/html">
 								{{ foreach m in value }}
+									<div class="task">
 									{{ if m.id }}
 										<figure data-id="{{ m.id }}" class="ticket{{ if m.isread }} fadeout{{ else }} {{ m.statusid }}{{ if m.ispriority && !m.postponed }} priority-{{ m.ispriority }}{{ fi }}{{ if m.isunread }} unread{{ fi }}{{ if m.foreign }} foreign{{ fi }}{{ if !m.isunread && m.warn === 3 }} expired{{ fi }}{{ fi }}">
 											<section class="exec exec3{{ if !m.isread && m.statusid === 'open' }} open{{ fi }}" data-exec="?/preview" data-exec3="?/contextmenu">
-												<div class="date">{{ if !m.postponed && (m.statusid === 'closed' || !m.deadline) }}{{ m.date | time3 }}{{ else if m.deadline && !m.postponed }}<b class="red">{{ m.deadline | deadline }}<i class="ti ti-start ml5" title="@(Deadline)"></i></b>{{ else }}<b class="green">{{ m.date | format('[date]') }}<i class="ti ti-start green ml5"></i></b>{{ fi }}</div>
-												<div class="worked">{{ if m.estimate }}<span>{{ m.estimate | logwork }} /</span>{{ fi }}{{ if m.worked > 0 }}{{ m.worked | logwork }}{{ fi }}</div>
-												<div class="status exec" data-exec="?/status" data-prevent="true">{{ m.statusid | status }}</div>
-												<div class="folder{{ if !m.folderid }} exec" data-exec="?/folder2" data-prevent="true{{ fi }}">{{ if m.folderid }}<div style="background-color:{{ m.folder_color | rgba(0.2) }}" class="hellip"><i class="ti ti-external exec pull-right" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}"></i>{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>
-												<div class="name{{ if m.assigned }} assigned{{ fi }}">
-													<span class="period" style="background-color:{{ {{ m.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ m.date | format('yyyy/MM') }}</span> <!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->{{ if m.priority }}<span class="flag flag-priority" style="background-color:{{ m.priority.color }}"><i class="ti ti-flag"></i></span>{{ fi }}<!-- {{ m.warn | warn }} -->{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}{{ if m.statusid === 'note' || m.statusid === 'review' || m.isread }}{{ m.name }}{{ else }}<b>{{ m.name }}</b>{{ fi }}{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip"></i>{{ fi }}{{ if m.parentid }}<i class="ti ti-code-branch ml5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+												<div class="status exec" data-exec="?/status" data-prevent="true" title="{{ m.statusid }}">{{ m.statusid | status(true) }}</div>
+												<div class="name{{ if m.assigned }} assigned{{ fi }}"{{ if m.deadline && !m.postponed }}title="@(Deadline)"{{ fi }}>
+													<span class="period" style="background-color:{{ {{ m.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ m.date | format('yyyy/MM') }}</span>
+													{{ if m.folderid }}<div class="folder{{ if !m.folderid }} exec" data-exec="?/folder2" data-prevent="true{{ fi }}">{{ if m.folderid }}<div class="hellip"{{ if m.folder_color }} style="background:{{ m.folder_color | rgba(0.1) }}"{{ fi }}><i class="ti ti-external exec pull-right" data-exec="?/folder" data-prevent="true" data-id="{{ m.folderid }}" style="color:{{ m.folder_color | rgba(1) }}"></i>{{ m.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>{{ fi }}
+													<!--{{ if m.assigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->
+													{{ if m.priority }}<span class="flag flag-priority" style="background-color:{{ m.priority.color }}"><i class="ti ti-flag"></i></span>{{ fi }}
+													<!-- {{ m.warn | warn }} -->
+													{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}
+													{{ if m.statusid === 'note' || m.statusid === 'review' || m.isread }}<span class="mr5">{{ m.name }}</span>{{ else }}<b>{{ m.name }}</b>{{ fi }}
+													{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip mr5"></i>{{ fi }}
+													{{ if m.parentid }}<i class="ti ti-code-branch mr5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
 													{{ m.tags | tags }}
 													{{ if m.ispublic }}
-													<i class="ti ti-users-alt public ml5" title="@(Open to all)"></i>
+													<i class="ti ti-users-alt public mr5" title="@(Open to all)"></i>
 													{{ else if m.userid && m.userid.length }}
-													<div class="user hidden-xs">
+													<div class="user hidden-xs mr5">
 														{{ m.userid | users(true) }}
 													</div>
 													{{ fi }}
@@ -219,9 +237,36 @@
 												</div>
 											</section>
 										</figure>
+										{{ foreach sub of m.children }}
+										<figure data-id="{{ sub.id }}" class="ticket subticket{{ if sub.isread }} fadeout{{ else }} {{ sub.statusid }}{{ if sub.ispriority && !sub.postponed }} priority-{{ sub.ispriority }}{{ fi }}{{ if sub.isunread }} unread{{ fi }}{{ if sub.foreign }} foreign{{ fi }}{{ if !sub.isunread && sub.warn === 3 }} expired{{ fi }}{{ fi }}">
+											<section class="exec exec3{{ if !sub.isread && sub.statusid === 'open' }} open{{ fi }}" data-exec="?/preview" data-exec3="?/contextmenu">
+												<div class="status exec" data-exec="?/status" data-prevent="true">{{ sub.statusid | status(true) }}</div>
+												<div class="name{{ if sub.assigned }} assigned{{ fi }}"{{ if m.deadline && !m.postponed }}title="@(Deadline)"{{ fi }}>
+													<span class="period" style="background-color:{{ {{ sub.date | format('yyyy/MM') | color2 | rgba(0.1) }}">{{ sub.date | format('yyyy/MM') }}</span>
+													{{ if sub.folderid }}<div class="folder{{ if !sub.folderid }} exec" data-exec="?/folder2" data-prevent="true{{ fi }}">{{ if sub.folderid }}<div class="hellip"{{ if sub.folder_color }} style="background:{{ sub.folder_color | rgba(0.1) }}"{{ fi }}><i class="ti ti-external exec pull-right" data-exec="?/folder" data-prevent="true" data-id="{{ sub.folderid }}" style="color:{{ m.folder_color }}"></i>{{ sub.folder }}</div>{{ else }}&nbsp;{{ fi }}</div>{{ fi }}
+													<!--{{ ifsubassigned }}<div class="arrows"><i class="ti ti-minus"></i><i class="ti ti-arrow-right mr5"></i></div>{{ fi }}-->
+													{{ if sub.priority }}<span class="flag flag-priority" style="background-color:{{ sub.priority.color }}"><i class="ti ti-flag"></i></span>{{ fi }}
+													<!-- {{ sub.warn | warn }} -->
+													{{ if sub.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}
+													{{ if sub.statusid === 'note' || sub.statusid === 'review' || sub.isread }}<span class="mr5">{{ sub.name }}</span>{{ else }}<b>{{ sub.name }}</b>{{ fi }}
+													{{ if sub.attachments && sub.attachments.length }} <i class="ti ti-paperclip mr5"></i>{{ fi }}{{ if sub.parentid }}<i class="ti ti-code-branch mr5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}
+													{{ sub.tags | tags }}
+													{{ if sub.ispublic }}
+													<i class="ti ti-users-alt public mr5" title="@(Open to all)"></i>
+													{{ else if sub.userid && sub.userid.length }}
+													<div class="user hidden-xs mr5">
+														{{ sub.userid | users(true) }}
+													</div>
+													{{ fi }}
+													{{ if sub.comments }}<i class="ti ti-comments comments" title="@(Comments)"></i>{{ fi }}
+												</div>
+											</section>
+										</figure>
+										{{ end }}
 									{{ else }}
 										<figure data-id="{{ m.skip }}" class="separator">@(Next {{ m.count }} tickets)</figure>
 									{{ fi }}
+									</div>
 								{{ end }}
 							</script>
 						</ui-bind>
@@ -318,6 +363,10 @@
 				folderid = null;
 			}
 
+			// For new tickets
+			if (folderid)
+				common.folderid = folderid;
+
 			var search = model.search;
 			if (search) {
 
@@ -408,6 +457,7 @@
 			var opt = {};
 			opt.align = 'left';
 			opt.element = el;
+			opt.raw = true;
 			opt.items = CLONE(DEF.cl.folder);
 			opt.callback = function(selected) {
 				exports.tapi('tickets_update/{0} ERROR'.format(id), { folderid: selected.id }, NOOP);
@@ -420,6 +470,7 @@
 			var opt = {};
 			opt.align = 'left';
 			opt.element = el;
+			opt.raw = true;
 			opt.items = CLONE(DEF.cl.status);
 			opt.callback = function(selected) {
 				exports.tapi('tickets_update/{0} ERROR'.format(id), { statusid: selected.id }, NOOP);
@@ -456,6 +507,10 @@
 				if (response.isunread)
 					exports.counter();
 
+				// For new tickets
+				if (response.folderid)
+					common.folderid = response.folderid;
+
 				response.iamowner = response.ownerid === user.id;
 				location.hash = id;
 				response.visible = true;
@@ -464,7 +519,7 @@
 				var win = {};
 
 				win.id = id;
-				win.title = '@(Ticket:) ' + id;
+				win.title = '@(Ticket:) #' + id;
 
 				var ww = (WW / 2.5) >> 0;
 				var wh = (WH / 1.5) >> 0;
@@ -608,7 +663,12 @@
 		};
 
 		exports.create = function() {
+
 			var model = exports.model;
+
+			if (!folderid)
+				folderid = common.folderid;
+
 			var folder = folderid ?  DEF.cl.folder.findItem('id', folderid) : null;
 			var date = NOW;
 			var day = date.getDay();
@@ -626,7 +686,14 @@
 			date.setHours(12);
 			date.setMinutes(0);
 
-			SET('formcreateticket @default', { folderid: folderid, userid: [], isbillable: folder ? folder.isbillable : true, date: date });
+			let payload = { folderid: folderid, userid: [], name: '', isbillable: folder ? folder.isbillable : true, date: date };
+
+			/*
+			exports.tapi('tickets_create ERROR', payload, function(response) {
+				exports.preview(response.value);
+			});*/
+
+			SET('formcreateticket @default', payload);
 			SET('*form2', 'formcreateticket');
 		};
 

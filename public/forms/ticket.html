@@ -109,6 +109,17 @@
 			if (model.isdeadline)
 				model.deadline = model.date;
 
+			var inline = model.markdown.match(/@\w+/g);
+			if (inline) {
+				for (let m of inline) {
+					let usr = DEF.cl.user.findItem('search', m.substring(1));
+					if (usr) {
+						if (!model.userid.includes(usr.id))
+							model.userid.push(usr.id);
+					}
+				}
+			}
+
 			exports.tapi('tickets_create ERROR', model, function(response) {
 
 				hide();

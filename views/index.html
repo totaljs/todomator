@@ -54,21 +54,21 @@
 	<ui-component name="LAZY clipboard"></ui-component>
 
 	<div>
-		<ui-component name="page" path="common.page" config="if:tickets;url:/pages/tickets.html;reload:?/reload" class="invisible hidden"></ui-component>
+		<ui-component name="page" path="*page" config="if:tickets;url:/pages/tickets.html;reload:?/reload" class="invisible hidden"></ui-component>
 	</div>
 
-	<ui-component name="importer" path="common.form" config="if:formfolders;url:/forms/folders.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formcreateticket;url:/forms/ticket.html"></ui-component>
-	<ui-component name="importer" path="common.form" config="if:formsettings;url:/forms/settings.html"></ui-component>
-	<ui-component name="importer" path="common.form" config="if:formtags;url:/forms/tags.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formtag;url:/forms/tag.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formlink;url:/forms/link.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formfolder;url:/forms/folder.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formlogs;url:/forms/logs.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formcomments;url:/forms/comments.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formnotifications;url:/forms/notifications.html"></ui-component>
-	<ui-component name="importer" path="common.form2" config="if:formclone;url:/forms/clone.html"></ui-component>
-	<ui-component name="importer" path="common.form3" config="if:formtime;url:/forms/time.html"></ui-component>
+	<ui-component name="importer" path="*form" config="if:formfolders;url:/forms/folders.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formcreateticket;url:/forms/ticket.html"></ui-component>
+	<ui-component name="importer" path="*form" config="if:formsettings;url:/forms/settings.html"></ui-component>
+	<ui-component name="importer" path="*form" config="if:formtags;url:/forms/tags.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formtag;url:/forms/tag.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formlink;url:/forms/link.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formfolder;url:/forms/folder.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formlogs;url:/forms/logs.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formcomments;url:/forms/comments.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formnotifications;url:/forms/notifications.html"></ui-component>
+	<ui-component name="importer" path="*form2" config="if:formclone;url:/forms/clone.html"></ui-component>
+	<ui-component name="importer" path="*form3" config="if:formtime;url:/forms/time.html"></ui-component>
 
 	@{json(model, 'pluginsdata')}
 
@@ -86,6 +86,7 @@
 		DEF.cl.priority = [{ id: 0, name: '@(None)', icon: 'ti ti-flag' }, { id: 1, name: '@(Low)', color: '#2E67C5', icon: 'ti ti-flag' }, { id: 2, name: '@(Medium)', color: '#EC8632', icon: 'ti ti-flag' }, { id: 3, name: '@(High)', color: '#E73323', icon: 'ti ti-flag' }];
 
 		common.detail = true;
+		common.folderid = '@{CONF.folderid}';
 		common.clientid = GUID(5) + Date.now().toString(36);
 		common.plugins = PARSE('#pluginsdata');
 		common.name = document.title;
@@ -103,6 +104,9 @@
 		};
 
 		Thelpers.tags = function(tags, larger) {
+
+			if (!tags)
+				return '';
 
 			if (typeof(tags) === 'string')
 				tags = [tags];
@@ -205,7 +209,9 @@
 			SET('common.page', 'tickets');
 		}, 'init');
 
-		ROUTE('/{folder}/', function() {
+		ROUTE('/{folder}/', function(folder) {
+			if (folder === 'unread' && W.tickets && W.tickets.type !== 'unread')
+				SET('tickets.data', { items: [] });
 			SET('common.page', 'tickets');
 		}, 'init');
 
@@ -224,6 +230,18 @@
 
 		ON('@flag showloading', function() {
 			SETTER('loading/show');
+		});
+
+		ON('@flag done', function() {
+			SETTER('notify/info', '@(Done.)');
+		});
+
+		ON('@flag saved', function() {
+			SETTER('notify/success', '@(Saved.)');
+		});
+
+		ON('@flag removed', function() {
+			SETTER('notify/success', '@(Removed.)');
 		});
 
 		ON('@flag hideloading', function() {
@@ -295,9 +313,9 @@
 
 		});
 
-		Thelpers.status = function(id) {
+		Thelpers.status = function(id, icononly) {
 			var status = DEF.cl.status.findItem('id', id);
-			return status ? '<i class="{icon} mr5" style="color:{color}"></i><span class="hidden-xs">{name}</span>'.arg(status) : DEF.empty;
+			return status ? ('<i class="{icon}" style="color:{color}"></i>' + (icononly ? '' : '<span class="hidden-xs">{name}</span>')).arg(status) : DEF.empty;
 		};
 
 		ON('service', function(counter) {

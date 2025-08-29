@@ -1,6 +1,6 @@
 <ui-component name="miniform" path="common.form" config="if:~PATH~;icon:cog;title:@(Settings);autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:400" class="hidden ~PATH~" plugin="~PATH~">
 	<div>
-		<div class="padding bg-smoke npb">
+		<div class="padding bg-smoke">
 			<ui-component name="input" path="?.name" config="required:1" class="m">@(Name)</ui-component>
 			<div class="grid-2">
 				<div class="m">
@@ -11,6 +11,8 @@
 					<ui-component name="input" path="?.color" config="type:color">@(Color)</ui-component>
 				</div>
 			</div>
+			<hr class="nmt" />
+			<ui-component name="input" path="?.folderid" config="dirsource:#folder;dirempty:@(Empty)">@(Default folder)</ui-component>
 		</div>
 		<div class="padding">
 			<ui-component name="input" path="?.token" config="camouflage:1">@(Token)</ui-component>
