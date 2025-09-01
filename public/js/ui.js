@@ -300,8 +300,8 @@ COMPONENT('markdownbody', 'minheightoffset:120', function(self, config, cls) {
 				if (b) {
 
 					if (a.tagName === b.tagName && a.tagName === 'UL') {
-						// check items
 
+						// check items
 						$(b).rclass().aclass($(a).attr('class'));
 
 						for (var m of b.children)

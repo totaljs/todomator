@@ -125,13 +125,17 @@ Thelpers.markdown2 = function(val, opt) {
 		var arr = [];
 
 		for (var link of links) {
-			if (!link.classList.contains('markdown-task'))
+			if (!link.classList.contains('markdown-task') && link.tagName !== 'A')
 				arr.push(ATTRD(link));
 		}
 
 		if (arr.length) {
 			TAPI(QUERIFY('tickets_find', { id: arr.join(',') }), function(response) {
 				for (var link of links) {
+
+					if (link.tagName === 'A')
+						continue;
+
 					var id = ATTRD(link);
 					var item = response.findItem('id', id);
 					var el = $(link);
