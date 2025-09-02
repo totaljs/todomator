@@ -1091,13 +1091,15 @@
 
 				data.markdown = val;
 
-				var inline = val.match(/@\w+/g);
+				if (!model.watcherid)
+					model.watcherid = [];
 
+				var inline = val.match(/@\w+/g);
 				if (inline) {
 					for (let m of inline) {
 						let usr = DEF.cl.user.findItem('search', m.substring(1));
 						if (usr) {
-							if (!model.userid.includes(usr.id)) {
+							if (!model.userid.includes(usr.id) && !model.watcherid.includes(usr.id)) {
 								model.userid.push(usr.id);
 								changed = true;
 							}
