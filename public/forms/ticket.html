@@ -36,7 +36,7 @@
 
 		<ui-bind path="?.ispublic" config="disabled" class="block">
 			<div class="m">
-				<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;dirempty:@(Empty);placeholder:@(Choose users)" class="m">@(Assign to)</ui-component>
+				<ui-component name="input" path="?.userid" config="dirsource:#user;multiple:1;placeholder:@(Choose users)" class="m">@(Assign to)</ui-component>
 				<ui-component name="input" path="?.ispublic" config="type:checkbox">@(Open for all users)</ui-component>
 				<ui-component name="input" path="?.isbillable" config="type:checkbox">@(Billable)</ui-component>
 				<ui-component name="input" path="?.logwork" config="type:checkbox">@(Start working)</ui-component>
