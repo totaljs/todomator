@@ -523,6 +523,10 @@
 			opt.align = 'left';
 			opt.element = el;
 			opt.items = CLONE(DEF.cl.status);
+
+			for (let m of opt.items)
+				m.selected = model.statusid == m.id;
+
 			opt.callback = exports.forcestatus;
 			EXEC('-menu/show', opt);
 		};
