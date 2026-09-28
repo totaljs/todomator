@@ -885,100 +885,109 @@ NEWSCHEMA('Tickets', function(schema) {
 		}
 	});
 
-	schema.action('comments', {
-		name: 'List of comments',
-		params: '*id:String',
-		public: true,
-		query: 'line:Number',
-		action: function($) {
-			var params = $.params;
-			var query = $.query;
-			var builder = DATA.find('tbl_ticket_comment');
-			builder.fields('id,userid,username,userphoto,markdown,dtcreated,dtupdated');
-			builder.where('ticketid', params.id);
-			builder.sort('dtcreated');
-
-			if (query.line != null)
-				builder.where('line', query.line);
-
-			builder.callback($);
-		}
-	});
-
-	var updatecommentscount = function(id) {
-		DATA.query('UPDATE tbl_ticket a SET comments=(SELECT COUNT(1) FROM tbl_ticket_comment x WHERE x.ticketid=a.id) WHERE a.id=' + PG_ESCAPE(id));
-	};
-
-	schema.action('Comments|create', {
-		name: 'Create comment',
-		input: '*ticketid:String,line:Number,*markdown:String',
-		public: true,
-		action: async function($, model) {
-
-			var item = await DATA.read('tbl_ticket').fields(Returning).id(model.ticketid).error(404).promise($);
-
-			model.id = UID();
-			model.userid = $.user.id;
-			model.username = $.user.name;
-			model.userphoto = $.user.photo;
-			model.dtcreated = NOW = new Date();
-
-			await DATA.insert('tbl_ticket_comment', model).promise($);
-			updatecommentscount(model.ticketid);
-
-			if (item.ispublic)
-				item.userid = MAIN.users;
-
-			await FUNC.notify(model.ticketid, m, 'comment', $.user.name, model.markdown.max(50), model.id);
-
-			for (var m of item.userid)
-				await FUNC.unread(model.ticketid, m, 'comment', null, m !== $.user.id);
-
-			item.type = 'comment';
-			EMIT('ticket', item);
-
-			MAIN.ws && MAIN.ws.send({ TYPE: 'comment', id: model.ticketid });
-
-			$.success(model.id);
-
-			if (item.callback)
-				TicketCallback(item);
-
-		}
-	});
-
-	schema.action('Comments|update', {
-		name: 'Update comment',
-		input: '*id,*markdown:String',
-		action: async function($, model) {
-
-			let item = await DATA.read('tbl_ticket_comment').id(model.id).where('userid', $.user.id).error(404).promise($);
-
-			model.username = $.user.name;
-			model.userphoto = $.user.photo;
-			model.ticketid = undefined;
-			model.dtupdated = NOW;
-
-			await DATA.modify('tbl_ticket_comment', model).id(model.id).promise($);
-
-			let filter = client => item.ownerid === client.user.id || item.userid.includes(client.user.id);
-			MAIN.ws && MAIN.ws.send({ TYPE: 'comment', id: model.id }, filter);
-
-			$.success(model.id);
-		}
-	});
-
-	schema.action('Comments|remove', {
-		name: 'Remove comment',
-		model: '*id',
-		action: async function($, model) {
-			var comment = await DATA.remove('tbl_ticket_comment').id(model.id).where('userid', $.user.id).returning('ticketid').error(404).promise($);
-			updatecommentscount(comment[0].ticketid);
-			$.success(model.id);
-		}
-	});
-
 });
+
+
+NEWACTION('Comments', {
+	name: 'List of comments',
+	input: '*id:String',
+	public: true,
+	route: '+API ?',
+	user: true,
+	query: 'line:Number',
+	action: function($, model) {
+		var query = $.query;
+		var builder = DATA.find('tbl_ticket_comment');
+		builder.fields('id,userid,username,userphoto,markdown,dtcreated,dtupdated');
+		builder.where('ticketid', model.id);
+		builder.sort('dtcreated');
+
+		if (query.line != null)
+			builder.where('line', query.line);
+
+		builder.callback($);
+	}
+});
+
+var updatecommentscount = function(id) {
+	DATA.query('UPDATE tbl_ticket a SET comments=(SELECT COUNT(1) FROM tbl_ticket_comment x WHERE x.ticketid=a.id) WHERE a.id=' + PG_ESCAPE(id));
+};
+
+NEWACTION('Comments|create', {
+	name: 'Create comment',
+	input: '*ticketid,line:Number,*markdown',
+	public: true,
+	user: true,
+	route: '+API ?',
+	action: async function($, model) {
+
+		var item = await DATA.read('tbl_ticket').fields(Returning).id(model.ticketid).error(404).promise($);
+
+		model.id = UID();
+		model.userid = $.user.id;
+		model.username = $.user.name;
+		model.userphoto = $.user.photo;
+		model.dtcreated = NOW = new Date();
+
+		await DATA.insert('tbl_ticket_comment', model).promise($);
+		updatecommentscount(model.ticketid);
+
+		if (item.ispublic)
+			item.userid = MAIN.users;
+
+		await FUNC.notify(model.ticketid, m, 'comment', $.user.name, model.markdown.max(50), model.id);
+
+		for (var m of item.userid)
+			await FUNC.unread(model.ticketid, m, 'comment', null, m !== $.user.id);
+
+		item.type = 'comment';
+		EMIT('ticket', item);
+
+		MAIN.ws && MAIN.ws.send({ TYPE: 'comment', id: model.ticketid });
+
+		$.success(model.id);
+
+		if (item.callback)
+			TicketCallback(item);
+
+	}
+});
+
+NEWACTION('Comments|update', {
+	name: 'Update comment',
+	route: '+API ?',
+	user: true,
+	input: '*id,*markdown:String',
+	action: async function($, model) {
+
+		let item = await DATA.read('tbl_ticket_comment').id(model.id).where('userid', $.user.id).error(404).promise($);
+
+		model.username = $.user.name;
+		model.userphoto = $.user.photo;
+		model.ticketid = undefined;
+		model.dtupdated = NOW;
+
+		await DATA.modify('tbl_ticket_comment', model).id(model.id).promise($);
+
+		let filter = client => item.ownerid === client.user.id || item.userid.includes(client.user.id);
+		MAIN.ws && MAIN.ws.send({ TYPE: 'comment', id: model.id }, filter);
+
+		$.success(model.id);
+	}
+});
+
+NEWACTION('Comments|remove', {
+	name: 'Remove comment',
+	input: '*id',
+	route: '+API ?',
+	user: true,
+	action: async function($, model) {
+		var comment = await DATA.remove('tbl_ticket_comment').id(model.id).where('userid', $.user.id).returning('ticketid').error(404).promise($);
+		updatecommentscount(comment[0].ticketid);
+		$.success(model.id);
+	}
+});
+
 
 function TicketCallback(data, keys) {
 	data.keys = keys;

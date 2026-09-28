@@ -68,11 +68,11 @@
 
 						var comment = exports.model.messages.findItem('id', id);
 						exports.message.edit(comment.markdown, function(text) {
-							exports.tapi('comments_update/{id} ERROR'.args(comment), { markdown: text }, exports.refresh);
+							exports.tapi('Comments|update ERROR', { id: id, markdown: text }, exports.refresh);
 						});
 						break;
 					case 'remove':
-						SETTER('approve/show', '@(Are you sure you want to remove selected comment?)', ':remove: @(Remove)', () => exports.tapi('comments_remove/{0} ERROR'.format(id), exports.refresh));
+						SETTER('approve/show', '@(Are you sure you want to remove selected comment?)', ':remove: @(Remove)', () => exports.tapi('Comments|remove ERROR', { id: id }, exports.refresh));
 						break;
 				}
 			};
@@ -82,7 +82,7 @@
 		exports.refresh = function() {
 			var detail = exports.model;
 			ticketid = detail.id;
-			exports.tapi('comments/{id}'.args(detail), function(response) {
+			exports.tapi('Comments', { id: detail.id }, function(response) {
 				for (var m of response)
 					m.me = m.userid === user.id;
 				exports.set('messages', response);
@@ -91,7 +91,7 @@
 
 		exports.send = function(msg) {
 			SETTER('sounds/play', 'badge');
-			exports.tapi('comments_create ERROR', msg, () => setTimeout(exports.message.edit, 200));
+			exports.tapi('Comments|create ERROR', msg, () => setTimeout(exports.message.edit, 200));
 		};
 
 		exports.on('message', function(msg) {

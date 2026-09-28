@@ -30,10 +30,6 @@ exports.install = function() {
 	ROUTE('+API    ?       -logwork_open              --> Tickets/logwork_open');
 	ROUTE('+API    ?       +logwork_start             --> Tickets/logwork_start');
 	ROUTE('+API    ?       +logwork_stop              --> Tickets/logwork_stop');
-	ROUTE('+API    ?       -comments/{id}             --> Tickets/comments');
-	ROUTE('+API    ?       +comments_create           --> Tickets/comments_create');
-	ROUTE('+API    ?       +comments_update/{id}      --> Tickets/comments_update');
-	ROUTE('+API    ?       -comments_remove/{id}      --> Tickets/comments_remove');
 	ROUTE('+API    ?       -data_read/{id}            --> Tickets/data_read');
 	ROUTE('+API    ?       +data_save/{id}            --> Tickets/data_save');
 
