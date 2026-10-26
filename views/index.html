@@ -244,7 +244,10 @@
 		});
 
 		Thelpers.owner = function(val) {
-			return DEF.cl.user.findValue('id', val, 'name', DEF.empty);
+			let item = DEF.cl.user.findItem('id', val);
+			if (!item)
+				return DEF.empty;
+			return Thelpers.users(val) + ' ' + item.name;
 		};
 
 		Thelpers.users = function(val) {
@@ -257,8 +260,8 @@
 			if (!(val instanceof Array))
 				val = [val];
 
-			for (var id of val) {
-				var item = DEF.cl.user.findItem('id', id);
+			for (let id of val) {
+				let item = DEF.cl.user.findItem('id', id);
 				if (item) {
 
 					if (item.photo) {
@@ -266,7 +269,7 @@
 						continue;
 					}
 
-					var name = item.initials;
+					let name = item.initials;
 					builder.push('<span class="initials" data-id="{id}" title="{1}" style="background:{color}">{0}</span>'.format(name.encode(), item.name.encode()).arg(item));
 
 					/*
@@ -291,8 +294,16 @@
 
 		SETTER(true, 'shortcuts/register', 'esc', function(e) {
 
+			if ($('.ui-approve-visible').length)
+				return;
+
 			if ($('.ui-menu-visible').length) {
 				SETTER('menu/hide');
+				return;
+			}
+
+			if (!$('.ui-datepicker-container').hclass('hidden')) {
+				SETTER('datepicker/hide');
 				return;
 			}
 
@@ -306,9 +317,9 @@
 				return;
 			}
 
-			if (common.windows.length) {
+			if (common.windows.length)
 				SETTER('windows/close', common.windows.last().id);
-			} else
+			else
 				NULL('*form');
 
 		});
@@ -463,6 +474,7 @@
 			});
 		});
 		// End: Tangular-Time
+
 	</script>
 
 </body>

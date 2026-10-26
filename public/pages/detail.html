@@ -11,16 +11,18 @@
 	.~ID~ .ui-box-icon { color: #68B25B; margin-right: 10px; }
 	.~ID~ .ui-box-label { font-weight: normal; color: #A0A0A0; font-size: 13px; user-select: text; font-family: Menlo, Consolas, monospace; }
 	.~ID~ .meta i { transform: scale(1); }
-	.~ID~ .attachments { font-size: 12px; padding: 0; margin-top: 10px; }
+	.~ID~ .attachments { font-size: 13px; padding: 0; margin-top: 10px; }
 	.~ID~ .attachments .file { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: #FFF; padding: 4px 5px; display: block; vertical-align: top; color: #777; border: 1px solid #E0E0E0; border-top: 0; }
 	.~ID~ .attachments .group { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; background-color: rgba(0,0,0,0.05); border-radius: var(--radius) var(--radius) 0 0; padding: 5px 5px; display: block; vertical-align: top; color: #777; margin-top: 10px; border: 1px solid #E0E0E0; font-size: 11px; }
 	.~ID~ .attachments .file:last-child { border-radius: 0 0 var(--radius) var(--radius); }
 	.~ID~ .attachments .group:first-child { margin-top: 0; }
 	.~ID~ .keyvalue { min-height: 20px; }
+	.~ID~ .owner .photo { width: 16px; border-radius: 100px; vertical-align: top; }
+	.~ID~ .owner .initials { width: 16px; height: 16px; color: #FFF; display: inline-block; text-align: center; border-radius: 100px; }
 	.~ID~ .keyvalue > div { padding: 3px 5px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; min-height: 18px }
 	.~ID~ .keyvalue > span { padding-top: 2px; }
 	.~ID~ .control { cursor: pointer; border-radius: var(--radius); }
-	.~ID~ .control:hover { background-color: #FFF; }
+	.~ID~ .control:hover { background-color: rgba(0,0,0,0.05); }
 	.~ID~ .options { float: right; }
 	.~ID~ .title { margin-top: 5px; }
 	.~ID~ .note { border-radius:var(--radius); margin-top: 0; }
@@ -44,7 +46,7 @@
 	.~ID~ .readers .photo { border-color: #68B25B; border-width: 2px; }
 	.~ID~ .tags i { cursor: pointer; }
 	.~ID~ .tabmenu li { padding: 0 10px; }
-	.~ID~ .badge { margin: 0 5px 5px 0; font-size: 11px; padding: 3px 5px; }
+	.~ID~ .badge { margin: 0 5px 5px 0; font-size: 11px; padding: 3px 5px; vertical-align: top; }
 	.~ID~ .badge i { margin-right: 0; }
 	.~ID~ .addtag { cursor: pointer; }
 	.~ID~ .addtag:hover { opacity: 0.8; }
@@ -62,6 +64,9 @@
 	.~ID~ .meta > h2 { border-bottom: 0; margin-bottom: 10px; padding: 0; outline: 0; line-height: 25px; }
 	.~ID~ .a-bk { color: #000; }
 	.~ID~ .ui-iframepreview { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #E0E0E0; padding-left: 10px; padding-right: 10px; }
+	.~ID~ .col { border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.1); padding: 5px 0 0; background: rgba(255,255,255,0.5); }
+	.~ID~ .col .keyvalue { border-top: 1px solid rgba(0,0,0,0.1); padding: 2px 8px; }
+	.~ID~ .col .keyvalue:first-child { border-top: 0; }
 
 	.~ID~ .relatedtickets { margin-top: 10px; display: block; }
 	.~ID~ .relatedtickets .users { background-color: #fff; padding: 0; border-radius: 0; }
@@ -192,7 +197,7 @@
 							{{ fi }}
 
 							<div class="grid-2 grid-xs-1">
-								<div>
+								<div class="col">
 									<div class="keyvalue">
 										<span>@(Status)</span>
 										<div class="exec control b" data-exec="?/status">{{ value.statusid | status }}</div>
@@ -203,17 +208,17 @@
 										<div class="exec control" data-exec="?/folder"{{ if value.folder }} style="background:{{ value.folder_color | rgba(0.2) }}"{{ fi }}>{{ value.folder | empty }}</div>
 									</div>
 									-->
-									<div class="keyvalue">
+									<div class="keyvalue owner">
 										<span>@(Owner)</span>
 										<div class="exec control" data-exec="?/owner">{{ value.ownerid | owner }}</div>
 									</div>
 									<div class="keyvalue">
 										<span>@(Source)</span>
-										<div>{{ value.source | empty }}</div>
+										<div class="exec control" data-exec="?/source">{{ value.source | empty }}</div>
 									</div>
-									<div class="keyvalue">
+									<div class="keyvalue" style="padding-bottom:0">
 										<span>@(Tags)</span>
-										<div class="tags" style="text-overflow:initial;white-space:normal">
+										<div class="tags" style="text-overflow:initial;white-space:normal;padding-bottom:0">
 											{{ if value.tags }}
 												{{ foreach m in value.tags }}
 												<span class="badge exec" data-exec="?/remtag" style="background-color:{{ m | tagcolor }}" data-id="{{ m }}"><i class="ti ti-times"></i>{{ m | tagname }}</span>
@@ -223,7 +228,7 @@
 										</div>
 									</div>
 								</div>
-								<div>
+								<div class="col">
 									<div class="keyvalue">
 										<span><i class="ti ti-start green"></i>@(Date from)</span>
 										<div class="exec control" data-exec="?/date">{{ value.date | format }}</div>
@@ -238,13 +243,13 @@
 									</div>
 									<div class="keyvalue">
 										<span><u class="exec" data-exec="?/logs">@(Worked)</u></span>
-										<div class="exec control b" data-exec="?/logwork">{{ value.worked | logwork }} <span class="green">&bull;</span></div>
+										<div class="exec control" data-exec="?/logwork"><b>{{ value.worked | logwork }}</b><span class="green"><i class="ti ti-bull"></i></span>{{ if value.isbillable }}<span class="badge badge-medium badge-silver nmb"><i class="ti ti-credit-card mr5"></i>@(billable)</span>{{ fi }}</div>
 									</div>
 								</div>
 							</div>
 
 							{{ if value.attachments && value.attachments.length }}
-							<hr />
+							<br />
 							<div class="b"><i class="ti ti-paperclip mr5"></i>@(Attachments)</div>
 							<div class="attachments">
 								{{ value.attachments | attachments }}
@@ -252,8 +257,8 @@
 							{{ fi }}
 						</script>
 					</ui-bind>
+					<br />
 
-					<hr style="margin-top:10px" />
 					<div class="b"><i class="ti ti-relations mr5"></i>@(Related tickets)</div>
 					<ui-bind path="?.links" config="template" class="relatedtickets">
 						<script type="text/html">
@@ -296,7 +301,7 @@
 
 <script>
 
-	const Tattachments = Tangular.compile(`{{ foreach m in value }}<a href="{{ m.url }}" target="_blank" class="file quickpreview"><span class="pull-right fs11 red ml5 exec" data-exec="?/remattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-remove"></i></span><span class="pull-right silver fs11">{{ m.size | filesize }}</span><i class="ti {{ m.icon }} mr5"></i>{{ m.name }}</a>{{ end }}`);
+	const Tattachments = Tangular.compile(`{{ foreach m in value }}<a href="{{ m.url }}" target="_blank" class="file quickpreview"><span class="pull-right ml5 exec" data-exec="?/contextattachment" data-prevent="true" data-id="{{ m.id }}"><i class="ti ti-cog"></i></span><span class="pull-right silver">{{ m.size | filesize }}</span><i class="ti {{ m.icon }} mr5"></i>{{ m.name }}</a>{{ end }}`);
 
 	Thelpers.attachments = function(arr) {
 		let ext = {
@@ -758,6 +763,26 @@
 			EXEC('-floatinginput/show', opt);
 		};
 
+		exports.source = function(el) {
+			var model = exports.model;
+			var opt = {};
+			opt.element = el;
+			opt.value = model.source || '';
+			opt.offsetY = -10;
+			opt.offsetX = -10;
+			opt.icon = 'ti ti-bullseye-arrow';
+			opt.summary = '@(Enter the source name.)';
+			opt.placeholder = '@(Source)';
+			opt.callback = function(val) {
+				exports.tapi('tickets_update/{0} ERROR'.format(model.id), { source: val }, function() {
+					model.source = val;
+					changed = true;
+					exports.upd('id');
+				});
+			};
+			EXEC('-floatinginput/show', opt);
+		};
+
 		exports.deadline = function(el) {
 			var model = exports.model;
 			var opt = {};
@@ -927,6 +952,47 @@
 			});
 		};
 
+		exports.contextattachment = function(el) {
+			let model = exports.model;
+			let id = ATTRD(el);
+			let opt = {};
+			opt.element = el;
+			opt.align = 'right';
+			opt.items = [];
+			opt.items.push({ id: 'rename', name: '@(Rename)', icon: 'ti ti-pencil' });
+			opt.items.push({ id: 'remove', name: '@(Remove)', icon: 'ti ti-remove red' });
+
+			let index = model.attachments.findIndex('id', id);
+			let file = model.attachments[index];
+
+			opt.callback = function(selected) {
+				if (selected.id === 'remove') {
+					EXEC('-approve/show', '@(Are you sure you want to remove selected attachment?)', '"ti ti-remove" @(Remove)', function() {
+						model.attachments.splice(index, 1);
+						exports.tapi('tickets_update/{0} ERROR'.format(model.id), { attachments: model.attachments }, function() {
+							changed = true;
+							exports.upd('id');
+						});
+					});
+				} else if (selected.id === 'rename') {
+					// prompt
+					let opt = {};
+					opt.name = '@(Enter a new filename)';
+					opt.value = file.name;
+					opt.centered = true;
+					opt.callback = function(val) {
+						file.name = val;
+						exports.tapi('tickets_update/{0} ERROR'.format(model.id), { attachments: model.attachments }, function() {
+							changed = true;
+							exports.upd('id');
+						});
+					};
+					SETTER('prompt/show', opt);
+				}
+			};
+			SETTER('menu/show', opt);
+		};
+
 		exports.toggle = function(el) {
 			var model = exports.model;
 			exports.tapi('tickets_update/{0} ERROR'.format(model.id), { isclosed: !model.isclosed }, function() {
@@ -979,7 +1045,7 @@
 			opt.items.push('-');
 			opt.items.push({ id: 'drop', name: '@(Upload attachment)', icon: 'ti ti-file' });
 			opt.items.push({ id: 'priority', name: '@(Priority)', icon: 'ti ti-arrow-up', children: [{ id: 'priority', value: 3, name: '@(High)', icon: 'ti ti-flag red', selected: model.ispriority === 3 }, { id: 'priority', value: 2, name: '@(Medium)', icon: 'ti ti-flag orange', selected: model.ispriority === 2 }, { id: 'priority', value: 1, name: '@(Low)', icon: 'ti ti-flag blue', selected: model.ispriority === 1 }, { id: 'priority', value: 0, name: '@(None)', icon: 'ti ti-flag', selected: model.ispriority === 0 }] });
-			opt.items.push({ id: 'billable', name: '@(Billable)', icon: 'ti ti-invoice', selected: model.isbillable == true });
+			opt.items.push({ id: 'billable', name: '@(Billable)', icon: 'ti ti-credit-card', selected: model.isbillable == true });
 			opt.items.push({ id: 'public', name: '@(Open to all)', icon: 'ti ti-users', selected: model.ispublic == true });
 			opt.items.push('-');
 			opt.items.push({ id: 'notifications', name: '@(Logs)', icon: 'ti ti-history' });

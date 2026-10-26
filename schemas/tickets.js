@@ -115,7 +115,7 @@ NEWSCHEMA('Tickets', function(schema) {
 		public: true,
 		action: async function($) {
 
-			let sql = 'SELECT a.id,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,COALESCE(b.isunread, false) AS isunread,b.iscomment,b.dtupdated AS dtunread,a.children FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id);
+			let sql = 'SELECT a.id,a.isbillable,a.ispublic,a.reference,a.parentid,a.ownerid,a.userid,a.folderid,a.folder,a.folder_color,a.folder_icon,a.statusid,a.name,a.estimate,a.date,a.dtupdated,a.ispriority,a.attachments,a.deadline,a.tags,a.worked,a.comments,COALESCE(b.isunread, false) AS isunread,b.iscomment,b.dtupdated AS dtunread,a.children FROM view_ticket a LEFT JOIN tbl_ticket_unread b ON b.id=(a.id||\'{0}\')'.format($.user.id);
 			let builder = DATA.query(sql);
 			let query = $.query;
 
@@ -232,7 +232,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('create', {
 		name: 'Create ticket',
-		input: '*name:String, parentid:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watchers:[String], ispriority:Number, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String, attrs:Object, attachments2:[Object]',
+		input: '*name:String, parentid:String, statusid:String, note:String, folderid:UID, folder:String, users:[String], userid:[String], watcherid:[String], watcherid:[String], ispriority:Number, isbillable:Boolean, ispublic:Boolean, source:String, tags:[String], html:String, markdown:String, reference:String, date:Date, deadline:Date, worked:Number, attachments:[*name:String, *data:*Base64], callback:String, attrs:Object, attachments2:[Object]',
 		public: true,
 		partial: true,
 		action: async function($, model) {
@@ -390,7 +390,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 	schema.action('update', {
 		name: 'Update ticket',
-		input: 'userid:[String], watcherid:[String], *folderid:UID, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Number, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String, attrs:Object',
+		input: 'userid:[String], watcherid:[String], *folderid:UID, source:String, note:String, *statusid:String, ownerid:String, *name:String, reference:String, estimate:Number, ispriority:Number, isbillable:Boolean, ispublic:Boolean, tags:[String], deadline:Date, attachments:[Object], date:Date, html:String, markdown:String, callback:String, attrs:Object',
 		params: '*id:String',
 		partial: true,
 		public: true,

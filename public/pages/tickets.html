@@ -96,6 +96,7 @@
 	.CLASS .subticket > section { margin: 0 !important; }
 	.CLASS .status-empty-BK { width: 120px; float: left; border-right: 1px solid #E0E0E0; margin-right: 10px; padding: 3px 0 0 5px; }
 	.CLASS .subticket .status { margin-left: 15px; }
+	.CLASS .billable { font-size: 16px; margin-right: 5px; color: #999; }
 
 	.CLASS .subticket:before { position: absolute; background-color: transparent; width: 15px; height: 38px; display: block; content: ''; margin: -20px 0 0 0; border-left: 1px solid #D0D0D0; border-bottom: 1px solid #D0D0D0; border-radius: 0 0 0 var(--radius)}
 
@@ -222,6 +223,7 @@
 													{{ if m.priority }}<span class="flag flag-priority" style="background-color:{{ m.priority.color }}"><i class="ti ti-flag"></i></span>{{ fi }}
 													<!-- {{ m.warn | warn }} -->
 													{{ if m.isunread }}<i class="ti ti ti-bell-alt unreadicon"></i>{{ fi }}
+													{{ if m.isbillable }}<i class="ti ti-credit-card billable" title="@(Billable)"></i>{{ fi }}
 													{{ if m.statusid === 'note' || m.statusid === 'review' || m.isread }}<span class="mr5">{{ m.name }}</span>{{ else }}<b>{{ m.name }}</b>{{ fi }}
 													{{ if m.attachments && m.attachments.length }} <i class="ti ti-paperclip mr5"></i>{{ fi }}
 													{{ if m.parentid }}<i class="ti ti-code-branch mr5" title="@(The ticket is assigned to another ticket)"></i>{{ fi }}

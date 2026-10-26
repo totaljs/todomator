@@ -1,7 +1,7 @@
-<ui-component name="miniform" path="common.form3" config="if:CLASS;icon:ti ti-hourglass;autofocus:true;reload:?/reload;submit:?/submit;width:400;zindex:50;enter:1" class="hidden" plugin="CLASS">
+<ui-component name="miniform" path="*form3" config="if:CLASS;icon:ti ti-hourglass;autofocus:true;reload:?/reload;submit:?/submit;width:400;zindex:50;enter:1" class="hidden" plugin="CLASS">
 	<div class="padding">
-
-		<ui-component name="input" path="?.name" config="innerlabel:1;placeholder:@(What did you do?)" class="m">@(Summary)</ui-component>
+		<div class="m"><img src="/img/cover-log.jpg" alt="@(Log work)" class="img-responsive" /></div>
+		<ui-component name="input" path="?.name" config="placeholder:@(What did you do?)" class="m">@(Summary)</ui-component>
 
 		<p>@(Log how many minutes did you spend on this ticket.)</p>
 		<div class="grid-2">
