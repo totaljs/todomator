@@ -37,10 +37,10 @@ NEWACTION('Users|save', {
 
 		let newbie = !model.id;
 
-		if (newbie)
+		if (newbie) {
 			model.id = UID();
-
-		model.permissions = [];
+			model.permissions = [];
+		}
 		model.password = model.password ? model.password.sha256(CONF.auth_secret) : undefined;
 
 		if (!model.search)

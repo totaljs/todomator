@@ -30,8 +30,6 @@ exports.install = function() {
 	ROUTE('+API    ?       -logwork_open              --> Tickets/logwork_open');
 	ROUTE('+API    ?       +logwork_start             --> Tickets/logwork_start');
 	ROUTE('+API    ?       +logwork_stop              --> Tickets/logwork_stop');
-	ROUTE('+API    ?       -data_read/{id}            --> Tickets/data_read');
-	ROUTE('+API    ?       +data_save/{id}            --> Tickets/data_save');
 
 	// Folders
 	ROUTE('+API    ?       -folders                   --> Folders/list');

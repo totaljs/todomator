@@ -478,7 +478,7 @@ NEWSCHEMA('Tickets', function(schema) {
 
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: params.id, markdown: model.markdown, clientid: clientid }, filter);
 
-			response.type = 'udpate';
+			response.type = 'update';
 			EMIT('ticket', response);
 
 			$.success(params.id);
@@ -706,7 +706,6 @@ NEWSCHEMA('Tickets', function(schema) {
 			$.success(ticket.worked);
 
 			DATA.modify('tbl_notification', { value: model.minutes + '' }).where('ticketid', response.ticketid).where('reference', params.id).where('typeid', 'logwork');
-			FUNC.notify(model.ticketid, $.user.id, 'logwork', $.user.name, model.minutes + '', model.id);
 
 			var filter = client => ticket.ispublic || ticket.ownerid === client.user.id || ticket.userid.includes(client.user.id);
 			MAIN.ws && MAIN.ws.send({ TYPE: 'refresh', id: ticket.id }, filter);
@@ -935,7 +934,7 @@ NEWACTION('Comments|create', {
 		if (item.ispublic)
 			item.userid = MAIN.users;
 
-		await FUNC.notify(model.ticketid, m, 'comment', $.user.name, model.markdown.max(50), model.id);
+		await FUNC.notify(model.ticketid, $.user.id, 'comment', $.user.name, model.markdown.max(50), model.id);
 
 		for (var m of item.userid)
 			await FUNC.unread(model.ticketid, m, 'comment', null, m !== $.user.id);

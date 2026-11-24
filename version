@@ -7,6 +7,12 @@ Version: 1.8
 - improved UI
 - updated UI components
 - added option to rename ticket attachment
+- fixed removing user permissions when saving a user
+- fixed notification when creating a comment
+- fixed creating an invalid notification when updating a logwork
+- fixed the "update" type in the "ticket" event
+- removed unused routes "data_read" and "data_save"
+- removed "querybuilderpg" dependency (replaced by "DATA.init()")
 
 ===================================
 Version: 1.7
